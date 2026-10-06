@@ -1,0 +1,1231 @@
+{
+  "report": {
+    "taxpayer": {
+      "rut": "[RUT]",
+      "name": "Caso de ejemplo · Capítulo IV",
+      "capturedAt": "2026-10-06T11:00:00-03:00",
+      "sources": [
+        {
+          "source": "F22",
+          "label": "F22 · Renta anual",
+          "status": "complete",
+          "obtained": [
+            "AT 2022",
+            "AT 2023",
+            "AT 2024",
+            "AT 2025"
+          ],
+          "missing": [],
+          "note": "Declaración vigente de cada año tributario."
+        },
+        {
+          "source": "F29",
+          "label": "F29 · IVA y PPM",
+          "status": "partial",
+          "obtained": [
+            "2025-02 a 2026-09 (20 períodos)"
+          ],
+          "missing": [
+            "2024-10 a 2025-01 (4 períodos)"
+          ],
+          "note": "Sin declaraciones antes del inicio de actividades (31-01-2025)."
+        },
+        {
+          "source": "F50",
+          "label": "F50 · Otros impuestos",
+          "status": "empty",
+          "obtained": [],
+          "missing": [],
+          "note": "El contribuyente no registra F50 en los últimos 24 meses."
+        },
+        {
+          "source": "BIENES_RAICES",
+          "label": "Bienes raíces",
+          "status": "complete",
+          "obtained": [
+            "9 roles vigentes"
+          ],
+          "missing": [],
+          "note": "Totales del Capítulo IV; el detalle por rol es ilustrativo."
+        },
+        {
+          "source": "ACTIVIDADES",
+          "label": "Actividades económicas",
+          "status": "complete",
+          "obtained": [
+            "2 actividades vigentes"
+          ],
+          "missing": [],
+          "note": ""
+        },
+        {
+          "source": "RCV_DTE",
+          "label": "RCV y DTE",
+          "status": "excluded",
+          "obtained": [],
+          "missing": [],
+          "note": "Fuente no incluida en esta versión."
+        },
+        {
+          "source": "BALANCE",
+          "label": "Balance tributario",
+          "status": "excluded",
+          "obtained": [],
+          "missing": [],
+          "note": "Fuente no incluida en esta versión."
+        }
+      ]
+    },
+    "years": [
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "summary": "Tus ingresos se duplicaron entre AT 2022 y AT 2025, pero tu renta financiera neta se mantiene en torno a $5,4 millones mensuales desde AT 2023. La diferencia la explican los arriendos, que el método no considera renta personal. Con ese ingreso, tu dividendo hipotecario de referencia es $1.361.668 al mes. Además, los arriendos declarados son menores a los que percibes, lo que abre una contingencia tributaria por validar.",
+    "kpis": [
+      {
+        "label": "Ingresos AT 2025",
+        "value": "$104,8 MM",
+        "note": "2,0 veces AT 2022",
+        "insightId": "ingresos"
+      },
+      {
+        "label": "Renta financiera neta mensual",
+        "value": "$5,45 MM",
+        "note": "AT 2025",
+        "insightId": "rfn"
+      },
+      {
+        "label": "Tasa efectiva de impuesto",
+        "value": "16,0%",
+        "note": "Tramo B Art. 55 bis",
+        "insightId": "tasa"
+      },
+      {
+        "label": "Dividendo hipotecario de referencia",
+        "value": "$1,36 MM",
+        "note": "Cerca de 7.424 UF · valor referencial",
+        "insightId": "hipotecario"
+      }
+    ],
+    "insights": [
+      {
+        "id": "ingresos",
+        "dimension": "Económico",
+        "tone": "positive",
+        "title": "Tus ingresos se duplicaron en cuatro años",
+        "body": "El total de orígenes de renta pasó de $52.455.880 en AT 2022 a $104.832.677 en AT 2025.",
+        "source": "F22 · orígenes de renta",
+        "anchor": "origenes"
+      },
+      {
+        "id": "arriendos",
+        "dimension": "Económico",
+        "tone": "neutral",
+        "title": "Los arriendos ya son 22% de tus ingresos",
+        "body": "Aparecen desde AT 2024 y suman $23.132.593 en AT 2025. El método los excluye de la renta financiera personal.",
+        "source": "F22 · código 955",
+        "anchor": "origenes"
+      },
+      {
+        "id": "subdeclaracion",
+        "dimension": "Tributario",
+        "tone": "review",
+        "title": "Los arriendos declarados son menores a los percibidos",
+        "body": "Percibes arriendos por $5.370.000 al mes ($64.440.000 al año), pero el código 955 de AT 2025 registra $23.132.593. La contingencia estimada por AT 2024 y AT 2025 es $30.999.570 y un analista debe validarla.",
+        "source": "F22 · código 955 · Art. 53 y 97 CT",
+        "anchor": "contingencias"
+      },
+      {
+        "id": "tasa",
+        "dimension": "Tributario",
+        "tone": "neutral",
+        "title": "Tu tasa efectiva de impuesto subió de 6,9% a 16,0%",
+        "body": "Desde AT 2024 tributas en el tramo B del Art. 55 bis. El impuesto determinado de AT 2025 es $15.931.231.",
+        "source": "F22 · códigos 157 y 170",
+        "anchor": "base"
+      },
+      {
+        "id": "rfn",
+        "dimension": "Financiero",
+        "tone": "positive",
+        "title": "Tu renta financiera neta se mantiene en $5,4 millones al mes",
+        "body": "Desde AT 2023 varía menos de 2%, aunque los ingresos totales siguen creciendo.",
+        "source": "Cálculo Método ICRED",
+        "anchor": "financiero"
+      },
+      {
+        "id": "hipotecario",
+        "dimension": "Crediticio",
+        "tone": "positive",
+        "title": "Tu dividendo hipotecario de referencia es $1.361.668",
+        "body": "Equivale a 25% de tu renta financiera neta mensual. A 30 años y 4% anual representa cerca de 7.424 UF. Es un valor referencial del método, no una aprobación de crédito.",
+        "source": "Cálculo Método ICRED",
+        "anchor": "credito"
+      },
+      {
+        "id": "actividad-arriendos",
+        "dimension": "Tributario",
+        "tone": "neutral",
+        "title": "Iniciaste la actividad de arriendo de inmuebles en enero de 2025",
+        "body": "El SII registra la actividad 681012 desde el 31-01-2025. Los arriendos declarados en AT 2024 y AT 2025 son anteriores a ese inicio de actividades.",
+        "source": "SII · actividades económicas",
+        "anchor": "actividades"
+      }
+    ],
+    "incomeOrigins": [
+      {
+        "code": "104",
+        "label": "Retiros",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "code": "105",
+        "label": "Dividendos",
+        "values": {
+          "2022": 14520982,
+          "2023": 15156706,
+          "2024": 0,
+          "2025": 65546
+        }
+      },
+      {
+        "code": "106",
+        "label": "Gastos rechazados",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "code": "108",
+        "label": "Rentas presuntas",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "code": "955",
+        "label": "Ingresos por arriendos de bienes raíces",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 19492810,
+          "2025": 23132593
+        }
+      },
+      {
+        "code": "1632",
+        "label": "Rentas asignadas Art. 14 D N°8",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "code": "155",
+        "label": "Rentas de capitales mobiliarios",
+        "values": {
+          "2022": 6985,
+          "2023": 24560,
+          "2024": 522868,
+          "2025": 448862
+        }
+      },
+      {
+        "code": "152",
+        "label": "Rentas exentas del IGC",
+        "values": {
+          "2022": 0,
+          "2023": 62,
+          "2024": 21010,
+          "2025": 0
+        }
+      },
+      {
+        "code": "1032",
+        "label": "Otras rentas de fuente chilena",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "code": "1891",
+        "label": "Mayor valor venta bienes raíces",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "code": "1104",
+        "label": "Rentas de fuente extranjera afectas al IGC",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "code": "749",
+        "label": "Incremento por impuesto de primera categoría",
+        "values": {
+          "2022": 1644747,
+          "2023": 1724626,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "code": "161",
+        "label": "Sueldos y salarios",
+        "values": {
+          "2022": 36283166,
+          "2023": 56916635,
+          "2024": 71983987,
+          "2025": 81185676
+        }
+      },
+      {
+        "code": "110",
+        "label": "Honorarios",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      }
+    ],
+    "igcBase": {
+      "base170": {
+        "2022": 44419448,
+        "2023": 66575225,
+        "2024": 86583947,
+        "2025": 99322241
+      },
+      "tax157": {
+        "2022": 3077892,
+        "2023": 7175733,
+        "2024": 12604982,
+        "2025": 15931231
+      },
+      "bracket55bis": {
+        "2022": "A",
+        "2023": "A",
+        "2024": "B",
+        "2025": "B"
+      }
+    },
+    "financial": [
+      {
+        "year": 2022,
+        "totalOrigins": 52455880,
+        "rfb": 52455888,
+        "rfn": 47210299,
+        "rfnMonthly": 3934192,
+        "effectiveRate": 0.0693,
+        "mortgageLimit": 983548,
+        "bitUta": 60.5
+      },
+      {
+        "year": 2023,
+        "totalOrigins": 73822589,
+        "rfb": 73822535,
+        "rfn": 66440282,
+        "rfnMonthly": 5536690,
+        "effectiveRate": 0.1078,
+        "mortgageLimit": 1384173,
+        "bitUta": 86.4
+      },
+      {
+        "year": 2024,
+        "totalOrigins": 92020675,
+        "rfb": 72506865,
+        "rfn": 65256178,
+        "rfnMonthly": 5438015,
+        "effectiveRate": 0.1456,
+        "mortgageLimit": 1359504,
+        "bitUta": 107.2
+      },
+      {
+        "year": 2025,
+        "totalOrigins": 104832677,
+        "rfb": 81700093,
+        "rfn": 65360074,
+        "rfnMonthly": 5446673,
+        "effectiveRate": 0.1604,
+        "mortgageLimit": 1361668,
+        "bitUta": 119.0
+      }
+    ],
+    "activities": [
+      {
+        "code": "681012",
+        "label": "Compra, venta y alquiler (excepto amoblados) de inmuebles",
+        "category": "1",
+        "startDate": "2025-01-31"
+      },
+      {
+        "code": "749009",
+        "label": "Otras actividades profesionales, científicas y técnicas n.c.p.",
+        "category": "2",
+        "startDate": "2014-10-06"
+      }
+    ],
+    "properties": [
+      {
+        "rol": "1204-18",
+        "comuna": "Los Ángeles",
+        "destino": "Habitacional",
+        "direccion": "Av. Alemania 1204, depto. 18",
+        "avaluo": 118450000,
+        "avaluoAfecto": 63450000,
+        "avaluoExento": 55000000,
+        "contribucion": 622000,
+        "superficieTerreno": null,
+        "superficieConstruida": 62.0
+      },
+      {
+        "rol": "1204-31",
+        "comuna": "Los Ángeles",
+        "destino": "Habitacional",
+        "direccion": "Av. Alemania 1204, depto. 31",
+        "avaluo": 96320000,
+        "avaluoAfecto": 41320000,
+        "avaluoExento": 55000000,
+        "contribucion": 405000,
+        "superficieTerreno": null,
+        "superficieConstruida": 54.5
+      },
+      {
+        "rol": "0877-6",
+        "comuna": "Los Ángeles",
+        "destino": "Habitacional",
+        "direccion": "Calle Colo Colo 877, casa 6",
+        "avaluo": 87900000,
+        "avaluoAfecto": 32900000,
+        "avaluoExento": 55000000,
+        "contribucion": 322000,
+        "superficieTerreno": 210.0,
+        "superficieConstruida": 96.0
+      },
+      {
+        "rol": "3310-2",
+        "comuna": "Los Ángeles",
+        "destino": "Sitio eriazo",
+        "direccion": "Camino Cerro Colorado, lote 2",
+        "avaluo": 54600000,
+        "avaluoAfecto": 54600000,
+        "avaluoExento": 0,
+        "contribucion": 535000,
+        "superficieTerreno": 1800.0,
+        "superficieConstruida": 0
+      },
+      {
+        "rol": "0452-11",
+        "comuna": "Colina",
+        "destino": "Habitacional",
+        "direccion": "Camino Chicureo 452, casa 11",
+        "avaluo": 168750000,
+        "avaluoAfecto": 113750000,
+        "avaluoExento": 55000000,
+        "contribucion": 1115000,
+        "superficieTerreno": 640.0,
+        "superficieConstruida": 148.0
+      },
+      {
+        "rol": "0452-12",
+        "comuna": "Colina",
+        "destino": "Habitacional",
+        "direccion": "Camino Chicureo 452, casa 12",
+        "avaluo": 152300000,
+        "avaluoAfecto": 97300000,
+        "avaluoExento": 55000000,
+        "contribucion": 954000,
+        "superficieTerreno": 610.0,
+        "superficieConstruida": 141.0
+      },
+      {
+        "rol": "0071-4",
+        "comuna": "Alto Biobío",
+        "destino": "Sitio eriazo",
+        "direccion": "Sector Ralco, lote 4",
+        "avaluo": 38200000,
+        "avaluoAfecto": 38200000,
+        "avaluoExento": 0,
+        "contribucion": 374000,
+        "superficieTerreno": 5200.0,
+        "superficieConstruida": 0
+      },
+      {
+        "rol": "0071-5",
+        "comuna": "Alto Biobío",
+        "destino": "Sitio eriazo",
+        "direccion": "Sector Ralco, lote 5",
+        "avaluo": 31500000,
+        "avaluoAfecto": 31500000,
+        "avaluoExento": 0,
+        "contribucion": 309000,
+        "superficieTerreno": 4700.0,
+        "superficieConstruida": 0
+      },
+      {
+        "rol": "0915-3",
+        "comuna": "Quellón",
+        "destino": "Habitacional",
+        "direccion": "Costanera Pedro Montt 915, casa 3",
+        "avaluo": 171788285,
+        "avaluoAfecto": 116788285,
+        "avaluoExento": 55000000,
+        "contribucion": 1145000,
+        "superficieTerreno": 480.0,
+        "superficieConstruida": 132.0
+      }
+    ],
+    "f29": [
+      {
+        "period": "2026-09",
+        "filingType": "original",
+        "folio": "292609-7300",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": 0,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2026-10-12"
+      },
+      {
+        "period": "2026-08",
+        "filingType": "original",
+        "folio": "292608-7301",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": 0,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2026-09-12"
+      },
+      {
+        "period": "2026-07",
+        "filingType": "original",
+        "folio": "292607-7302",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": 0,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2026-08-12"
+      },
+      {
+        "period": "2026-06",
+        "filingType": "original",
+        "folio": "292606-7303",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2026-07-12"
+      },
+      {
+        "period": "2026-05",
+        "filingType": "original",
+        "folio": "292605-7304",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2026-06-12"
+      },
+      {
+        "period": "2026-04",
+        "filingType": "original",
+        "folio": "292604-7305",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2026-05-12"
+      },
+      {
+        "period": "2026-03",
+        "filingType": "rectificatoria",
+        "folio": "292603-7306",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2026-04-12"
+      },
+      {
+        "period": "2026-02",
+        "filingType": "original",
+        "folio": "292602-7307",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2026-03-12"
+      },
+      {
+        "period": "2026-01",
+        "filingType": "original",
+        "folio": "292601-7308",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2026-02-12"
+      },
+      {
+        "period": "2025-12",
+        "filingType": "original",
+        "folio": "292512-7309",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2026-01-12"
+      },
+      {
+        "period": "2025-11",
+        "filingType": "original",
+        "folio": "292511-7310",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2025-12-12"
+      },
+      {
+        "period": "2025-10",
+        "filingType": "original",
+        "folio": "292510-7311",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2025-11-12"
+      },
+      {
+        "period": "2025-09",
+        "filingType": "original",
+        "folio": "292509-7312",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2025-10-12"
+      },
+      {
+        "period": "2025-08",
+        "filingType": "original",
+        "folio": "292508-7313",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2025-09-12"
+      },
+      {
+        "period": "2025-07",
+        "filingType": "original",
+        "folio": "292507-7314",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2025-08-12"
+      },
+      {
+        "period": "2025-06",
+        "filingType": "original",
+        "folio": "292506-7315",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2025-07-12"
+      },
+      {
+        "period": "2025-05",
+        "filingType": "original",
+        "folio": "292505-7316",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2025-06-12"
+      },
+      {
+        "period": "2025-04",
+        "filingType": "original",
+        "folio": "292504-7317",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2025-05-12"
+      },
+      {
+        "period": "2025-03",
+        "filingType": "original",
+        "folio": "292503-7318",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2025-04-12"
+      },
+      {
+        "period": "2025-02",
+        "filingType": "original",
+        "folio": "292502-7319",
+        "debit": 0,
+        "credit": 0,
+        "ivaDeterminado": 0,
+        "remanente": 0,
+        "ppm": 0,
+        "retenciones": 0,
+        "liqFactura818": null,
+        "total": 0,
+        "paymentStatus": "sin_movimiento",
+        "filedAt": "2025-03-12"
+      }
+    ],
+    "f50": [],
+    "warnings": [
+      "Factor RFN, códigos excluidos de la RFB, UTA y rangos del tramo Art. 55 bis están pendientes de validación con el Método ICRED.",
+      "Folios, detalle de bienes raíces por rol y períodos del F29 son ilustrativos: el Capítulo IV solo publica los totales.",
+      "Los códigos 158, 494, 465, 750 y 765 no están informados en el caso de ejemplo."
+    ],
+    "f22Returns": [
+      {
+        "year": 2022,
+        "folio": "220418-0001",
+        "filedAt": "2022-04-18",
+        "filingType": "original"
+      },
+      {
+        "year": 2023,
+        "folio": "230421-0001",
+        "filedAt": "2023-04-21",
+        "filingType": "original"
+      },
+      {
+        "year": 2024,
+        "folio": "240419-0001",
+        "filedAt": "2024-04-19",
+        "filingType": "original"
+      },
+      {
+        "year": 2025,
+        "folio": "250428-0001",
+        "filedAt": "2025-04-28",
+        "filingType": "original"
+      }
+    ],
+    "patrimony": {
+      "avaluoTotal": 919808285,
+      "enajenacionClp": 1118305776,
+      "enajenacionUf": 35728.07,
+      "pagoContadoClp": 261244504,
+      "pagoContadoUf": 7693.49,
+      "ivaClp": 123035076,
+      "patrimonioUf": 7693.49,
+      "activosUf": 35728.07,
+      "pasivosUf": 28034.58,
+      "deudaTotalUf": 27982,
+      "leverage": 5.7,
+      "debts": [
+        {
+          "bank": "Banco de Chile",
+          "debtUf": 9163,
+          "leverage": 1.5,
+          "properties": 2
+        },
+        {
+          "bank": "Banco de Crédito e Inversiones",
+          "debtUf": 12870,
+          "leverage": 2.6,
+          "properties": 1
+        },
+        {
+          "bank": "Banco Santander Chile",
+          "debtUf": 5949,
+          "leverage": 1.3,
+          "properties": 2
+        }
+      ],
+      "note": "Enajenación, pago contado, pasivos y deuda por banco no provienen del SII: los informa el cliente o una fuente externa."
+    },
+    "method": {
+      "release": "demo-0.2",
+      "uf": {
+        "value": 38416.69,
+        "date": "2024-12-31"
+      },
+      "mortgageFactor": 0.25,
+      "autoFactor": 0.07,
+      "mortgageRate": 0.04,
+      "mortgageYears": 30,
+      "autoMonths": 48,
+      "parameters": [
+        {
+          "key": "rfb_excluded",
+          "label": "Códigos excluidos de la RFB",
+          "value": "955 y 152",
+          "status": "pending"
+        },
+        {
+          "key": "rfn_factor",
+          "label": "Factor RFN",
+          "value": "0,90 hasta AT 2024; 0,80 en AT 2025",
+          "status": "pending"
+        },
+        {
+          "key": "bracket_55bis",
+          "label": "Rangos del tramo Art. 55 bis",
+          "value": "A y B según BIT en UTA",
+          "status": "pending"
+        },
+        {
+          "key": "uta",
+          "label": "UTA por año tributario",
+          "value": "Valores oficiales SII",
+          "status": "pending"
+        },
+        {
+          "key": "mortgage_factor",
+          "label": "Factor crédito hipotecario",
+          "value": "0,25 de la RFN mensual",
+          "status": "confirmed"
+        },
+        {
+          "key": "auto_factor",
+          "label": "Factor crédito automotriz",
+          "value": "0,07 de la RFN mensual",
+          "status": "confirmed"
+        }
+      ],
+      "formulas": [
+        {
+          "indicator": "Total orígenes de renta",
+          "formula": "Suma de los 14 códigos de orígenes de renta",
+          "pending": false
+        },
+        {
+          "indicator": "Tasa efectiva de tributación",
+          "formula": "Código 157 / Código 170",
+          "pending": false
+        },
+        {
+          "indicator": "Renta financiera bruta (RFB)",
+          "formula": "Total orígenes − códigos excluidos (955 y 152)",
+          "pending": true
+        },
+        {
+          "indicator": "Renta financiera neta (RFN)",
+          "formula": "RFB × factor RFN del año",
+          "pending": true
+        },
+        {
+          "indicator": "RFN promedio mensual",
+          "formula": "RFN / 12",
+          "pending": true
+        },
+        {
+          "indicator": "BIT IGC en UTA",
+          "formula": "Código 170 / UTA del año",
+          "pending": true
+        },
+        {
+          "indicator": "Tramo Art. 55 bis",
+          "formula": "Rango de la BIT en UTA",
+          "pending": true
+        },
+        {
+          "indicator": "Límite crédito hipotecario",
+          "formula": "RFN mensual × 0,25",
+          "pending": true
+        },
+        {
+          "indicator": "Límite crédito automotriz",
+          "formula": "RFN mensual × 0,07",
+          "pending": true
+        },
+        {
+          "indicator": "Credit Capacity (PV)",
+          "formula": "PMT × (1 − (1 + i)^−n) / i, con i mensual y n en meses",
+          "pending": true
+        }
+      ],
+      "reference": [
+        "GIF = Código 158 − (Código 106 + Código 108)",
+        "GIF bruto ajustado = (Código 158 + Código 494) − (Código 106 + Código 108), si el código 494 es mayor que cero",
+        "IFN = GIF bruto ajustado − Código 157",
+        "Nunca usar el código 170 como base de ingresos: no depura rentas nominales y queda rebajado por las franquicias de los Art. 55 bis y 42 bis (códigos 750 y 765)."
+      ],
+      "adjustments": [
+        {
+          "code": "158",
+          "label": "Total ingresos brutos afectos",
+          "values": {
+            "2022": null,
+            "2023": null,
+            "2024": null,
+            "2025": null
+          }
+        },
+        {
+          "code": "494",
+          "label": "Gastos presuntos de honorarios",
+          "values": {
+            "2022": null,
+            "2023": null,
+            "2024": null,
+            "2025": null
+          }
+        },
+        {
+          "code": "465",
+          "label": "Gastos efectivos de honorarios",
+          "values": {
+            "2022": null,
+            "2023": null,
+            "2024": null,
+            "2025": null
+          }
+        },
+        {
+          "code": "750",
+          "label": "Rebaja intereses hipotecarios Art. 55 bis",
+          "values": {
+            "2022": null,
+            "2023": null,
+            "2024": null,
+            "2025": null
+          }
+        },
+        {
+          "code": "765",
+          "label": "Rebaja ahorro previsional Art. 42 bis",
+          "values": {
+            "2022": null,
+            "2023": null,
+            "2024": null,
+            "2025": null
+          }
+        }
+      ]
+    },
+    "contingency": {
+      "rentsReceivedMonthly": 5370000,
+      "rentsShouldDeclare": 64440000,
+      "asOf": "2025-11-01",
+      "years": [
+        {
+          "year": 2024,
+          "baseDeclared": 86583947,
+          "rentsDeclared": 19492810,
+          "underDeclared": 44947190,
+          "baseAdjusted": 131531137,
+          "bracket": "35%",
+          "taxAdjusted": 28065693,
+          "taxDifference": 15460741,
+          "igcPaid": 4419093,
+          "netDebit": 11041648,
+          "debitUf": 296.33,
+          "monetaryCorrection": 693841,
+          "interest": 3344614,
+          "fine": 4523941,
+          "totalDebit": 19603744
+        },
+        {
+          "year": 2025,
+          "baseDeclared": 99322241,
+          "rentsDeclared": 23132593,
+          "underDeclared": 41307407,
+          "baseAdjusted": 140629648,
+          "bracket": "35%",
+          "taxAdjusted": 30388825,
+          "taxDifference": 14457394,
+          "igcPaid": 5531450,
+          "netDebit": 8925944,
+          "debitUf": 228.43,
+          "monetaryCorrection": 120517,
+          "interest": 949878,
+          "fine": 1399488,
+          "totalDebit": 11395827
+        }
+      ],
+      "total": 30999570,
+      "proposal": [
+        "Determinar con exactitud la base imponible del IGC que debió declararse.",
+        "Cuantificar la contingencia de AT 2024 y AT 2025 según los Art. 53 y 97 del Código Tributario.",
+        "Rectificar las declaraciones de AT 2024 y AT 2025, con condonación parcial de multas y pago diferido.",
+        "Evaluar el cambio de régimen de Segunda a Primera Categoría como empresario individual (Art. 14 letra A).",
+        "Informar lo que implica el cambio: PPM mensual en el F29 y contabilidad completa."
+      ]
+    },
+    "recommendations": [
+      "Fijar la tasa de los créditos",
+      "Extender el plazo de la deuda",
+      "Separar el patrimonio personal",
+      "Migrar a una estructura empresarial",
+      "Mantener un colchón de liquidez de 6 meses",
+      "Diversificar las fuentes de ingreso"
+    ]
+  },
+  "navSections": [
+    {
+      "id": "fuentes",
+      "label": "Fuentes y cobertura"
+    },
+    {
+      "id": "origenes",
+      "label": "Orígenes de renta"
+    },
+    {
+      "id": "base",
+      "label": "Base imponible IGC"
+    },
+    {
+      "id": "financiero",
+      "label": "Análisis financiero"
+    },
+    {
+      "id": "credito",
+      "label": "Capacidad de crédito"
+    },
+    {
+      "id": "contingencias",
+      "label": "Contingencias"
+    },
+    {
+      "id": "actividades",
+      "label": "Actividades económicas"
+    },
+    {
+      "id": "patrimonio",
+      "label": "Radiografía patrimonial"
+    },
+    {
+      "id": "f29",
+      "label": "F29 y F50"
+    }
+  ],
+  "loginSources": [
+    {
+      "code": "F22",
+      "text": "Renta anual, últimos 4 años"
+    },
+    {
+      "code": "F29",
+      "text": "IVA y PPM, últimos 24 meses"
+    },
+    {
+      "code": "F50",
+      "text": "Otros impuestos, últimos 24 meses"
+    },
+    {
+      "code": "Bienes raíces",
+      "text": "Roles y avalúos vigentes"
+    }
+  ],
+  "scrapeSteps": [
+    {
+      "key": "LOGIN",
+      "title": "Conexión con el SII",
+      "detail": "Sesión iniciada con tu clave tributaria"
+    },
+    {
+      "key": "F22",
+      "title": "F22 · Renta anual",
+      "detail": "AT 2022, 2023, 2024 y 2025"
+    },
+    {
+      "key": "F29",
+      "title": "F29 · IVA y PPM",
+      "detail": "Últimos 24 períodos"
+    },
+    {
+      "key": "F50",
+      "title": "F50 · Otros impuestos",
+      "detail": "Últimos 24 períodos"
+    },
+    {
+      "key": "BIENES_RAICES",
+      "title": "Bienes raíces y actividades",
+      "detail": "Roles, avalúos y giros vigentes"
+    },
+    {
+      "key": "CALCULO",
+      "title": "Cálculo Método ICRED",
+      "detail": "Orígenes de renta, RFN y capacidad de crédito"
+    }
+  ],
+  "scrapeLog": [
+    {
+      "step": 0,
+      "t": "00:04",
+      "text": "Sesión abierta en sii.cl"
+    },
+    {
+      "step": 1,
+      "t": "00:19",
+      "text": "F22 AT 2025: declaración vigente encontrada"
+    },
+    {
+      "step": 1,
+      "t": "00:41",
+      "text": "F22: 4 años tributarios guardados con su respaldo"
+    },
+    {
+      "step": 2,
+      "t": "00:43",
+      "text": "Detecté ingresos por arriendos (código 955) desde AT 2024"
+    },
+    {
+      "step": 2,
+      "t": "00:44",
+      "text": "Tasa efectiva del impuesto subió de 6,9% a 16,0%"
+    },
+    {
+      "step": 2,
+      "t": "00:52",
+      "text": "Leyendo F29 del período más reciente…"
+    },
+    {
+      "step": 3,
+      "t": "01:30",
+      "text": "F29: 20 períodos leídos; 4 sin declaración antes del inicio de actividades"
+    },
+    {
+      "step": 4,
+      "t": "01:58",
+      "text": "F50: sin declaraciones en los últimos 24 meses"
+    },
+    {
+      "step": 5,
+      "t": "02:20",
+      "text": "Bienes raíces: 9 roles vigentes · Actividades: 2 vigentes"
+    },
+    {
+      "step": 6,
+      "t": "02:31",
+      "text": "Cálculos del Método ICRED listos. Diagnóstico disponible."
+    }
+  ]
+}
