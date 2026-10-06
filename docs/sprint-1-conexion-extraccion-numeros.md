@@ -113,7 +113,33 @@ Se implementa lo que reproduce la tabla “Análisis financiero” del caso, por
 | Límite crédito hipotecario | RFN mensual × 0,25 | 1.361.668 |
 | Límite crédito automotriz | RFN mensual × 0,07 | 381.267 |
 
-El simulador de capacidad de crédito se calcula en el front con la RFN mensual, la UF y los factores que entrega `method`. Con 4% anual a 30 años reproduce el caso: $285.216.668, UF 7.424.
+### Capacidad de crédito (Credit Capacity)
+
+Se calcula a partir del límite hipotecario del último año tributario. No depende de ninguna fuente adicional.
+
+| Cálculo | Fórmula | Control del caso |
+| --- | --- | --- |
+| Capacidad de endeudamiento personal | PV = PMT × (1 − (1 + i)^−n) / i, con PMT = límite hipotecario, i = tasa anual / 12 y n = meses | $285.216.668 con 4% anual a 30 años |
+| Capacidad en UF | PV / UF de referencia | UF 7.424 (UF 38.416,69 al 31-12-2024) |
+| Factor leverage | PV × factor | Factor 2: UF 14.849 · Factor 3: UF 22.273 |
+| Monto automotriz | PV con PMT = límite automotriz y n = 48 meses | Sin control: el Capítulo IV no fija la tasa |
+
+El motor calcula estos valores con los parámetros por defecto y los cubre la prueba dorada. El front repite la misma fórmula solo para el simulador, donde el usuario cambia tasa y plazo; hoy vive en `src/lib/icred.ts` y no tiene pruebas.
+
+### Dónde vive cada cálculo de Números
+
+| Sección de Números | Cálculo | Dónde corre | Ticket |
+| --- | --- | --- | --- |
+| Orígenes de renta | Total por año | Motor | CAL-02 |
+| Gráficos | Sin cálculo propio: usan orígenes, RFN y tasa efectiva | Front | WEB-04 |
+| Base imponible IGC | Sin cálculo: códigos 170 y 157 | — | SII-03 |
+| Análisis financiero | Los 9 indicadores | Motor | CAL-02 y CAL-03 |
+| Capacidad de crédito | PV, conversión a UF y factor leverage con parámetros por defecto | Motor | CAL-04 |
+| Capacidad de crédito | Simulación con tasa y plazo que elige el usuario | Front | WEB-06 |
+| Radiografía patrimonial | Totales de avalúo y contribuciones, conteo por destino y comuna | Front | WEB-04 |
+| Radiografía patrimonial | Control avalúo total = afecto + exento | Motor | CAL-05 |
+| F29 y F50 | Sin cálculo: resumen por período | — | SII-04 y SII-05 |
+| Fuentes y cobertura | Estado, obtenido y faltante por fuente | Motor | API-05 |
 
 **Parámetros (tabla editable y versionada)**
 
@@ -123,8 +149,11 @@ El simulador de capacidad de crédito se calcula en el front con la RFN mensual,
 | Factor RFN | 0,90 hasta AT 2024; 0,80 en AT 2025 | Pendiente Ricardo: regla que lo define |
 | Rangos del tramo Art. 55 bis | Por definir (el caso da A bajo 90 UTA y B sobre 90) | Pendiente Ricardo |
 | UTA por AT | Valores oficiales SII | Cargar el día 1 y contrastar con la BIT del caso |
-| UF de referencia | Valor del día de captura | Definir fecha de corte |
+| UF de referencia | Valor del día de captura | Pendiente Ricardo: el caso usa la del 31 de diciembre del año comercial |
 | Factor hipotecario y automotriz | 0,25 y 0,07 | Confirmados en el Capítulo IV |
+| Tasa y plazo hipotecario de referencia | 4% anual a 30 años | Valores del caso; confirmar si son los de producción |
+| Plazo automotriz de referencia | 48 meses | Confirmado en el Capítulo IV; falta la tasa |
+| Factores leverage a mostrar | 1 a 4 | Pendiente Ricardo: el caso solo muestra 2 y 3 |
 | Tolerancia de la prueba dorada | ±10 pesos | Hasta aclarar la diferencia de la RFB |
 
 Cada parámetro viaja en el reporte con su estado. Números marca como “por validar” los indicadores que dependen de uno pendiente.
@@ -160,8 +189,8 @@ Tres frentes en paralelo. El motor no espera al scraper porque parte con la prue
 | Día | Conectores | Motor y API | Front | Entregable del día |
 | --- | --- | --- | --- | --- |
 | 1 | Login SII con RUT de prueba; mapa de rutas y formato por fuente | Esquema de base de datos, parámetros, carga de la prueba dorada | Apagar agente y hallazgos tras una bandera; cliente HTTP con respaldo al mock | Login funcionando y front de fase 1 navegable |
-| 2 | Conector y parser F22 (4 AT) | Motor de los 9 indicadores con la prueba dorada pasando; endpoints de consentimiento y run | Conexión y extracción contra la API real | F22 real en base de datos y run visible en pantalla |
-| 3 | Conectores y parsers F29 y F50 | Endpoint de reporte: F22, cálculos, `method` y cobertura | Números con datos reales de F22 | Primer recorrido completo con F22 |
+| 2 | Conector y parser F22 (4 AT) | Motor de los 9 indicadores y de capacidad de crédito con la prueba dorada pasando; endpoints de consentimiento y run | Conexión y extracción contra la API real | F22 real en base de datos y run visible en pantalla |
+| 3 | Conectores y parsers F29 y F50 | Endpoint de reporte: F22, cálculos, `method` y cobertura | Números con datos reales de F22; pruebas del simulador | Primer recorrido completo con F22 |
 | 4 | Conector y parser de bienes raíces y actividades | Reporte completo; estados terminales y errores con su formato | Tablas de F29, F50, bienes raíces y actividades con datos reales | Números completo de un RUT real |
 | 5 | Sesión vencida, período sin declaración, CAPTCHA, timeout | Prueba con 3 a 5 RUT reales; ajuste de parsers | Revisión de estados de falla, móvil y descargas | Demo a Ricardo |
 
@@ -184,7 +213,9 @@ Si el equipo es de dos personas, el frente de front se reparte entre los días 1
 
 - [ ] CAL-01 Esquema de base de datos y tabla de parámetros
 - [ ] CAL-02 Motor de cálculo del Capítulo IV
-- [ ] CAL-03 Prueba dorada del caso Carlos Díaz
+- [ ] CAL-03 Prueba dorada del caso Carlos Díaz: tabla “Análisis financiero” AT 2022–2025
+- [ ] CAL-04 Capacidad de crédito: PV, conversión a UF, factor leverage y monto automotriz, con sus controles en la prueba dorada
+- [ ] CAL-05 Controles de datos: avalúo total = afecto + exento y total de orígenes contra la suma de códigos
 - [ ] API-01 Consentimiento: crear y revocar
 - [ ] API-02 Run: crear, consultar estado y cancelar
 - [ ] API-03 Reporte con el contrato del front
@@ -198,6 +229,7 @@ Si el equipo es de dos personas, el frente de front se reparte entre los días 1
 - [ ] WEB-03 Al completar la captura, llevar al usuario a Números
 - [ ] WEB-04 Validar Números con datos reales: valores nulos, cobertura y estados vacíos
 - [ ] WEB-05 Revisar las pantallas de falla con respuestas reales del backend
+- [ ] WEB-06 Simulador de capacidad de crédito: pruebas de la fórmula contra el caso y parámetros por defecto tomados del reporte
 
 **Operación**
 
@@ -213,6 +245,7 @@ Sin los dos primeros puntos el sprint no parte. Los demás se resuelven durante 
 - [ ] **ERS de BICRED y cualquier avance del scraper existente.** Si ya hay rutas o selectores mapeados, el día 1 se acorta.
 - [ ] Ricardo responde la regla del factor RFN y los códigos excluidos de la RFB. Mientras tanto se usan los valores que cuadran el caso.
 - [ ] Ricardo entrega los rangos del tramo Art. 55 bis.
+- [ ] Ricardo confirma los parámetros de capacidad de crédito: tasa y plazo de referencia, fecha de la UF y factores leverage a mostrar.
 - [ ] Confirmar qué códigos del F29 alimentan el resumen mensual (débitos, créditos, IVA, remanente, PPM y retenciones).
 - [ ] Confirmar dónde corre el servicio y con qué IP sale, para no gatillar bloqueos del SII.
 
