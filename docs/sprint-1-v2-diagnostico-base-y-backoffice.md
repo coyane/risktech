@@ -11,13 +11,34 @@ Este documento reemplaza como plan vigente a `sprint-1-conexion-extraccion-diagn
 | Tema | Antes | Ahora |
 | --- | --- | --- |
 | UF | Un valor de referencia cargado a mano | Se obtiene del SII todos los días y cada cálculo pide la de su fecha |
-| Diagnóstico Base en pantalla | Una página larga | Cinco vistas (Resumen, Cálculos, Datos del SII, Pendientes, Glosario). Los cálculos se ven como bloques y la explicación de uno queda siempre abierta al lado |
+| Diagnóstico Base en pantalla | Una página larga | Seis vistas (Resumen, Cálculos, Crédito, Datos del SII, Pendientes, Glosario). Los cálculos se ven como bloques y la explicación de uno queda siempre abierta al lado |
 | PDF | Lo mismo que la pantalla | Documento completo aparte: imprime todas las vistas y todos los cálculos en orden |
 | Fórmulas | Repartidas en tres tablas | Un solo catálogo numerado, con redondeo, tolerancia y casos especiales |
+| Reunión con Ricardo | Doce puntos por confirmar y cinco por determinar | Diez cerrados y aplicados; quedan cinco por confirmar y dos por determinar |
 | Origen de los datos | Una tabla de fuentes | Ruta paso a paso de cada fuente, cada dato con su código y los cálculos que lo usan, y una ficha por cálculo con lo que toma y lo que necesita |
 | Contingencias Art. 53 y 97 | Sin fórmulas | Fórmulas deducidas del caso y verificadas, en un anexo. Siguen fuera de la fase 1 |
 | Backoffice | "Vista Propietarios mínima" | Propietarios y Radiografía del portafolio, con sus datos, fórmulas, endpoints y tickets |
 | Agente del portafolio | Sin mencionar | Visible como "Próximamente", igual que el agente del cliente |
+
+## Lo que confirmó Ricardo (reunión del 7 de octubre)
+
+Se revisaron con él los pendientes del método. Este documento y el prototipo ya incorporan lo que quedó cerrado.
+
+| Pendiente | Respuesta de Ricardo | Efecto |
+| --- | --- | --- |
+| Base imponible | Orígenes menos rebajas tiene que coincidir con el código 170; la diferencia de AT 2022 del informe real es un error | Pasa a "calculado" |
+| UTA | Siempre la de diciembre del mismo año de la declaración | Pasa a "calculado" |
+| Tramo Art. 55 bis | Hasta 90 UTA, 100% de la rebaja; entre 90 y 150 se extingue gradualmente; desde 150, nada. Tope de 8 UTA | Pasa a "calculado" y se agrega el cálculo de la rebaja máxima |
+| Tramo de Global Complementario | Art. 52 de la Ley de la Renta; usar la tabla de cada año tributario, que ya viene en pesos | Fuente cerrada; falta cargar las tablas |
+| Credit Capacity | No hay tasa ni plazo únicos: tiene que ser interactivo, con las variables ajustables. La tabla va de 5 a 25 años y de 3,0% a 5,0% | Pasa a "calculado". Tiene su propia vista, Crédito: la persona escribe la tasa y el plazo y todo el informe se recalcula |
+| Factor leverage | Lo define cada institución; niveles F1 a F5 | Pasa a "calculado", con factores 1 a 5 |
+| Deuda por institución | Sale de la tabla de propiedades: valor de compra menos pie, sumado por institución | Nuevo cálculo, verificado contra la vista de BICRED |
+| Asiento de apertura, valor depreciable, monto IVA y estado de resultados | Son contables; no van | Salen del informe |
+| Renta financiera bruta | Dio el concepto (código 158 menos gastos rechazados y rentas presuntas) y no recordó los códigos | Sigue por confirmar: su descripción no reproduce sus casos |
+| Factor de renta neta | En la reunión grabada no recordó el contexto. Cristóbal informa que lo validó después | Pasa a "calculado" con la regla tal como estaba: 0,90 bajo 15% de tasa efectiva y 0,80 desde 15% |
+| Leverage por institución | "Súper importante"; no dio la fórmula | Por determinar: falta el divisor |
+
+No se trataron: la fecha de la UF, la tasa del crédito automotriz, el código de cada rebaja, el origen de la marca de Ley 20.455 y la recomendación sobre esa ley.
 
 Lo que no cambia: el informe **no interpreta**. No tiene semáforo, evaluaciones ni texto generado. Dos personas con las mismas cifras reciben el mismo informe, y lo que el método aún no define se muestra rotulado como "por confirmar" o "por determinar".
 
@@ -40,6 +61,7 @@ Lo que no cambia: el informe **no interpreta**. No tiene semáforo, evaluaciones
 | Bienes raíces con enajenación, pago al contado y financiamiento | Arquetipos y vista comercial para bancos |
 | Datos personales, actividades económicas, sociedades, regímenes y timbrajes | Historial de rectificatorias, modelo bitemporal, WORM, SIEM |
 | Cálculos del Capítulo IV y del Informe de Apertura, con su estado | Evasión de CAPTCHA o MFA (si aparece, el run se detiene) |
+| Deuda de origen por institución | Análisis contable: asiento de apertura, valor depreciable, monto IVA y estado de resultados (decisión de Ricardo) |
 | Backoffice: Propietarios y Radiografía | Edición de datos desde el backoffice, exportes y filtros avanzados |
 
 **Criterio de terminado**
@@ -60,8 +82,9 @@ El front (React + Vite) está construido y funciona contra una API simulada en `
 
 - **Conexión:** valida el dígito verificador, pide consentimiento y envía el RUT sin puntos con el DV separado.
 - **Extracción:** muestra los pasos, la bitácora, el botón de cancelar y una pantalla por cada estado terminal.
-- **Diagnóstico Base:** cinco vistas con el año siempre a la vista. Una cifra del resumen abre su cálculo; un dato del SII dentro de un cálculo abre su tabla con la fila resaltada; "Se usa en" vuelve al cálculo. Cada vista y cada cálculo tiene dirección propia (`/diagnostico#calc-tasa-efectiva`).
-- **Registro de cálculos:** `src/lib/calculos.ts` define cada cálculo como una función pura con definición fija, operación, fuentes, dependencias y estado. Tiene 13 pruebas (`npm test`): el caso Carlos Díaz, un caso real de 5 años anonimizado y 1.000 reportes generados al azar.
+- **Diagnóstico Base:** seis vistas con el año siempre a la vista. Una cifra del resumen abre su cálculo; un dato del SII dentro de un cálculo abre su tabla con la fila resaltada; "Se usa en" vuelve al cálculo. Cada vista y cada cálculo tiene dirección propia (`/diagnostico#calc-tasa-efectiva`).
+- **Registro de cálculos:** `src/lib/calculos.ts` define cada cálculo como una función pura con definición fija, operación, fuentes, dependencias y estado. Tiene 17 pruebas (`npm test`): el caso Carlos Díaz, un caso real de 5 años anonimizado y 1.000 reportes generados al azar.
+- **Vista Crédito:** dos campos numéricos libres (tasa de interés anual y plazo en años), el resultado al lado, la explicación de los cálculos 14, 15 y 16, una tabla de consulta por tasa y plazo, y el crédito automotriz. Al escribir se recalculan el Credit Capacity, su valor en UF y el factor leverage en todo el informe, incluidos el resumen, la tabla por año y el PDF.
 - **PDF:** impresión del navegador, con todas las vistas y todos los cálculos.
 - **Backoffice:** Propietarios (cifras del portafolio y tabla por cliente) y Radiografía (clientes por tramo de Global Complementario y de Art. 55 bis; propiedades por destino, avalúo y comuna). Hoy usan un portafolio de ejemplo de 10 clientes.
 - **Escenarios de prueba:** `?demo=captcha|mfa|clave|parcial|fallo|error` en el login simula cada estado sin tocar el SII.
@@ -77,7 +100,7 @@ Hay cuatro orígenes posibles para un dato, y el informe los distingue siempre:
 | Sesión del contribuyente en sii.cl | Lo que la persona declaró o tiene registrado | Conectores, con su RUT y clave |
 | Valores públicos del SII | UF de cada día, UTA y tabla del Impuesto Global Complementario | Se leen del sitio del SII, sin sesión. La UF se actualiza todos los días |
 | Parámetros del método | Factores y reglas de Ricardo | Tabla de parámetros versionada |
-| Lo que escribe la persona | Tasa y plazo del simulador | Formulario del front; no se guarda como dato del SII |
+| Lo que ajusta la persona | Tasa y plazo del Credit Capacity; tasa del crédito automotriz | Controles del front; no se guarda como dato del SII |
 
 ### Rutas en sii.cl
 
@@ -104,10 +127,10 @@ Una consulta por año tributario. Se guarda el formulario compacto completo; est
 | Dividendos | 105 | `incomeOrigins` | 1 |
 | Gastos rechazados | 106 | `incomeOrigins` | 1 |
 | Rentas presuntas | 108 | `incomeOrigins` | 1 |
-| Ingresos por arriendos de bienes raíces | 955 | `incomeOrigins` | 1 y 8 |
+| Ingresos por arriendos de bienes raíces | 955 | `incomeOrigins` | 1 y 9 |
 | Rentas asignadas Art. 14 D N°8 | 1632 | `incomeOrigins` | 1 |
 | Rentas de capitales mobiliarios | 155 | `incomeOrigins` | 1 |
-| Rentas exentas del IGC | 152 | `incomeOrigins` | 1 y 8 |
+| Rentas exentas del IGC | 152 | `incomeOrigins` | 1 y 9 |
 | Otras rentas de fuente chilena | 1032 | `incomeOrigins` | 1 |
 | Mayor valor en venta de bienes raíces | 1891 | `incomeOrigins` | 1 |
 | Rentas de fuente extranjera afectas al IGC | 1104 | `incomeOrigins` | 1 |
@@ -123,9 +146,9 @@ Una consulta por año tributario. Se guarda el formulario compacto completo; est
 | Dividendos hipotecarios Ley 19.622 | Por confirmar | `deductions` | 2 |
 | 20% de cuotas de fondos de inversión (Ley 19.247) | Por confirmar | `deductions` | 2 |
 | Ahorro previsional voluntario Art. 42 bis | 765 | `deductions` | 2 |
-| Base imponible tributaria | 170 | `igcBase.base170` | 3 (comparación), 4 y 5 |
+| Base imponible tributaria | 170 | `igcBase.base170` | 3 (comparación), 4 y 5; también 8 cuando se cargue la tabla en pesos |
 | Impuesto determinado según tabla | 157 | `igcBase.tax157` | 4 |
-| Gastos presuntos de honorarios | 494 | `method.adjustments` | 8 |
+| Gastos presuntos de honorarios | 494 | `method.adjustments` | 9 |
 | Total ingresos brutos afectos | 158 | `method.adjustments` | Ninguno: solo se muestra |
 | Gastos efectivos de honorarios | 465 | `method.adjustments` | Ninguno: solo se muestra |
 
@@ -159,19 +182,22 @@ El listado entrega una fila por rol; los antecedentes o el PDF de cada rol entre
 | Avalúo total, afecto y exento; contribución | Listado o antecedentes | `properties` | Avalúo fiscal total; backoffice |
 | Superficie de terreno y construida | Antecedentes | `properties` | Ninguno: solo se muestra |
 | Fecha de adquisición y tipo de acto | Antecedentes | `properties` | Línea de tiempo |
-| Monto de enajenación en pesos | Antecedentes | `properties.precioAdquisicion` | 20 |
-| Monto de enajenación en UF | Antecedentes | `properties.enajenacionUf` | 16 y 19 |
-| Pago al contado en pesos | Antecedentes | `properties.pagoContado` | 20 |
-| Pago al contado en UF | Antecedentes | `properties.pagoContadoUf` | 17 |
-| Institución, monto financiado y monto en UF | Antecedentes | `properties` | Deuda por institución (por determinar) |
-| Acogida a la Ley 20.455 | Por confirmar si viene del SII | `properties.ley20455` | 19 |
+| Monto de enajenación en pesos | Antecedentes | `properties.precioAdquisicion` | Ninguno: solo se muestra |
+| Monto de enajenación en UF | Antecedentes | `properties.enajenacionUf` | 17, 20 y 21 |
+| Pago al contado en pesos | Antecedentes | `properties.pagoContado` | Ninguno: solo se muestra |
+| Pago al contado en UF | Antecedentes | `properties.pagoContadoUf` | 18 y 21 |
+| Institución que financió la compra | Antecedentes | `properties.institucion` | 21 |
+| Monto financiado, en pesos y en UF | Antecedentes | `properties` | Ninguno: la deuda de origen se calcula como enajenación menos pago al contado |
+| Acogida a la Ley 20.455 | Por confirmar si viene del SII | `properties.ley20455` | 20 |
 | Uso familiar | Por confirmar si viene del SII | `properties.usoFamiliar` | Ninguno: solo se muestra |
+
+La vista de propiedades de la herramienta de referencia (BICRED) muestra además estos datos por propiedad, que hoy no están en el reporte: porcentaje de derechos, repertorio, naturaleza de la escritura, acogida a DFL2, plazo del crédito en meses, monto de IVA, fojas, número y fecha de inscripción, si adquiere dominio pleno y si es nueva. Ningún cálculo vigente los usa. Se agregan al reporte cuando el conector de bienes raíces confirme que el SII los entrega.
 
 Reglas de bienes raíces:
 
 - Si el SII no entrega un dato de una propiedad, queda como no capturado. Los totales suman solo lo informado; si ninguna propiedad trae el dato, el total es desconocido.
 - Si el SII entrega la enajenación solo en pesos, la conversión usa la UF del SII de la fecha de adquisición, tomada de la tabla diaria. Falta confirmar si el SII ya la entrega en UF.
-- Si esta fuente falla, el run termina en `PARTIAL` y los cálculos 16 a 20 muestran "Dato no capturado".
+- Si esta fuente falla, el run termina en `PARTIAL` y los cálculos 17 a 21 muestran "Dato no capturado".
 
 ### Datos del contribuyente
 
@@ -184,7 +210,7 @@ Reglas de bienes raíces:
 | Regímenes tributarios: código, nombre y fecha de inicio | `regimes` | Datos del SII; línea de tiempo |
 | Timbrajes: documento y fecha | `stampings` | Datos del SII; línea de tiempo |
 
-Ningún cálculo del método usa estos datos en la fase 1.
+Ningún cálculo del método usa estos datos en la fase 1. La herramienta de referencia muestra además el capital enterado y el porcentaje de capital de cada sociedad, y si cada actividad afecta IVA; hoy no están en el reporte.
 
 ### Valores públicos y parámetros
 
@@ -192,16 +218,17 @@ No vienen de la sesión del contribuyente. Se cargan una vez por período y viaj
 
 | Dato | De dónde sale | Qué valor se toma | Cálculos que lo usan |
 | --- | --- | --- | --- |
-| UTA | Valores publicados por el SII | Diciembre del mismo año del AT (por confirmar) | 5 |
-| UF | Valor diario que informa el SII; se carga todos los días (ver abajo) | La de la fecha que pida cada cálculo. Para el Credit Capacity en UF, hoy el 31 de diciembre del año comercial (por confirmar) | 14; simulador |
-| Tabla del Impuesto Global Complementario | Tabla anual publicada por el SII, en UTA | La del año tributario | 7 |
-| Rangos del Art. 55 bis | Ley y casos de referencia | A, B y C en UTA | 6 |
-| Códigos que restan y suman en la RFB | Ricardo | 955, 152 y 494 | 8 |
-| Regla del factor de renta neta | Ricardo | 0,90 o 0,80 según la tasa efectiva | 9 |
-| Factor hipotecario y automotriz | Capítulo IV | 0,25 y 0,07 | 11 y 12 |
-| Tasa y plazo hipotecario | Ricardo | 4% anual a 30 años | 13 |
-| Factores leverage | Ricardo | 1 a 4 | 15 |
-| Capital del asiento de apertura | Informe de referencia | $10.000.000 | 20 |
+| UTA | Valores publicados por el SII | Diciembre del mismo año de la declaración (confirmado) | 5 y 7 |
+| UF | Valor diario que informa el SII; se carga todos los días (ver abajo) | La de la fecha que pida cada cálculo. Para el Credit Capacity en UF, hoy el 31 de diciembre del año comercial (por confirmar) | 15 y la tabla de tasas y plazos |
+| Tabla del Impuesto Global Complementario | Art. 52 de la Ley de la Renta; el SII publica la de cada año tributario, ya en pesos | La del año tributario | 8 |
+| Rangos del Art. 55 bis | Ley de la Renta (confirmado) | A hasta 90 UTA, B sobre 90 y bajo 150, C desde 150 | 6 |
+| Rebaja máxima de intereses del Art. 55 bis | Ley de la Renta (confirmado) | Tope de 8 UTA; entre 90 y 150 UTA, porcentaje = 250 − 1,667 × base en UTA | 7 |
+| Códigos que restan y suman en la RFB | Ricardo | 955, 152 y 494 (por confirmar) | 9 |
+| Regla del factor de renta neta | Ricardo (validada) | 0,90 si la tasa efectiva es menor a 15%; 0,80 si es 15% o más | 10 |
+| Factor hipotecario y automotriz | Capítulo IV | 0,25 y 0,07 | 12 y 13 |
+| Tasa y plazo de partida | Capítulo IV | 4% anual a 30 años; la persona escribe los suyos | 14 |
+| Rango de la tabla de consulta | Ricardo, más el plazo del Capítulo IV | Tasas de 3,0% a 5,0% de 0,1 en 0,1; plazos de 5, 10, 15, 20, 25 y 30 años | Tabla de la vista Crédito |
+| Factores leverage | Ricardo (confirmado) | 1 a 5; cada institución define el suyo | 16 |
 
 ### UF: se obtiene del SII todos los días
 
@@ -223,8 +250,12 @@ Lo que sigue por confirmar con Ricardo es **qué fecha** usa el Credit Capacity 
 
 | Dato | Dónde | Para qué |
 | --- | --- | --- |
-| Tasa anual y plazo del crédito hipotecario | Simulador | Recalcular el Credit Capacity con otros supuestos |
-| Tasa anual del crédito automotriz | Simulador | Calcular el crédito automotriz, que no tiene tasa por defecto |
+| Tasa de interés anual y plazo en años del Credit Capacity | Campos numéricos de la vista Crédito | Recalcular los cálculos 14, 15 y 16 de todos los años |
+| Tasa de interés anual del crédito automotriz | Campo numérico de la vista Crédito | Calcular el crédito automotriz, que no tiene tasa por defecto |
+
+Los campos son libres: aceptan cualquier tasa entre 0% y 30% y cualquier plazo entre 1 y 50 años, con coma o punto decimal. Lo que se escribe se muestra tal cual (3,75% no se redondea a 3,8%). Si un valor no es válido, el informe conserva el último válido y el campo lo indica.
+
+La elección vive en la pantalla: no se guarda en el reporte ni viaja al backend. El informe indica con qué tasa y plazo está calculado, y el PDF imprime la elección vigente. Al volver a entrar, parte de nuevo en la referencia.
 
 Los arriendos realmente percibidos, que alimentan las contingencias, también los informa la persona. Están fuera de la fase 1.
 
@@ -262,18 +293,24 @@ La evidencia son 9 años de datos: los 4 del Capítulo IV (Carlos Díaz) y los 5
 | --- | --- | --- | --- | --- | --- |
 | 1 | Total de orígenes de renta | Suma de los 14 códigos de orígenes | Calculado | 9 de 9 años | $104.832.677 |
 | 2 | Total de rebajas | Suma de los 9 conceptos de rebajas | Calculado | Suma directa de lo declarado | $5.510.436 |
-| 3 | Base imponible | (1) − (2), comparada con el código 170 declarado | Por confirmar | Exacto en 4 de 5 años; en AT 2022 del informe real difiere en $1.252.199 | $99.322.241 |
+| 3 | Base imponible | (1) − (2), comparada con el código 170 declarado | Calculado | Confirmado por Ricardo: tiene que coincidir. Es exacto en 4 de 5 años del informe real; la diferencia de AT 2022 ($1.252.199) es un error de ese informe | $99.322.241 |
 | 4 | Tasa efectiva de tributación | Código 157 ÷ código 170 | Calculado | 9 de 9 | 16,04% |
-| 5 | Base imponible en UTA | Código 170 ÷ UTA del año | Por confirmar | Los casos usan la UTA de diciembre del mismo año del AT | 119,00 UTA |
-| 6 | Tramo Art. 55 bis | Rango de (5): A bajo 90 UTA, B de 90 a 150, C sobre 150 | Por confirmar | A y B coinciden en los 9 años; el tope de B viene de la ley | B |
-| 7 | Tramo de Global Complementario | Rango de (5) en la tabla oficial del año | Por confirmar | Falta cargar la tabla de cada año | Tramo 5 · 30,4% |
+| 5 | Base imponible en UTA | Código 170 ÷ UTA de diciembre del mismo año de la declaración | Calculado | Confirmado por Ricardo: siempre es así | 119,00 UTA |
+| 6 | Tramo Art. 55 bis | Rango de (5): A hasta 90 UTA, B sobre 90 y bajo 150, C desde 150 | Calculado | Confirmado por Ricardo | B |
+| 7 | Rebaja máxima de intereses (Art. 55 bis) | 8 UTA × porcentaje. Porcentaje: 100% hasta 90 UTA; 250 − 1,667 × (5) entre 90 y 150 UTA; 0% desde 150 UTA | Calculado | Fórmula que dio Ricardo. Da 100% en 90 UTA y 0% en 150 | 4,13 UTA ($3.446.502) |
+| 8 | Tramo de Global Complementario | Rango de la base en la tabla del Art. 52 del año tributario | Por confirmar | Fuente confirmada por Ricardo. Falta cargar la tabla oficial de cada año | Tramo 5 · 30,4% |
 
 Detalles:
 
+- Si el motor informa una base imponible distinta de (1) − (2), el informe muestra la diferencia; no la corrige.
 - Tasa efectiva: tolerancia de 0,01 puntos porcentuales. Si el código 170 es cero no se calcula.
 - Base imponible en UTA: tolerancia de 0,05 UTA.
 - UTA cargada hoy: $733.884 (AT 2022), $770.592 (AT 2023), $807.528 (AT 2024), $834.504 (AT 2025).
-- Tabla de Global Complementario cargada hoy (ilustrativa, una sola para todos los años):
+- En los rangos, el tope de un tramo pertenece a ese tramo: 90 UTA exactas son tramo A del Art. 55 bis, y 150 UTA exactas son tramo C.
+- Rebaja máxima de intereses: se muestra en UTA y en pesos, con la misma UTA de (5).
+- Tramo de Global Complementario: Ricardo indicó usar la tabla de cada año tributario, que el SII publica ya en pesos. Con ella el tramo se obtiene comparando el código 170 directamente, sin pasar por (5). Mientras esas tablas no estén cargadas, el prototipo usa la tabla general en UTA.
+- La herramienta de referencia (BICRED) muestra otro número de tramo para la misma base. Puede venir de una tabla antigua: manda la tabla oficial del año, no esa etiqueta.
+- Tabla general en UTA cargada hoy (ilustrativa, una sola para todos los años):
 
 | Tramo | Desde (UTA) | Hasta (UTA) | Tasa |
 | --- | --- | --- | --- |
@@ -290,14 +327,14 @@ Detalles:
 
 | N° | Cálculo | Fórmula | Estado | Evidencia | Control |
 | --- | --- | --- | --- | --- | --- |
-| 8 | Renta financiera bruta (RFB) | (1) − código 955 − código 152 + código 494 | Por confirmar | Cuadra con 5 a 10 pesos de diferencia en los 9 años | $81.700.093 |
-| 9 | Renta financiera neta (RFN) | (8) × factor. Factor 0,90 si (4) es menor a 15%; 0,80 si es 15% o más | Por confirmar | La regla reproduce los 9 años | $65.360.074 |
-| 10 | RFN mensual | (9) ÷ 12 | Calculado | 9 de 9 | $5.446.673 |
-| 11 | Límite crédito hipotecario | (10) × 0,25 | Calculado | Capítulo IV | $1.361.668 |
-| 12 | Límite crédito automotriz | (10) × 0,07 | Calculado | Capítulo IV | $381.267 |
-| 13 | Credit Capacity | PV = PMT × (1 − (1 + i)^−n) ÷ i, con PMT = (11), i = tasa anual ÷ 12, n = años × 12 | Por confirmar | La fórmula es la del Capítulo IV; faltan tasa, plazo y fecha de la UF de producción | $285.216.668 con 4% a 30 años |
-| 14 | Credit Capacity en UF | (13) ÷ UF del SII en la fecha de referencia | Por confirmar | El valor sale de la tabla diaria del SII; falta confirmar qué fecha se usa | UF 7.424 (UF 38.416,69 al 31-12-2024) |
-| 15 | Factor leverage | (14) × factor, para cada factor de la lista | Por confirmar | Falta saber qué factores mostrar | Factor 2: UF 14.849 · Factor 3: UF 22.273 |
+| 9 | Renta financiera bruta (RFB) | (1) − código 955 − código 152 + código 494 | Por confirmar | Cuadra con 5 a 10 pesos de diferencia en los 9 años. No coincide con la descripción que dio Ricardo (ver abajo) | $81.700.093 |
+| 10 | Renta financiera neta (RFN) | (9) × factor. Factor 0,90 si (4) es menor a 15%; 0,80 si es 15% o más | Calculado | La regla reproduce los 9 años. Validada por Ricardo según informó Cristóbal; la reunión grabada no lo registra | $65.360.074 |
+| 11 | RFN mensual | (10) ÷ 12 | Calculado | 9 de 9 | $5.446.673 |
+| 12 | Límite crédito hipotecario | (11) × 0,25 | Calculado | Capítulo IV | $1.361.668 |
+| 13 | Límite crédito automotriz | (11) × 0,07 | Calculado | Capítulo IV | $381.267 |
+| 14 | Credit Capacity | PV = PMT × (1 − (1 + i)^−n) ÷ i, con PMT = (12), i = tasa anual ÷ 12, n = años × 12. La tasa y el plazo los escribe la persona | Calculado | La fórmula es la del Capítulo IV. Ricardo: no hay tasa ni plazo únicos; tiene que ser interactivo | $285.216.668 con 4% a 30 años |
+| 15 | Credit Capacity en UF | (14) ÷ UF del SII en la fecha de referencia | Por confirmar | El valor sale de la tabla diaria del SII; falta confirmar qué fecha se usa | UF 7.424 (UF 38.416,69 al 31-12-2024) |
+| 16 | Factor leverage | (15) × factor, para los factores 1 a 5 | Calculado | Confirmado por Ricardo: lo define cada institución y son niveles F1 a F5 | Factor 2: UF 14.849 · Factor 3: UF 22.273 |
 
 Detalles:
 
@@ -306,24 +343,37 @@ Detalles:
 - RFN mensual y los dos límites: tolerancia de 1 peso.
 - Credit Capacity: si la tasa es 0, PV = PMT × n. El resultado se redondea al peso.
 
-**Simulador de crédito (front).** Usa la misma fórmula del Credit Capacity con la tasa y el plazo que escribe la persona; parte con los valores por defecto del reporte.
+**Renta financiera bruta: lo que dijo Ricardo y por qué sigue abierta.** En la reunión la describió como el código 158 menos los gastos rechazados (106) y las rentas presuntas (108), que es la fórmula del manual, más el código 494 cuando existe. No recordó los códigos exactos. Esa descripción no reproduce sus propios casos: en ambos, los códigos 106 y 108 están en cero, así que daría cerca del total declarado ($104,8 millones en AT 2025), y su tabla dice $81,7 millones, que es lo que da la fórmula de esta tabla en los 9 años. Hay que revisarlo con él con los números a la vista.
+
+**Factor de renta neta.** Quedó validado con la regla por tasa efectiva. Para tenerlo presente: los datos solo fijan el corte entre 14,56% y 16,04% (15% es el número redondo dentro de ese tramo), y no hay casos con tasa efectiva sobre 17,39%, así que no se sabe si existe un tercer escalón.
+
+**Vista Crédito (front).** Como no hay una tasa ni un plazo únicos, el Credit Capacity tiene su propia vista en el informe, separada de los demás cálculos:
+
+- Dos campos numéricos libres: tasa de interés anual y plazo en años. Parten en la referencia del Capítulo IV (4% a 30 años) y hay un botón para volver a ella.
+- El resultado al lado de los campos: dividendo de referencia, Credit Capacity y Credit Capacity en UF.
+- La explicación completa de los cálculos 14, 15 y 16, con la misma forma que el resto: pregunta, cifra, frase, definición y operación con sus fuentes. Se ve una a la vez, con tres subpestañas.
+- Una tabla de consulta, plegada por defecto, con el Credit Capacity en UF para tasas de 3,0% a 5,0% contra plazos de 5 a 30 años. Si la combinación escrita está en la tabla, queda marcada.
+- El crédito automotriz, con su propio campo de tasa.
+
+Al escribir se recalculan los cálculos 14, 15 y 16 de todos los años, y con ellos las cifras del resumen, la tabla de análisis financiero y el PDF. En la operación del cálculo 14, la tasa y el plazo aparecen como "Referencia del Capítulo IV" o como "Valor ajustado en este informe". En la vista Cálculos, el grupo de renta financiera termina en el cálculo 13 y enlaza a Crédito.
+
+Se probó primero con deslizadores y una tabla con celdas presionables dentro del cálculo, y se descartó: era incómodo de usar con mouse. Ricardo describió la tabla con plazos de 5 a 25 años; se agregó el de 30 porque es el del caso del Capítulo IV.
 
 | Cálculo | Fórmula | Estado |
 | --- | --- | --- |
-| Crédito hipotecario simulado | PV con PMT = (11), tasa y plazo ingresados | Calculado |
-| Crédito automotriz simulado | PV con PMT = (12) y n = 48 meses | Por confirmar: el Capítulo IV no fija la tasa, así que solo se calcula cuando la persona la ingresa |
+| Crédito automotriz | PV con PMT = (13) y n = 48 meses | Por confirmar: el Capítulo IV no fija la tasa, así que solo se calcula cuando la persona la ingresa |
 | Conversión a UF | Monto ÷ UF del SII en la fecha de referencia | Por confirmar: qué fecha se usa |
 
 ### 3. Propiedades
 
 | N° | Cálculo | Fórmula | Estado | Evidencia |
 | --- | --- | --- | --- | --- |
-| 16 | Activos (enajenación total) | Suma de los montos de enajenación en UF | Calculado | Exacto en ambos casos: 35.728,07 y 24.708 UF |
-| 17 | Patrimonio (pago contado total) | Suma de los pagos al contado en UF | Calculado | Exacto en ambos casos: 7.693,49 y 6.281,6 UF |
-| 18 | Pasivos de origen | (16) − (17) | Calculado | Exacto en ambos casos: 28.034,58 y 18.426,4 UF |
-| 19 | Adquisición sin las propiedades acogidas a la Ley 20.455 | (16) − enajenación en UF de las propiedades acogidas | Calculado | Informe real: 24.708 − 13.100 − 5.800 = 5.808 UF |
+| 17 | Activos (enajenación total) | Suma de los montos de enajenación en UF | Calculado | Exacto en ambos casos: 35.728,07 y 24.708 UF |
+| 18 | Patrimonio (pago contado total) | Suma de los pagos al contado en UF | Calculado | Exacto en ambos casos: 7.693,49 y 6.281,6 UF |
+| 19 | Pasivos de origen | (17) − (18) | Calculado | Exacto en ambos casos: 28.034,58 y 18.426,4 UF |
+| 20 | Adquisición sin las propiedades acogidas a la Ley 20.455 | (17) − enajenación en UF de las propiedades acogidas | Calculado | Informe real: 24.708 − 13.100 − 5.800 = 5.808 UF |
 
-Totales que acompañan a la tabla de propiedades, sin fórmula del método: cantidad de roles, suma de avalúos fiscales, suma de contribuciones, propiedades por destino, por comuna y por institución (cantidad y UF financiadas).
+Totales que acompañan a la tabla de propiedades, sin fórmula del método: cantidad de roles, suma de avalúos fiscales, suma de contribuciones, propiedades por destino y por comuna.
 
 Los pasivos de origen son lo financiado al comprar, no la deuda vigente.
 
@@ -331,12 +381,17 @@ Los pasivos de origen son lo financiado al comprar, no la deuda vigente.
 
 | N° | Cálculo | Fórmula | Estado | Evidencia |
 | --- | --- | --- | --- | --- |
-| 20 | Asiento de apertura: reservas para futuras capitalizaciones | Activos inmobiliarios en pesos − pasivo de largo plazo − capital | Por confirmar | Reproduce $525.130.859 del informe real. El pasivo coincide con el pago al contado y el capital es $10.000.000 fijo |
-| — | Valor depreciable total y cuota mensual | Inversión × (1 − 0,17) no reproduce el informe. La cuota sería el total ÷ 192 meses | Por determinar | — |
-| — | Monto IVA total | Sin fórmula | Por determinar | — |
-| — | Estado de resultados | Sin datos en el informe de referencia | Por determinar | — |
-| — | Deuda por institución y leverage | Se tiene la deuda de origen por institución; falta la fórmula del leverage (el Capítulo IV muestra 5,7) | Por determinar | — |
-| — | Recomendación sobre la Ley 20.455 | Falta saber si es un texto fijo o una regla | Por determinar | — |
+| 21 | Deuda de origen por institución | Por propiedad: enajenación en UF − pago al contado en UF. Se suma según la institución que financió la compra. Parte de cada institución = su deuda ÷ deuda total | Calculado | Ricardo: sale de la tabla de propiedades. Reproduce la vista de BICRED del caso real: 3.300, 2.440, 2.206,4 y 10.480 UF (17,9%, 13,2%, 12% y 56,9%). La suma es igual a (19) |
+| — | Leverage por institución y total | Deuda de cada institución ÷ un mismo divisor; la suma de todos da el leverage total | Por determinar | Falta el divisor. BICRED muestra 1,6 · 1,2 · 1,1 y un total de 8,8 para el caso real, lo que deja el divisor entre 2.082 y 2.101 UF. No es el Credit Capacity de referencia: daría 1,7 |
+| — | Recomendación sobre la Ley 20.455 | Falta saber si es un texto fijo o una regla | Por determinar | No se trató en la reunión |
+
+Detalles de la deuda por institución:
+
+- Una propiedad con deuda de origen y sin institución informada va en el grupo "Sin institución informada".
+- Una propiedad sin enajenación o sin pago al contado en UF cuenta en su institución, pero no suma deuda.
+- El monto financiado que entregue el SII no entra en el cálculo; la deuda es siempre enajenación menos pago al contado.
+
+**Fuera del informe por decisión de Ricardo.** El asiento de apertura (reservas para futuras capitalizaciones), el valor depreciable, el monto IVA total y el estado de resultados son contables y no son parte de lo que necesita el diagnóstico. Se retiraron del informe y del registro de cálculos.
 
 ### 5. Backoffice
 
@@ -348,13 +403,13 @@ Todo sale de los valores ya calculados para cada cliente; el backoffice no tiene
 | --- | --- |
 | Nombre y RUT | Datos del contribuyente |
 | Estado | Regla por definir (ver decisiones abiertas). Propuesta: Activo si la última captura terminó completa; En revisión si terminó parcial o algún cálculo no cuadra con su verificación; Sin datos si no tiene captura completa |
-| Tramo de Global Complementario | Cálculo 7 |
+| Tramo de Global Complementario | Cálculo 8 |
 | Tramo Art. 55 bis | Cálculo 6 |
 | Región principal | La región con más propiedades del cliente |
 | Orígenes de renta | Cálculo 1 |
-| RFN mensual | Cálculo 10 |
+| RFN mensual | Cálculo 11 |
 | Tasa efectiva | Cálculo 4 |
-| Dividendo máximo | Cálculo 11 |
+| Dividendo máximo | Cálculo 12 |
 | Propiedades | Cantidad de roles |
 | Alertas | Regla por definir. Propuesta: cantidad de fuentes incompletas más cantidad de cálculos que no cuadran con su verificación |
 
@@ -380,61 +435,61 @@ La tabla se ordena por orígenes de renta, de mayor a menor. La fila final suma 
 
 La numeración es la del catálogo de fórmulas. "Necesita" es lo mínimo que debe existir para que el cálculo dé un valor; si falta, el informe muestra la frase fija indicada.
 
-**Orden de cálculo.** 1 y 2 → 3 · 4 · 5 → 6 y 7 · 8 → 9 → 10 → 11 y 12 → 13 → 14 → 15 · 16 y 17 → 18 · 19 · 20. Los cálculos 1 a 15 se repiten para cada año tributario capturado; los 16 a 20 se calculan una vez por cliente.
+**Orden de cálculo.** 1 y 2 → 3 · 4 · 5 → 6, 7 y 8 · 9 → 10 → 11 → 12 y 13 → 14 → 15 → 16 · 17 y 18 → 19 · 20 · 21. Los cálculos 1 a 16 se repiten para cada año tributario capturado; los 17 a 21 se calculan una vez por cliente.
 
 ### Renta e impuesto
 
 | N° | Cálculo | Toma del SII | Parámetros | Cálculos previos | Necesita | Si falta | Lo usan |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Total de orígenes de renta | Los 14 códigos de orígenes del F22 del año | — | — | F22 del año capturado | Sin declaración ese año | 3 y 8; backoffice |
+| 1 | Total de orígenes de renta | Los 14 códigos de orígenes del F22 del año | — | — | F22 del año capturado | Sin declaración ese año | 3 y 9; backoffice |
 | 2 | Total de rebajas | Los 9 conceptos de rebajas del F22 del año | — | — | F22 del año capturado | Sin declaración ese año | 3 |
 | 3 | Base imponible | Código 170, para comparar | — | 1 y 2 | F22 del año capturado | Sin declaración ese año | Ninguno |
-| 4 | Tasa efectiva | Códigos 157 y 170 | — | — | F22 del año, con código 170 distinto de cero | No se puede calcular: la base imponible es 0 | 9; backoffice |
-| 5 | Base imponible en UTA | Código 170 | UTA del año | — | F22 del año y UTA cargada para ese año | Dato no capturado | 6 y 7 |
+| 4 | Tasa efectiva | Códigos 157 y 170 | — | — | F22 del año, con código 170 distinto de cero | No se puede calcular: la base imponible es 0 | 10; backoffice |
+| 5 | Base imponible en UTA | Código 170 | UTA de diciembre del año | — | F22 del año y UTA cargada para ese año | Dato no capturado | 6, 7 y 8 |
 | 6 | Tramo Art. 55 bis | — | Rangos A, B y C | 5 | Cálculo 5 con valor | Dato no capturado | Backoffice |
-| 7 | Tramo de Global Complementario | — | Tabla del año | 5 | Cálculo 5 con valor y tabla del año cargada | Dato no capturado | Backoffice |
+| 7 | Rebaja máxima de intereses | — | Tope de 8 UTA y fórmula del tramo intermedio; UTA del año para expresarla en pesos | 5 | Cálculo 5 con valor | Dato no capturado | Ninguno |
+| 8 | Tramo de Global Complementario | Código 170, cuando se use la tabla en pesos | Tabla del año tributario | 5, mientras se use la tabla en UTA | Tabla del año cargada | Dato no capturado | Backoffice |
 
 ### Renta financiera y crédito
 
 | N° | Cálculo | Toma del SII | Parámetros | Cálculos previos | Necesita | Si falta | Lo usan |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 8 | Renta financiera bruta | Códigos 955, 152 y 494 del F22 del año | Lista de códigos que restan y suman | 1 | F22 del año capturado | Sin declaración ese año | 9 |
-| 9 | Renta financiera neta | — | Regla del factor (umbral de 15%, 0,90 y 0,80) | 8 y 4 | Cálculo 8 con valor. Si el código 170 es cero, la tasa se toma como 0 | Dato no capturado | 10 |
-| 10 | RFN mensual | — | — | 9 | Cálculo 9 con valor | Dato no capturado | 11 y 12; backoffice |
-| 11 | Límite crédito hipotecario | — | Factor 0,25 | 10 | Cálculo 10 con valor | Dato no capturado | 13; simulador; backoffice |
-| 12 | Límite crédito automotriz | — | Factor 0,07 | 10 | Cálculo 10 con valor | Dato no capturado | Simulador |
-| 13 | Credit Capacity | — | Tasa anual y plazo en años | 11 | Cálculo 11 con valor | Dato no capturado | 14 |
-| 14 | Credit Capacity en UF | — | UF del SII en la fecha de referencia | 13 | Cálculo 13 con valor y la UF de esa fecha cargada | Dato no capturado | 15 |
-| 15 | Factor leverage | — | Lista de factores | 14 | Cálculo 14 con valor | Dato no capturado | Ninguno |
+| 9 | Renta financiera bruta | Códigos 955, 152 y 494 del F22 del año | Lista de códigos que restan y suman | 1 | F22 del año capturado | Sin declaración ese año | 10 |
+| 10 | Renta financiera neta | — | Regla del factor (umbral de 15%, 0,90 y 0,80) | 9 y 4 | Cálculo 9 con valor. Si el código 170 es cero, la tasa se toma como 0 | Dato no capturado | 11 |
+| 11 | RFN mensual | — | — | 10 | Cálculo 10 con valor | Dato no capturado | 12 y 13; backoffice |
+| 12 | Límite crédito hipotecario | — | Factor 0,25 | 11 | Cálculo 11 con valor | Dato no capturado | 14 y la tabla de consulta de la vista Crédito; backoffice |
+| 13 | Límite crédito automotriz | — | Factor 0,07 | 11 | Cálculo 11 con valor | Dato no capturado | Crédito automotriz |
+| 14 | Credit Capacity | — | Tasa anual y plazo: los que escribe la persona en la vista Crédito; parten en la referencia | 12 | Cálculo 12 con valor | Dato no capturado | 15 |
+| 15 | Credit Capacity en UF | — | UF del SII en la fecha de referencia | 14 | Cálculo 14 con valor y la UF de esa fecha cargada | Dato no capturado | 16 |
+| 16 | Factor leverage | — | Factores 1 a 5 | 15 | Cálculo 15 con valor | Dato no capturado | Ninguno |
 
 ### Propiedades y análisis inmobiliario
 
 | N° | Cálculo | Toma del SII | Parámetros | Cálculos previos | Necesita | Si falta | Lo usan |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 16 | Activos | Enajenación en UF de cada propiedad | — | — | Al menos una propiedad con enajenación en UF | Sin propiedades inscritas, o Dato no capturado | 18 y 19 |
-| 17 | Patrimonio | Pago al contado en UF de cada propiedad | — | — | Al menos una propiedad con pago al contado en UF | Sin propiedades inscritas, o Dato no capturado | 18 |
-| 18 | Pasivos de origen | — | — | 16 y 17 | Cálculos 16 y 17 con valor | Dato no capturado | Ninguno |
-| 19 | Adquisición sin Ley 20.455 | Marca de Ley 20.455 y enajenación en UF de las propiedades acogidas | — | 16 | Cálculo 16 con valor. Sin propiedades acogidas, resta cero | Dato no capturado | Ninguno |
-| 20 | Asiento de apertura | Enajenación y pago al contado en pesos de cada propiedad | Capital | — | Al menos una propiedad con ambos montos en pesos | Sin propiedades inscritas, o Dato no capturado | Ninguno |
+| 17 | Activos | Enajenación en UF de cada propiedad | — | — | Al menos una propiedad con enajenación en UF | Sin propiedades inscritas, o Dato no capturado | 19 y 20 |
+| 18 | Patrimonio | Pago al contado en UF de cada propiedad | — | — | Al menos una propiedad con pago al contado en UF | Sin propiedades inscritas, o Dato no capturado | 19 |
+| 19 | Pasivos de origen | — | — | 17 y 18 | Cálculos 17 y 18 con valor | Dato no capturado | Ninguno |
+| 20 | Adquisición sin Ley 20.455 | Marca de Ley 20.455 y enajenación en UF de las propiedades acogidas | — | 17 | Cálculo 17 con valor. Sin propiedades acogidas, resta cero | Dato no capturado | Ninguno |
+| 21 | Deuda de origen por institución | Enajenación en UF, pago al contado en UF e institución de cada propiedad | — | — | Al menos una propiedad con ambos montos en UF | Sin propiedades inscritas, o Dato no capturado | Leverage por institución, cuando tenga fórmula |
 
-Los cinco puntos "por determinar" del análisis inmobiliario no tienen ficha porque no tienen fórmula. Lo que ya se tiene para cada uno:
+Los dos puntos "por determinar" no tienen ficha porque no tienen fórmula completa. Lo que ya se tiene para cada uno:
 
 | Punto | Datos que ya se tienen | Qué falta |
 | --- | --- | --- |
-| Valor depreciable | Cálculo 16, factor de terreno 0,17 y vida útil de 192 meses | La fórmula del total |
-| Monto IVA total | Enajenación total en pesos | La fórmula |
-| Estado de resultados | Ninguno | Ingresos percibidos, gastos financieros y la fórmula del resultado |
-| Deuda por institución y leverage | Propiedades y UF financiadas por institución | La fórmula del leverage |
-| Recomendación sobre la Ley 20.455 | Cálculo 19 | Si es un texto fijo o una regla |
+| Leverage por institución y total | Cálculo 21: deuda de cada institución y su parte | El número por el que se divide la deuda, y la UF de qué fecha |
+| Recomendación sobre la Ley 20.455 | Cálculo 20 | Si es un texto fijo o una regla |
 
-### Simulador y backoffice
+### Crédito interactivo y backoffice
 
 | Pieza | Qué toma | Qué necesita |
 | --- | --- | --- |
-| Crédito hipotecario simulado | Cálculo 11 del último año, y la tasa y el plazo que escribe la persona | Tasa mayor o igual a cero y plazo mayor a cero |
-| Crédito automotriz simulado | Cálculo 12 del último año, 48 meses y la tasa que escribe la persona | Que la persona escriba una tasa |
-| Fila de un propietario en el backoffice | Cálculos 1, 4, 6, 7, 10 y 11 del último año de su última captura completa, y sus propiedades | Una captura completa del cliente |
+| Vista Crédito: campos, resultado y tabla de consulta | Cálculo 12 del año elegido, la UF de referencia, y la tasa y el plazo que escribe la persona | Cálculo 12 con valor; tasa entre 0% y 30% y plazo entre 1 y 50 años |
+| Crédito automotriz | Cálculo 13 del año elegido, 48 meses y la tasa que escribe la persona | Que la persona escriba una tasa |
+| Fila de un propietario en el backoffice | Cálculos 1, 4, 6, 8, 11 y 12 del último año de su última captura completa, y sus propiedades | Una captura completa del cliente |
 | Cifras y gráficos del portafolio | Las filas de todos los propietarios y sus propiedades | Al menos un propietario; con portafolio vacío todo queda en cero |
+
+El backoffice usa el dividendo máximo (cálculo 12), que no depende de la tasa ni del plazo. No muestra Credit Capacity.
 
 ## Parámetros
 
@@ -443,17 +498,17 @@ Nada que cambie con el tiempo queda fijo en el código. Todos viajan en `method`
 | Parámetro | Valor inicial | Estado |
 | --- | --- | --- |
 | Códigos que se restan y se suman en la RFB | Restan 955 y 152; suma 494 | Por confirmar |
-| Regla del factor de renta neta | 0,90 bajo 15% de tasa efectiva; 0,80 desde 15% | Por confirmar |
-| Rangos del tramo Art. 55 bis | A hasta 90 UTA, B hasta 150, C sobre 150 | Por confirmar |
-| Tramos de Global Complementario | Tabla oficial por año, en UTA | Cargar por AT y validar |
-| UTA por año | Diciembre del mismo año del AT | Por confirmar |
+| Regla del factor de renta neta | 0,90 bajo 15% de tasa efectiva; 0,80 desde 15% | Confirmado |
+| UTA por año | Diciembre del mismo año de la declaración | Confirmado |
+| Rangos del tramo Art. 55 bis | A hasta 90 UTA, B sobre 90 y bajo 150, C desde 150 | Confirmado |
+| Rebaja máxima de intereses del Art. 55 bis | Tope de 8 UTA; porcentaje = 250 − 1,667 × base en UTA entre 90 y 150 UTA | Confirmado |
+| Tramos de Global Complementario | Tabla del Art. 52 por año tributario, en pesos | Fuente confirmada. Falta cargar cada año |
 | UF | Valor diario del SII, cargado todos los días | Fuente definida. Por confirmar qué fecha usa el Credit Capacity en UF: hoy el 31 de diciembre del año comercial |
 | Factor hipotecario y automotriz | 0,25 y 0,07 | Capítulo IV |
-| Tasa y plazo hipotecario de referencia | 4% anual a 30 años | Por confirmar si son los de producción |
+| Tasa y plazo de partida del Credit Capacity | 4% anual a 30 años | Capítulo IV. La persona escribe los suyos |
+| Rango de la tabla de consulta | Tasas de 3,0% a 5,0%; plazos de 5 a 30 años | Confirmado de 5 a 25 años; el de 30 se agregó por el caso del Capítulo IV |
 | Plazo automotriz de referencia | 48 meses | Capítulo IV; falta la tasa |
-| Factores leverage a mostrar | 1 a 4 | Por confirmar: el caso solo muestra 2 y 3 |
-| Factor de terreno y vida útil | 0,17 y 192 meses | Por determinar: no reproducen el valor depreciable |
-| Capital del asiento de apertura | $10.000.000 | Por confirmar de dónde sale |
+| Factores leverage | 1 a 5 | Confirmado: cada institución define el suyo |
 | Tolerancia de la prueba dorada | ±10 pesos | Hasta aclarar la diferencia de la RFB |
 
 ## Reglas para que el informe sea determinístico
@@ -563,9 +618,9 @@ Tres frentes en paralelo. El motor no espera al scraper porque parte con la prue
 | Día | Conectores | Motor y API | Front | Entregable del día |
 | --- | --- | --- | --- | --- |
 | 1 | Login SII con RUT de prueba; confirmar las rutas del traspaso y el formato de cada fuente | Esquema de base de datos, parámetros, carga de las pruebas doradas; UF diaria desde el SII con su carga histórica | Cliente HTTP con respaldo al mock; registro de usuario | Login funcionando y front navegable contra la API |
-| 2 | Conector y parser F22 compacto (4 a 5 AT), con rebajas | Cálculos 1 a 15 con las pruebas doradas pasando; endpoints de consentimiento y run | Conexión y extracción contra la API real | F22 real en base de datos y run visible en pantalla |
+| 2 | Conector y parser F22 compacto (4 a 5 AT), con rebajas | Cálculos 1 a 16 con las pruebas doradas pasando; endpoints de consentimiento y run | Conexión y extracción contra la API real | F22 real en base de datos y run visible en pantalla |
 | 3 | Conectores y parsers F29 y F50 | Endpoint de reporte: F22, cálculos, `method` y cobertura | Diagnóstico Base con datos reales de F22 | Primer diagnóstico real, sin propiedades |
-| 4 | Conector y parser de bienes raíces; datos del contribuyente, sociedades, regímenes y timbrajes | Cálculos 16 a 20; reporte completo; estados terminales y errores; fotografía por propietario | Propiedades, declaraciones mensuales y PDF con datos reales | Diagnóstico Base completo de un RUT real |
+| 4 | Conector y parser de bienes raíces; datos del contribuyente, sociedades, regímenes y timbrajes | Cálculos 17 a 21; reporte completo; estados terminales y errores; fotografía por propietario | Propiedades, declaraciones mensuales y PDF con datos reales | Diagnóstico Base completo de un RUT real |
 | 5 | Sesión vencida, período sin declaración, CAPTCHA, timeout | Listado de propietarios, resumen del portafolio y control de acceso; prueba con 3 a 5 RUT reales | Propietarios y Radiografía con datos reales; revisión de estados de falla y móvil | Demo a Ricardo |
 
 Si el equipo es de dos personas, el frente de front se reparte entre los días 1 y 4, porque es el que menos trabajo nuevo tiene. El detalle de enajenación, pago al contado y financiamiento de bienes raíces es lo más incierto de la semana: depende de lo que entregue el SII en "Mis Bienes". Si el día 5 no alcanza, el resumen del portafolio se calcula en el front y su endpoint pasa al sprint siguiente.
@@ -589,13 +644,13 @@ Los identificadores del plan anterior se conservan. Los nuevos llevan "(nuevo)".
 **Motor y API**
 
 - [ ] CAL-01 Esquema de base de datos (crudo, normalizado, derivado) y tabla de parámetros por período
-- [ ] CAL-02 Cálculos 1 a 12: renta, impuesto, tramos, renta financiera y límites, con el estado de cada uno
+- [ ] CAL-02 Cálculos 1 a 13: renta, impuesto, tramos, rebaja máxima del Art. 55 bis, renta financiera y límites, con el estado de cada uno
 - [ ] CAL-03 Pruebas doradas: caso Carlos Díaz (AT 2022–2025) y caso real anonimizado de 5 años
-- [ ] CAL-04 Cálculos 13 a 15: Credit Capacity, conversión a UF y factor leverage, con sus controles
+- [ ] CAL-04 Cálculos 14 a 16: Credit Capacity, conversión a UF y factor leverage (1 a 5), con sus controles
 - [ ] CAL-05 Controles de datos: avalúo total = afecto + exento y total de orígenes contra la suma de códigos
-- [ ] CAL-06 Tramo de Global Complementario con tabla oficial por año
-- [ ] CAL-07 Cálculos 16 a 20: propiedades, Ley 20.455 y asiento de apertura; totales por institución, comuna y destino
-- [ ] CAL-08 Completar los cálculos "por determinar" cuando llegue la fórmula: valor depreciable, monto IVA, estado de resultados, leverage por institución
+- [ ] CAL-06 Tramo de Global Complementario con la tabla del Art. 52 de cada año tributario, en pesos, comparada contra el código 170
+- [ ] CAL-07 Cálculos 17 a 21: propiedades, Ley 20.455 y deuda de origen por institución; totales por comuna y destino
+- [ ] CAL-08 Leverage por institución y total, cuando se conozca el divisor
 - [ ] CAL-09 (nuevo) Reglas generales del motor: redondeo, tolerancias, año sin declaración, dato faltante y división por cero
 - [ ] CAL-10 (nuevo) Carga de UTA y de la tabla del Impuesto Global Complementario por año tributario, desde el SII
 - [ ] CAL-11 (nuevo) UF diaria desde el SII: proceso de todos los días, carga histórica, alerta si falta un día y consulta por fecha para el motor
@@ -622,7 +677,7 @@ Los identificadores del plan anterior se conservan. Los nuevos llevan "(nuevo)".
 - [ ] WEB-03 Diagnóstico Base con datos reales: valores no capturados, cobertura y estados vacíos
 - [ ] WEB-04 Propiedades calculadas por el motor en lugar del front
 - [ ] WEB-05 Revisar las pantallas de falla con respuestas reales del backend
-- [ ] WEB-06 Simulador de crédito con parámetros por defecto tomados del reporte
+- [ ] WEB-06 Vista Crédito: tasa y plazo de partida y rango de la tabla tomados del reporte
 - [ ] WEB-07 Registro de cálculos contra el reporte real: estados, autoverificación y enlaces de trazabilidad
 - [ ] WEB-08 PDF: revisar el informe impreso con datos reales
 - [ ] WEB-09 Propietarios conectada al listado real
@@ -654,30 +709,32 @@ Sin los dos primeros puntos el sprint no parte. Los demás se resuelven durante 
 
 ## Pendientes del método para Ricardo
 
-Es la misma lista que el informe muestra en su vista "Pendientes".
+Es la misma lista que el informe muestra en su vista "Pendientes", más los datos que faltan.
+
+**Cerrado en la reunión del 7 de octubre**
+
+- [x] Base imponible: orígenes menos rebajas debe coincidir con el código 170.
+- [x] UTA: la de diciembre del mismo año de la declaración.
+- [x] Tramo Art. 55 bis y rebaja máxima de intereses.
+- [x] Tramo de Global Complementario: tabla del Art. 52 de cada año tributario.
+- [x] Credit Capacity: no hay tasa ni plazo únicos; la persona escribe ambos en la vista Crédito.
+- [x] Factor de renta neta: 0,90 bajo 15% de tasa efectiva y 0,80 desde 15% (validado después de la reunión, según informó Cristóbal).
+- [x] Factor leverage: lo define cada institución; niveles F1 a F5.
+- [x] Deuda por institución: valor de compra menos pie, sumado por institución.
+- [x] Asiento de apertura, valor depreciable, monto IVA y estado de resultados: fuera del informe.
 
 **Por confirmar** (hoy se calcula con una regla deducida de los casos)
 
-- [ ] Base imponible: orígenes − rebajas da el código 170 en 4 de 5 años del informe real. ¿Qué explica la diferencia de $1.252.199 en AT 2022?
-- [ ] Renta financiera bruta: ¿la fórmula es total de orígenes − 955 − 152 + 494? ¿De dónde salen los 5 a 10 pesos de diferencia?
-- [ ] Factor de renta neta: ¿la regla es 0,90 bajo 15% de tasa efectiva y 0,80 desde 15%?
-- [ ] UTA: ¿se usa la de diciembre del mismo año del AT?
-- [ ] Tramo Art. 55 bis: ¿los rangos son A hasta 90 UTA, B hasta 150 y C sobre 150?
-- [ ] Tramo de Global Complementario: validar la tabla oficial de cada año.
-- [ ] Credit Capacity: tasa y plazo que se usan por defecto.
+- [ ] Renta financiera bruta: la fórmula que reproduce los casos es total de orígenes − 955 − 152 + 494. La que describió Ricardo (código 158 − 106 − 108, más el 494) no los reproduce. ¿Cuál es la correcta y de dónde salen los 5 a 10 pesos de diferencia?
 - [ ] Credit Capacity en UF: el valor de la UF se toma del SII; ¿de qué fecha? ¿31 de diciembre del año comercial, como en el caso, o el día de la captura?
 - [ ] Crédito automotriz: tasa de referencia.
-- [ ] Factor leverage: qué factores se muestran.
-- [ ] Asiento de apertura: ¿el pasivo de largo plazo es el pago al contado o lo financiado? ¿De dónde sale el capital de $10.000.000?
 - [ ] Rebajas: código del F22 de cada concepto.
 - [ ] Ley 20.455 y uso familiar por propiedad: ¿vienen del SII o las informa el cliente?
+- [ ] Nivel de leverage que recomienda no superar: en la reunión se entendió "2,5 a 3". Confirmar la cifra antes de usarla; hoy no aparece en el informe.
 
 **Por determinar** (hoy no se puede calcular)
 
-- [ ] Valor depreciable total y su cuota mensual: inversión × (1 − 0,17) no reproduce el informe.
-- [ ] Monto IVA total: fórmula.
-- [ ] Estado de resultados: de dónde salen los ingresos percibidos y los gastos financieros, y la fórmula del resultado tributario.
-- [ ] Deuda por institución y leverage: fórmula del leverage por banco y del leverage total (el Capítulo IV muestra 5,7 sin explicarlo).
+- [ ] Leverage por institución y total: ¿por qué número se divide la deuda, y con la UF de qué fecha? BICRED muestra 8,8 para una deuda de 18.426,4 UF, lo que deja el divisor entre 2.082 y 2.101 UF. El Capítulo IV muestra 5,7 para Carlos Díaz.
 - [ ] Recomendación sobre la Ley 20.455: ¿es un texto fijo o depende de una regla?
 
 ## Qué sigue después
