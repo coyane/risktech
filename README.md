@@ -18,7 +18,7 @@ npm run build      # typecheck + build de producción
 | Ruta | Acceso | Contenido |
 | --- | --- | --- |
 | `/` | público | Login demo con clave tributaria |
-| `/diagnostico` | sesión | Avance de la captura y, al terminar, el Diagnóstico Base. El fragmento elige la vista: `#resumen`, `#calculos`, `#calc-tasa-efectiva`, `#datos-propiedades`, `#origenes-104`, `#pendientes`, `#glosario` |
+| `/diagnostico` | sesión | Avance de la captura y, al terminar, el Diagnóstico Base. El fragmento elige la vista: `#resumen`, `#calculos`, `#calc-tasa-efectiva`, `#credito`, `#datos-propiedades`, `#origenes-104`, `#pendientes`, `#glosario` |
 | `/analisis` | sesión | Hallazgos del agente, marcado como "Próximamente" |
 | `/analisis/hallazgo/:id` | sesión | Mesa de trabajo de un hallazgo: origen, preguntas al agente y casos de uso |
 | `/admin` | rol admin | Propietarios del portafolio |
@@ -29,7 +29,7 @@ npm run build      # typecheck + build de producción
 
 Es la vista principal de la fase 1: muestra los datos obtenidos del SII y los cálculos del método sobre esos datos. **No interpreta**: no hay semáforo, evaluaciones ni texto generado. Dos personas con las mismas cifras reciben el mismo informe.
 
-- **Pantalla y PDF son dos presentaciones del mismo contenido.** En pantalla el informe se recorre por vistas (Resumen, Cálculos, Datos del SII, Pendientes, Glosario); no hay una página larga. En Cálculos, todos se ven como bloques agrupados y la explicación de uno queda siempre abierta al lado; presionar otro bloque la cambia. En pantallas angostas la explicación se desliza sobre los bloques al elegir uno. El PDF imprime todo, en el mismo orden. `src/lib/reportViews.ts` traduce el fragmento de la URL a la vista y `src/components/diagnostico/CalcExplorer.tsx` tiene los bloques y el panel de explicación.
+- **Pantalla y PDF son dos presentaciones del mismo contenido.** En pantalla el informe se recorre por vistas (Resumen, Cálculos, Crédito, Datos del SII, Pendientes, Glosario); no hay una página larga. En Crédito, la persona escribe la tasa y el plazo del Credit Capacity y todo el informe se recalcula. En Cálculos, todos se ven como bloques agrupados y la explicación de uno queda siempre abierta al lado; presionar otro bloque la cambia. En pantallas angostas la explicación se desliza sobre los bloques al elegir uno. El PDF imprime todo, en el mismo orden. `src/lib/reportViews.ts` traduce el fragmento de la URL a la vista y `src/components/diagnostico/CalcExplorer.tsx` tiene los bloques y el panel de explicación.
 - `src/lib/calculos.ts` es el registro único de cálculos. Cada uno es una función pura con una pregunta, un nombre técnico, una definición fija, una sola plantilla de frase "en simple", su operación con los datos usados y sus dependencias. La pantalla solo recorre el registro.
 - Cada cálculo lleva uno de tres estados: **Calculado** (la fórmula está en un documento del método y cuadra con los casos), **Por confirmar** (la fórmula se dedujo de los casos o usa un parámetro supuesto) y **Por determinar** (falta la fórmula o el dato; la sección aparece igual, con los datos que sí se tienen y lo que falta).
 - Cada dato de una operación es de uno de tres tipos, siempre con etiqueta: **Dato del SII** (formulario, código, año y folio), **Parámetro del método** y **Resultado calculado**. Las fichas enlazan a su fila de origen o al cálculo que las produce, y las tablas del SII indican en qué cálculos se usa cada código.

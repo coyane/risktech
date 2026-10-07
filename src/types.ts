@@ -191,6 +191,8 @@ export interface UtaRange {
   fromUta: number
   // null = sin tope.
   toUta: number | null
+  // El tope pertenece a este rango ("hasta 90 UTA") y no al siguiente.
+  toInclusive?: boolean
 }
 
 export interface Method {
@@ -204,9 +206,11 @@ export interface Method {
   utaByYear: Record<number, number>
   bracket55bis: UtaRange[]
   igcBrackets: IgcBracket[]
+  // Rebaja máxima de intereses del Art. 55 bis: tope en UTA y fórmula del tramo intermedio.
+  interest55bis: { capUta: number; fullUntilUta: number; zeroFromUta: number; constant: number; slope: number }
   leverageFactors: number[]
-  depreciation: { landFactor: number; months: number }
-  openingCapital: number
+  // Tabla de Credit Capacity: plazos en años y rango de tasas anuales.
+  creditTable: { years: number[]; rateFrom: number; rateTo: number; rateStep: number }
   uf: { value: number; date: string }
   mortgageFactor: number
   autoFactor: number

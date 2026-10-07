@@ -1,139 +1,263 @@
 import { useState } from 'react'
-import { formatAt, formatDate, formatDecimal, formatMoney, formatRate, formatUf } from '../../lib/format'
+import type { Calc, CreditChoice } from '../../lib/calculos'
+import {
+  formatDate,
+  formatDecimal,
+  formatExact,
+  formatMoney,
+  formatRate,
+  formatRateExact,
+} from '../../lib/format'
 import { presentValue } from '../../lib/icred'
 import type { Report } from '../../types'
+import { Figure, Figures } from '../Figures'
 import { SectionCard, TableWrap } from '../SectionCard'
-import { StatTile } from '../StatTile'
 
-const LEVERAGE_FACTORS = [1, 2, 3, 4]
-
-function parsePositive(text: string) {
-  const value = Number(text.replace(',', '.'))
-  return Number.isFinite(value) && value >= 0 ? value : null
+// Acepta coma o punto decimal. null si no es un número.
+function parseNumber(text: string) {
+  const clean = text.trim().replace(',', '.')
+  if (clean === '') return null
+  const value = Number(clean)
+  return Number.isFinite(value) ? value : null
 }
 
-export function CreditCapacitySection({ report, as }: { report: Report; as?: 'h2' | 'h3' | 'h4' }) {
+const MAX_RATE = 30
+const MAX_YEARS = 50
+const rateInput = (rate: number) => formatExact(Math.round(rate * 1e7) / 1e5, 1)
+
+// La tasa y el plazo del Credit Capacity se escriben a mano. No hay valores únicos:
+// dependen de cada institución, y el informe completo se recalcula con lo que se ingrese.
+export function CreditInputs({
+  report,
+  calcs,
+  credit,
+  onChange,
+}: {
+  report: Report
+  calcs: Calc[]
+  credit: CreditChoice
+  onChange: (credit: CreditChoice | null) => void
+}) {
   const { method } = report
-  const last = report.financial.at(-1)
-  const [rateText, setRateText] = useState(() => formatDecimal(method.mortgageRate * 100, 1))
-  const [yearsText, setYearsText] = useState(() => String(method.mortgageYears))
-  const [autoRateText, setAutoRateText] = useState('')
+  const [rateText, setRateText] = useState(() => rateInput(credit.rate))
+  const [yearsText, setYearsText] = useState(() => String(credit.years))
+  const displayOf = (id: string) => calcs.find((calc) => calc.id === id)?.display ?? '—'
 
-  if (!last) return null
+  const rate = parseNumber(rateText)
+  const years = parseNumber(yearsText)
+  const rateOk = rate !== null && rate >= 0 && rate <= MAX_RATE
+  const yearsOk = years !== null && years > 0 && years <= MAX_YEARS
+  const isReference = credit.rate === method.mortgageRate && credit.years === method.mortgageYears
 
-  const rate = parsePositive(rateText)
-  const years = parsePositive(yearsText)
-  const autoRate = autoRateText.trim() === '' ? null : parsePositive(autoRateText)
-  const valid = rate !== null && years !== null && years > 0
-  const capacity = valid ? presentValue(last.mortgageLimit, rate / 100, Math.round(years * 12)) : null
-  const autoPmt = Math.round(last.rfnMonthly * method.autoFactor)
-  const autoCapacity =
-    autoRate !== null ? presentValue(autoPmt, autoRate / 100, method.autoMonths) : null
-  const toUf = (clp: number) => clp / method.uf.value
+  // El informe solo cambia cuando ambos valores son válidos; si no, conserva los últimos.
+  const apply = (nextRate: string, nextYears: string) => {
+    const r = parseNumber(nextRate)
+    const y = parseNumber(nextYears)
+    if (r !== null && r >= 0 && r <= MAX_RATE && y !== null && y > 0 && y <= MAX_YEARS) {
+      onChange({ rate: r / 100, years: y })
+    }
+  }
+
+  return (
+    <div id="credito" className="card stack credit-inputs">
+      <div className="sim-inputs no-print">
+        <div className="field">
+          <label htmlFor="sim-rate">Tasa de interés anual (%)</label>
+          <input
+            id="sim-rate"
+            inputMode="decimal"
+            autoComplete="off"
+            value={rateText}
+            aria-invalid={rateOk ? undefined : true}
+            aria-describedby={rateOk ? undefined : 'sim-rate-error'}
+            onChange={(event) => {
+              setRateText(event.target.value)
+              apply(event.target.value, yearsText)
+            }}
+          />
+          {!rateOk && (
+            <span id="sim-rate-error" className="field-error" role="alert">
+              Escribe una tasa entre 0 y {MAX_RATE}, por ejemplo 4,5.
+            </span>
+          )}
+        </div>
+        <div className="field">
+          <label htmlFor="sim-years">Plazo (años)</label>
+          <input
+            id="sim-years"
+            inputMode="decimal"
+            autoComplete="off"
+            value={yearsText}
+            aria-invalid={yearsOk ? undefined : true}
+            aria-describedby={yearsOk ? undefined : 'sim-years-error'}
+            onChange={(event) => {
+              setYearsText(event.target.value)
+              apply(rateText, event.target.value)
+            }}
+          />
+          {!yearsOk && (
+            <span id="sim-years-error" className="field-error" role="alert">
+              Escribe un plazo entre 1 y {MAX_YEARS} años.
+            </span>
+          )}
+        </div>
+        <button
+          type="button"
+          className="btn"
+          disabled={isReference && rateOk && yearsOk}
+          onClick={() => {
+            setRateText(rateInput(method.mortgageRate))
+            setYearsText(String(method.mortgageYears))
+            onChange(null)
+          }}
+        >
+          Volver a la referencia ({formatRate(method.mortgageRate, 1)} a {method.mortgageYears} años)
+        </button>
+      </div>
+
+      <div aria-live="polite">
+        <Figures label="Resultado con esa tasa y ese plazo">
+          <Figure
+            label="Dividendo de referencia"
+            value={displayOf('limite-hipotecario')}
+            note={`${formatRate(method.mortgageFactor, 0)} de la renta financiera neta mensual`}
+          />
+          <Figure
+            label="Credit Capacity"
+            value={displayOf('credit-capacity')}
+            note={`Con ${formatRateExact(credit.rate)} anual a ${formatExact(credit.years)} años`}
+          />
+          <Figure
+            label="Credit Capacity en UF"
+            value={displayOf('credit-capacity-uf')}
+            note={`UF del ${formatDate(method.uf.date)}`}
+          />
+        </Figures>
+      </div>
+    </div>
+  )
+}
+
+// Tabla de doble entrada, solo de consulta: el crédito que paga el dividendo de referencia
+// para cada tasa y plazo del rango del método.
+export function CreditTable({
+  report,
+  calcs,
+  credit,
+}: {
+  report: Report
+  calcs: Calc[]
+  credit: CreditChoice
+}) {
+  const { method } = report
+  const { creditTable } = method
+  const dividend = calcs.find((calc) => calc.id === 'limite-hipotecario')?.value ?? null
+  if (dividend === null) return null
+
+  // Las tasas se generan en décimas de punto para no arrastrar decimales sueltos.
+  const from = Math.round(creditTable.rateFrom * 1000)
+  const to = Math.round(creditTable.rateTo * 1000)
+  const step = Math.max(1, Math.round(creditTable.rateStep * 1000))
+  const rates = Array.from({ length: Math.floor((to - from) / step) + 1 }, (_, index) => from + index * step)
+  const current = Math.round(credit.rate * 100000) / 100
 
   return (
     <SectionCard
-      id="credito"
-      title="Simula tu crédito"
-      as={as}
-      note={`Simulación sobre ${formatAt(last.year)} · UF ${formatDecimal(method.uf.value, 2)} al ${formatDate(method.uf.date)}`}
+      id="credito-tabla"
+      title="Tabla de referencia: Credit Capacity en UF"
+      as="h3"
+      note={`Dividendo de ${formatMoney(dividend)} al mes`}
     >
+      <TableWrap>
+        <table className="credit-table">
+          <thead>
+            <tr>
+              <th>Tasa anual</th>
+              {creditTable.years.map((term) => (
+                <th key={term} className={term === credit.years ? 'col-selected' : undefined}>
+                  {term} años
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rates.map((tenths) => (
+              <tr key={tenths} className={tenths === current ? 'row-selected' : undefined}>
+                <td>{formatRate(tenths / 1000, 1)}</td>
+                {creditTable.years.map((term) => (
+                  <td
+                    key={term}
+                    className={
+                      term === credit.years
+                        ? tenths === current
+                          ? 'col-selected cell-selected'
+                          : 'col-selected'
+                        : undefined
+                    }
+                  >
+                    {formatDecimal(presentValue(dividend, tenths / 1000, term * 12) / method.uf.value, 0)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </TableWrap>
+      <p className="section-body footnote">
+        Valores referenciales: no constituyen una oferta ni una aprobación de crédito.
+      </p>
+    </SectionCard>
+  )
+}
+
+// El crédito automotriz no tiene tasa de referencia: solo se calcula si se escribe una.
+export function AutoCredit({ report, calcs }: { report: Report; calcs: Calc[] }) {
+  const { method } = report
+  const [rateText, setRateText] = useState('')
+  const payment = calcs.find((calc) => calc.id === 'cuota-automotriz')?.value ?? null
+  if (payment === null) return null
+
+  const rate = parseNumber(rateText)
+  const rateOk = rateText.trim() === '' || (rate !== null && rate >= 0 && rate <= MAX_RATE)
+  const amount = rate !== null && rateOk ? presentValue(payment, rate / 100, method.autoMonths) : null
+
+  return (
+    <SectionCard id="credito-automotriz" title="Crédito automotriz" as="h3" note={`${method.autoMonths} meses`}>
       <div className="section-body stack">
-        <div className="sim-inputs">
+        <div className="sim-inputs sim-narrow no-print">
           <div className="field">
-            <label htmlFor="sim-rate">Tasa anual hipotecaria (%)</label>
-            <input
-              id="sim-rate"
-              inputMode="decimal"
-              value={rateText}
-              onChange={(event) => setRateText(event.target.value)}
-              aria-invalid={rate === null ? true : undefined}
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="sim-years">Plazo (años)</label>
-            <input
-              id="sim-years"
-              inputMode="numeric"
-              value={yearsText}
-              onChange={(event) => setYearsText(event.target.value)}
-              aria-invalid={years === null || years === 0 ? true : undefined}
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="sim-auto">Tasa anual automotriz (%)</label>
+            <label htmlFor="sim-auto">Tasa de interés anual (%)</label>
             <input
               id="sim-auto"
               inputMode="decimal"
-              placeholder="Opcional"
-              value={autoRateText}
-              onChange={(event) => setAutoRateText(event.target.value)}
+              autoComplete="off"
+              placeholder="El método no fija una tasa"
+              value={rateText}
+              aria-invalid={rateOk ? undefined : true}
+              onChange={(event) => setRateText(event.target.value)}
             />
+            {!rateOk && (
+              <span className="field-error" role="alert">
+                Escribe una tasa entre 0 y {MAX_RATE}.
+              </span>
+            )}
           </div>
         </div>
-        {!valid && (
-          <div className="field-error" role="alert">
-            Ingresa una tasa y un plazo válidos para calcular la capacidad.
-          </div>
-        )}
-
-        <div className="stat-grid stat-grid-3" aria-live="polite">
-          <StatTile
-            label="Dividendo hipotecario de referencia"
-            value={formatMoney(last.mortgageLimit)}
-            note={`RFN mensual × ${formatRate(method.mortgageFactor, 0)}`}
-            mono
-          />
-          <StatTile
-            label="Capacidad de endeudamiento personal"
-            value={capacity === null ? '—' : formatMoney(Math.round(capacity))}
-            note={capacity === null ? undefined : formatUf(toUf(capacity))}
-            mono
-          />
-          <StatTile
-            label="Cuota automotriz de referencia"
-            value={formatMoney(autoPmt)}
-            note={
-              autoCapacity === null
-                ? `RFN mensual × ${formatRate(method.autoFactor, 0)} · ${method.autoMonths} meses`
-                : `Financia ${formatMoney(Math.round(autoCapacity))} a ${method.autoMonths} meses`
-            }
-            mono
-          />
+        <div aria-live="polite">
+          <Figures label="Crédito automotriz">
+            <Figure
+              label="Cuota de referencia"
+              value={formatMoney(payment)}
+              note={`${formatRate(method.autoFactor, 0)} de la renta financiera neta mensual`}
+            />
+            <Figure
+              label="Crédito que paga esa cuota"
+              value={amount === null ? '—' : formatMoney(Math.round(amount))}
+              note={amount === null ? 'Escribe una tasa para calcularlo' : `Con ${formatExact(rate ?? 0, 1)}% anual a ${method.autoMonths} meses`}
+            />
+          </Figures>
         </div>
       </div>
-
-      {capacity !== null && (
-        <>
-          <h3 className="section-subtitle">Factor leverage</h3>
-          <TableWrap>
-            <table>
-              <thead>
-                <tr>
-                  <th>Veces la capacidad personal</th>
-                  <th>Deuda máxima (UF)</th>
-                  <th>Deuda máxima ($)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {LEVERAGE_FACTORS.map((factor) => (
-                  <tr key={factor}>
-                    <td>Factor {factor}</td>
-                    <td>{formatDecimal(toUf(capacity * factor), 0)}</td>
-                    <td>{formatDecimal(capacity * factor, 0)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </TableWrap>
-        </>
-      )}
-      <p className="section-body footnote">
-        La capacidad personal mide el pago con ingresos propios. El factor leverage es cuántas veces
-        ese monto está dispuesta a financiar una institución a un inversionista inmobiliario, cuyo
-        servicio de deuda proviene de los arriendos. Valores referenciales: no constituyen una
-        oferta ni una aprobación de crédito.
-      </p>
     </SectionCard>
   )
 }

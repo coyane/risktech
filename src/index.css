@@ -3420,6 +3420,57 @@ a.data-chip:hover {
   text-align: right;
 }
 
+/* Crédito: campos numéricos libres y tabla de consulta */
+
+.credit-inputs .sim-inputs {
+  grid-template-columns: repeat(2, minmax(160px, 220px)) auto;
+  align-items: start;
+}
+
+.credit-inputs .sim-inputs > .btn {
+  align-self: start;
+  justify-self: start;
+  margin-top: 27px;
+  min-height: 48px;
+}
+
+.credit-inputs .field input {
+  font-size: var(--fs-xl);
+  font-variant-numeric: tabular-nums;
+}
+
+.sim-narrow {
+  grid-template-columns: minmax(160px, 260px);
+}
+
+.credit-table .cell-selected {
+  background: var(--nav);
+  color: #fff;
+}
+
+.credit-table .row-selected td:first-child {
+  background: var(--info-bg);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Desglose por partes: cada fila con su fuente y su parte del total. */
+.brackets-parts {
+  max-width: 720px;
+}
+
+.brackets-parts li {
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding-block: 8px;
+}
+
+.bracket-note {
+  display: block;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+}
+
 .brackets .tag {
   justify-self: end;
 }
@@ -3730,6 +3781,19 @@ a.data-chip:hover {
 
   .hero-figures {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .credit-inputs .sim-inputs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Las cifras del informe son largas: en móvil van una por fila. */
+  .report .hero-figures {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .credit-inputs .sim-inputs > .btn {
+    margin-top: 0;
   }
 
   /* Sin ancho para ocho columnas: cada tramo pasa a una barra horizontal. */

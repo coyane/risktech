@@ -31,6 +31,41 @@ describe('caso del Capítulo IV (Carlos Díaz)', () => {
     expect(get('tramo-55bis').display).toBe('B')
   })
 
+  it('lo que confirmó el método queda como calculado', () => {
+    const get = (id: string) => calcOf(capituloIV, 2025, id)
+    for (const id of ['base-imponible', 'bit-uta', 'tramo-55bis', 'tope-55bis', 'renta-neta', 'credit-capacity', 'factor-leverage']) {
+      expect(get(id).status, id).toBe('calculado')
+      expect(get(id).statusNote, id).toBeNull()
+    }
+    for (const id of ['renta-bruta', 'tramo-igc', 'credit-capacity-uf']) {
+      expect(get(id).status, id).toBe('por_confirmar')
+    }
+  })
+
+  it('la rebaja máxima de intereses del Art. 55 bis sigue la fórmula del tramo', () => {
+    // Bajo 90 UTA corresponde el tope completo; entre 90 y 150, 250 − 1,667 × base en UTA.
+    expect(calcOf(capituloIV, 2022, 'tope-55bis').display).toBe('8,00 UTA')
+    expect(calcOf(capituloIV, 2024, 'tope-55bis').display).toBe('5,70 UTA')
+    expect(calcOf(capituloIV, 2025, 'tope-55bis').display).toBe('4,13 UTA')
+    expect(calcOf(capituloIV, 2025, 'tope-55bis').dependsOn).toEqual(['bit-uta'])
+  })
+
+  it('en los límites del Art. 55 bis, 90 UTA es tramo A y 150 UTA es tramo C', () => {
+    const uta = capituloIV.method.utaByYear[2025]
+    const withBase = (utas: number): Report => ({
+      ...capituloIV,
+      financial: capituloIV.financial.filter((item) => item.year !== 2025),
+      igcBase: { ...capituloIV.igcBase, base170: { ...capituloIV.igcBase.base170, 2025: utas * uta } },
+    })
+    expect(calcOf(withBase(90), 2025, 'tramo-55bis').display).toBe('A')
+    expect(calcOf(withBase(90), 2025, 'tope-55bis').display).toBe('8,00 UTA')
+    expect(calcOf(withBase(90.5), 2025, 'tramo-55bis').display).toBe('B')
+    expect(calcOf(withBase(150), 2025, 'tramo-55bis').display).toBe('C')
+    expect(calcOf(withBase(150), 2025, 'tope-55bis').display).toBe('0,00 UTA')
+    // En la tabla de Global Complementario el tope de cada tramo pertenece a ese tramo.
+    expect(calcOf(withBase(90), 2025, 'tramo-igc').display).toBe('Tramo 4 · 23,0%')
+  })
+
   it('reproduce el Credit Capacity y el factor leverage del caso', () => {
     expect(calcOf(capituloIV, 2025, 'credit-capacity').value).toBe(285_216_668)
     expect(calcOf(capituloIV, 2025, 'credit-capacity-uf').display).toBe('UF 7.424')
@@ -40,9 +75,31 @@ describe('caso del Capítulo IV (Carlos Díaz)', () => {
       'UF 14.849',
       'UF 22.273',
       'UF 29.697',
+      'UF 37.121',
     ])
     const { method } = capituloIV
     expect(Math.round(presentValue(1_361_668, method.mortgageRate, method.mortgageYears * 12))).toBe(285_216_668)
+  })
+
+  it('al ajustar la tasa y el plazo se recalculan el Credit Capacity, su valor en UF y el leverage', () => {
+    const calcs = buildYearCalcs(capituloIV, 2025, { rate: 0.035, years: 20 })
+    const get = (id: string) => calcs.find((item) => item.id === id)!
+    const expected = Math.round(presentValue(1_361_668, 0.035, 240))
+    expect(get('credit-capacity').value).toBe(expected)
+    expect(get('credit-capacity').plain).toContain('240 meses, con 3,5% de interés anual')
+    // Una tasa con dos decimales se muestra tal como se escribió, sin redondearla.
+    const exact = buildYearCalcs(capituloIV, 2025, { rate: 0.0375, years: 23 }).find((item) => item.id === 'credit-capacity')!
+    expect(exact.plain).toContain('276 meses, con 3,75% de interés anual')
+    expect(exact.value).toBe(Math.round(presentValue(1_361_668, 0.0375, 276)))
+    expect(get('credit-capacity-uf').value).toBeCloseTo(expected / capituloIV.method.uf.value, 6)
+    const sources = operandsOf(get('credit-capacity').equation!).map((operand) => operand.source)
+    expect(sources).toEqual(['Calculado en este informe', 'Valor ajustado en este informe', 'Valor ajustado en este informe'])
+    // Lo que no depende del crédito no cambia.
+    expect(get('limite-hipotecario').value).toBe(1_361_668)
+    // Con la misma tasa y plazo de la referencia, el resultado es el del Capítulo IV.
+    const same = buildYearCalcs(capituloIV, 2025, { rate: 0.04, years: 30 })
+    expect(same.find((item) => item.id === 'credit-capacity')!.value).toBe(285_216_668)
+    expect(operandsOf(same.find((item) => item.id === 'credit-capacity')!.equation!)[1].source).toBe('Referencia del Capítulo IV')
   })
 
   it('las propiedades cuadran con el Bloque 2: activos, patrimonio y pasivos en UF', () => {
@@ -98,14 +155,31 @@ describe('caso de referencia (informe real, 5 años)', () => {
     expect(mismatched).toEqual([2022])
   })
 
-  it('propiedades, Ley 20.455 y asiento de apertura reproducen el informe', () => {
+  it('propiedades, Ley 20.455 y deuda por institución reproducen el informe', () => {
     const { summary, calcs } = buildPropertyCalcs(casoReferencia)
     const get = (id: string) => calcs.find((item) => item.id === id)!
     expect(get('prop-activos').value).toBe(24_708)
     expect(get('prop-patrimonio').value).toBe(6_281.6)
     expect(get('prop-pasivos').value).toBe(18_426.4)
     expect(get('ley-20455').value).toBe(5_808)
-    expect(buildRealEstate(casoReferencia, summary).calcs[0].value).toBe(525_130_859)
+
+    // Deuda de origen por institución: enajenación menos pago al contado, como en la vista de referencia.
+    expect(summary.byBank.map((item) => [item.bank, item.debtUf, item.properties])).toEqual([
+      ['Institución 4', 10_480, 1],
+      ['Institución 1', 3_300, 1],
+      ['Institución 2', 2_440, 1],
+      ['Institución 3', 2_206.4, 1],
+    ])
+    expect(summary.byBank.map((item) => Math.round(item.share! * 1000) / 10)).toEqual([56.9, 17.9, 13.2, 12])
+    const estate = buildRealEstate(summary)
+    expect(estate.calcs.map((item) => item.id)).toEqual(['deuda-institucion'])
+    expect(estate.calcs[0].value).toBe(get('prop-pasivos').value)
+    expect(estate.pending.map((item) => item.id)).toEqual(['leverage-institucion', 'recomendacion-20455'])
+  })
+
+  it('en el caso del Capítulo IV la deuda por institución suma los pasivos de origen', () => {
+    const { summary, calcs } = buildPropertyCalcs(capituloIV)
+    expect(buildRealEstate(summary).calcs[0].value).toBe(calcs.find((item) => item.id === 'prop-pasivos')!.value)
   })
 })
 
@@ -143,6 +217,7 @@ describe('prueba masiva: 1.000 reportes al azar', () => {
       if (calc.equation.kind === 'arith' || calc.equation.kind === 'formula') out.push(calc.equation.result)
       if (calc.equation.kind === 'multiples') out.push(...calc.equation.rows.map((row) => row.result))
       if (calc.equation.kind === 'ranges') out.push(...calc.equation.ranges.map((row) => row.range))
+      if (calc.equation.kind === 'parts') out.push(calc.equation.total, ...calc.equation.rows.map((row) => row.note))
     }
     return out
   }
@@ -160,7 +235,7 @@ describe('prueba masiva: 1.000 reportes al azar', () => {
     for (let seed = 1; seed <= 1000; seed++) {
       const report = randomReport(seed)
       const property = buildPropertyCalcs(report)
-      const estate = buildRealEstate(report, property.summary)
+      const estate = buildRealEstate(property.summary)
       const calcs = [
         ...report.years.flatMap((year) => buildYearCalcs(report, year)),
         ...property.calcs,

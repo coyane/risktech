@@ -142,12 +142,12 @@ export const casoReferencia = makeReport({
   },
   uta: [733884, 770592, 807528, 834504, 860658],
   properties: [
-    { enajenacionUf: 5800, pagoContadoUf: 2500, ley20455: true, avaluo: 475466001, precioAdquisicion: 717611099, pagoContado: 182480240 },
-    { enajenacionUf: 3050, pagoContadoUf: 610 },
+    { enajenacionUf: 5800, pagoContadoUf: 2500, ley20455: true, avaluo: 475466001, precioAdquisicion: 717611099, pagoContado: 182480240, institucion: 'Institución 1' },
+    { enajenacionUf: 3050, pagoContadoUf: 610, institucion: 'Institución 2' },
     { enajenacionUf: 0, pagoContadoUf: 0, destino: 'Bodega y almacenaje' },
-    { enajenacionUf: 2758, pagoContadoUf: 551.6 },
+    { enajenacionUf: 2758, pagoContadoUf: 551.6, institucion: 'Institución 3' },
     { enajenacionUf: 0, pagoContadoUf: 0, destino: 'Estacionamiento' },
-    { enajenacionUf: 13100, pagoContadoUf: 2620, ley20455: true, usoFamiliar: true },
+    { enajenacionUf: 13100, pagoContadoUf: 2620, ley20455: true, usoFamiliar: true, institucion: 'Institución 4' },
     { enajenacionUf: 0, pagoContadoUf: 0, destino: 'Estacionamiento' },
   ],
 })

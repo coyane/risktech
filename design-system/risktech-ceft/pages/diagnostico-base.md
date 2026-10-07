@@ -21,12 +21,14 @@ Cabecera fija del informe (título, persona, acciones) y una barra que queda a l
 | --- | --- |
 | Resumen | Seis cifras del año con su pregunta, tres cifras de propiedades, tabla de análisis financiero por año, datos del informe |
 | Cálculos | Todos los cálculos como bloques agrupados, con la explicación de uno siempre abierta al lado; debajo, cascada del dinero y guía de lectura |
+| Crédito | Dos campos numéricos libres (tasa y plazo), el resultado al lado, la explicación de los tres cálculos de crédito, una tabla de consulta y el crédito automotriz |
 | Datos del SII | Subpestañas: renta anual, declaraciones mensuales, propiedades, contribuyente, fuentes y cobertura |
 | Pendientes | Lista de lo que está por confirmar y por determinar, y parámetros en uso |
 | Glosario | Definiciones cortas |
 
 Reglas:
 
+- **Lo que la persona ajusta se escribe, no se arrastra.** Campos numéricos libres con su etiqueta y el resultado al lado. Los deslizadores y las tablas con celdas presionables se descartaron: son incómodos con mouse. Un valor escrito se muestra tal cual, sin redondearlo.
 - **Un solo índice de cálculos:** los bloques. No combinar una lista lateral con un mapa en árbol, ni llevar la explicación a otra pantalla.
 - **Explicación en la misma sección, siempre abierta.** Sobre 1100 px los bloques van en una columna a la izquierda y la explicación queda al lado, fija mientras se recorre la lista; parte por el primer cálculo y nunca se cierra. Bajo 1100 px no caben los dos: la explicación se desliza desde la derecha encima de los bloques al elegir uno, y se cierra con el botón, con Escape o tocando fuera.
 - **Los bloques se ven presionables:** flecha a la derecha de cada fila, subrayado y flecha en color al pasar el cursor, y el bloque abierto con fondo y borde de color. El panel también lleva anterior y siguiente.

@@ -5,10 +5,11 @@ import {
   formatDecimal,
   formatMoney,
   formatRate,
+  formatRateExact,
   formatUf,
 } from './format'
 import { presentValue } from './icred'
-import { summarizeProperties, type PatrimonySummary } from './patrimonio'
+import { sumKnown, summarizeProperties, type PatrimonySummary } from './patrimonio'
 
 // Registro único de cálculos del Diagnóstico Base.
 //
@@ -46,6 +47,7 @@ export type Equation =
   | { kind: 'formula'; formula: string; operands: Operand[]; result: string }
   | { kind: 'ranges'; input: Operand; ranges: { label: string; range: string; current: boolean }[] }
   | { kind: 'multiples'; base: Operand; rows: { label: string; result: string }[] }
+  | { kind: 'parts'; rows: { operand: Operand; note: string }[]; total: string }
 
 export interface Calc {
   id: string
@@ -117,14 +119,22 @@ export function evaluate(terms: { op: Op | null; operand: Operand }[]): number |
   return acc
 }
 
-function rangeText(from: number, to: number | null) {
-  return to === null
-    ? `Más de ${formatDecimal(from, 1)} UTA`
-    : `${formatDecimal(from, 1)} a ${formatDecimal(to, 1)} UTA`
+// Los rangos van en orden. El tope de un rango pertenece a ese rango solo si lo indica.
+function findRange<T extends UtaRange>(ranges: T[], value: number): T | undefined {
+  return ranges.find(
+    (item) => item.toUta === null || value < item.toUta || (item.toInclusive === true && value === item.toUta),
+  )
 }
 
-function findRange<T extends UtaRange>(ranges: T[], value: number): T | undefined {
-  return ranges.find((item) => value >= item.fromUta && (item.toUta === null || value < item.toUta))
+function rangeText(ranges: UtaRange[], index: number) {
+  const item = ranges[index]
+  const from = formatDecimal(item.fromUta, 1)
+  const above = index > 0 && ranges[index - 1].toInclusive === true
+  const start = above ? `Más de ${from}` : `Desde ${from}`
+  if (item.toUta === null) return `${start} UTA`
+  const to = formatDecimal(item.toUta, 1)
+  if (index === 0) return `${item.toInclusive ? 'Hasta' : 'Menos de'} ${to} UTA`
+  return `${start} y ${item.toInclusive ? 'hasta' : 'menos de'} ${to} UTA`
 }
 
 interface Built {
@@ -134,7 +144,13 @@ interface Built {
 
 // ---------- Cálculos por año tributario ----------
 
-export function buildYearCalcs(report: Report, year: number): Calc[] {
+// Tasa anual y plazo en años que elige la persona para el Credit Capacity.
+export interface CreditChoice {
+  rate: number
+  years: number
+}
+
+export function buildYearCalcs(report: Report, year: number, credit?: CreditChoice): Calc[] {
   const { method, igcBase } = report
   const fin = report.financial.find((item) => item.year === year)
   const declared = report.years.includes(year)
@@ -329,9 +345,8 @@ export function buildYearCalcs(report: Report, year: number): Calc[] {
       name: 'Base imponible',
       definition:
         'El monto sobre el que se aplica el impuesto anual. Corresponde al código 170 del Formulario 22.',
-      status: 'por_confirmar',
-      statusNote:
-        'En el caso de referencia, el total de orígenes menos las rebajas coincide con el código 170 en 4 de 5 años. Falta aclarar la diferencia del año restante.',
+      status: 'calculado',
+      statusNote: null,
     },
     arith(
       [
@@ -422,9 +437,9 @@ export function buildYearCalcs(report: Report, year: number): Calc[] {
       id: 'renta-neta',
       question: '¿Cuánto queda como renta neta?',
       name: 'Renta financiera neta (RFN)',
-      definition: 'La renta financiera bruta multiplicada por el factor de renta neta del método.',
-      status: 'por_confirmar',
-      statusNote: `La regla del factor se dedujo de los casos de referencia: ${factor(rule.factorBelow)} si la tasa efectiva es menor a ${formatRate(rule.rateThreshold, 0)}; ${factor(rule.factorFrom)} si es ${formatRate(rule.rateThreshold, 0)} o más.`,
+      definition: `La renta financiera bruta multiplicada por el factor de renta neta del método: ${factor(rule.factorBelow)} si la tasa efectiva es menor a ${formatRate(rule.rateThreshold, 0)}; ${factor(rule.factorFrom)} si es ${formatRate(rule.rateThreshold, 0)} o más.`,
+      status: 'calculado',
+      statusNote: null,
     },
     arith(
       [
@@ -528,9 +543,8 @@ export function buildYearCalcs(report: Report, year: number): Calc[] {
       name: 'Base imponible en UTA',
       definition:
         'La base imponible expresada en Unidades Tributarias Anuales, la medida con que la ley define los tramos.',
-      status: 'por_confirmar',
-      statusNote:
-        'Falta confirmar qué UTA corresponde usar. Los casos de referencia usan la de diciembre del mismo año de la declaración.',
+      status: 'calculado',
+      statusNote: null,
     },
     arith(
       [
@@ -541,7 +555,7 @@ export function buildYearCalcs(report: Report, year: number): Calc[] {
             'Valor de la UTA',
             utaValue,
             utaValue === null ? '—' : money(utaValue),
-            `UTA usada para ${formatAt(year)}`,
+            `UTA de diciembre de ${year}`,
           ),
         },
       ],
@@ -563,7 +577,8 @@ export function buildYearCalcs(report: Report, year: number): Calc[] {
     question: string,
     name: string,
     definition: string,
-    statusNote: string,
+    status: CalcStatus,
+    statusNote: string | null,
     ranges: (UtaRange & { rate?: number })[],
     reported: string | null,
     plain: (label: string) => string,
@@ -580,7 +595,7 @@ export function buildYearCalcs(report: Report, year: number): Calc[] {
       question,
       name,
       definition,
-      status: 'por_confirmar',
+      status,
       statusNote,
       state: ok ? 'ok' : 'sin_dato',
       value: null,
@@ -590,10 +605,10 @@ export function buildYearCalcs(report: Report, year: number): Calc[] {
         ? {
             kind: 'ranges',
             input: ref(bit),
-            ranges: ranges.map((item) => ({
+            ranges: ranges.map((item, index) => ({
               label:
                 item.rate === undefined ? item.label : `${item.label} · ${formatRate(item.rate, 1)}`,
-              range: rangeText(item.fromUta, item.toUta),
+              range: rangeText(ranges, index),
               current: item === current,
             })),
           }
@@ -611,37 +626,81 @@ export function buildYearCalcs(report: Report, year: number): Calc[] {
     'tramo-55bis',
     '¿En qué tramo del Art. 55 bis queda?',
     'Tramo Art. 55 bis',
-    'La clasificación de la base imponible en UTA que define cuánto se pueden rebajar los intereses hipotecarios.',
-    'Los rangos se dedujeron de los casos de referencia y de la ley; falta confirmarlos con el método.',
+    'La clasificación de la base imponible en UTA que define cuánto se pueden rebajar los intereses hipotecarios: completo en el tramo A, en parte en el B y nada en el C.',
+    'calculado',
+    null,
     method.bracket55bis,
     declared ? (igcBase.bracket55bis[year] ?? null) : null,
     (label) => `Con ${bit.display}, el tramo del Art. 55 bis es ${label}.`,
+  )
+
+  // Rebaja máxima de intereses del Art. 55 bis
+  const cap = method.interest55bis
+  const capShare =
+    bit.value === null
+      ? null
+      : bit.value <= cap.fullUntilUta
+        ? 1
+        : bit.value >= cap.zeroFromUta
+          ? 0
+          : Math.min(1, Math.max(0, (cap.constant - cap.slope * bit.value) / 100))
+  const capValue = capShare === null ? null : Math.round(cap.capUta * capShare * 100) / 100
+  const capText = `${formatDecimal(cap.capUta, 0)} UTA`
+  add(
+    {
+      id: 'tope-55bis',
+      question: '¿Cuánto interés hipotecario se puede rebajar como máximo?',
+      name: 'Rebaja máxima de intereses (Art. 55 bis)',
+      definition: `El tope anual de intereses de créditos hipotecarios que se puede rebajar de la base imponible. Es de ${capText} y disminuye cuando la base imponible supera las ${formatDecimal(cap.fullUntilUta, 0)} UTA, hasta llegar a cero en ${formatDecimal(cap.zeroFromUta, 0)} UTA.`,
+      status: 'calculado',
+      statusNote: null,
+    },
+    {
+      value: capValue,
+      equation: {
+        kind: 'formula',
+        formula: `Tope × porcentaje. Porcentaje: 100% hasta ${formatDecimal(cap.fullUntilUta, 0)} UTA; ${formatDecimal(cap.constant, 0)} − ${formatDecimal(cap.slope, 3)} × base en UTA entre ${formatDecimal(cap.fullUntilUta, 0)} y ${formatDecimal(cap.zeroFromUta, 0)} UTA; 0% desde ${formatDecimal(cap.zeroFromUta, 0)} UTA`,
+        operands: [ref(bit), param('Tope legal', cap.capUta, capText, 'Art. 55 bis de la Ley de la Renta')],
+        result: capValue === null ? '—' : uta(capValue),
+      },
+    },
+    {
+      format: uta,
+      plain: (display) =>
+        `Con ${bit.display} corresponde ${formatRate(capShare ?? 0, 2)} del tope de ${capText}: ${display}, que son ${money((capValue ?? 0) * (utaValue ?? 0))}.`,
+    },
   )
   tramo(
     'tramo-igc',
     '¿En qué tramo del Impuesto Global Complementario queda?',
     'Tramo de Global Complementario',
     'El tramo de la tabla del Impuesto Global Complementario que corresponde a la base imponible en UTA. La tasa del tramo se aplica solo a la parte de la base que cae en él.',
-    'Falta cargar y validar la tabla oficial de tramos de cada año.',
+    'por_confirmar',
+    'La tabla es la del Art. 52 de la Ley de la Renta para cada año tributario. Falta cargar la tabla oficial de cada año; mientras tanto se usa la tabla general en UTA.',
     method.igcBrackets,
     null,
     (label) => `Con ${bit.display}, el tramo de Global Complementario es ${label}.`,
   )
 
   // 13 a 15. Credit Capacity
-  const months = method.mortgageYears * 12
-  const pv =
-    mortgage.value === null ? null : Math.round(presentValue(mortgage.value, method.mortgageRate, months))
+  // La tasa y el plazo parten en la referencia del Capítulo IV y la persona puede ajustarlos.
+  const creditRate = credit?.rate ?? method.mortgageRate
+  const creditYears = credit?.years ?? method.mortgageYears
+  const creditSource =
+    creditRate === method.mortgageRate && creditYears === method.mortgageYears
+      ? 'Referencia del Capítulo IV'
+      : 'Valor ajustado en este informe'
+  const months = Math.round(creditYears * 12)
+  const pv = mortgage.value === null ? null : Math.round(presentValue(mortgage.value, creditRate, months))
   const capacity = add(
     {
       id: 'credit-capacity',
       question: '¿Qué monto de crédito se podría pagar con ese dividendo?',
       name: 'Credit Capacity',
       definition:
-        'El monto de crédito que se paga con el dividendo de referencia, a una tasa y un plazo dados. Es el valor presente de esas cuotas.',
-      status: 'por_confirmar',
-      statusNote:
-        'La fórmula es la del Capítulo IV. Falta confirmar la tasa, el plazo y la fecha de la UF que se usan por defecto.',
+        'El monto de crédito que se paga con el dividendo de referencia, a una tasa y un plazo dados. Es el valor presente de esas cuotas. La tasa y el plazo dependen de cada institución, por eso se pueden ajustar.',
+      status: 'calculado',
+      statusNote: null,
     },
     {
       value: pv,
@@ -650,8 +709,8 @@ export function buildYearCalcs(report: Report, year: number): Calc[] {
         formula: 'Dividendo × (1 − (1 + tasa mensual) ^ −meses) ÷ tasa mensual',
         operands: [
           ref(mortgage),
-          param('Tasa anual', method.mortgageRate, formatRate(method.mortgageRate, 1), 'Parámetro de referencia'),
-          param('Plazo', months, `${months} meses`, 'Parámetro de referencia'),
+          param('Tasa anual', creditRate, formatRateExact(creditRate), creditSource),
+          param('Plazo', months, `${months} meses`, creditSource),
         ],
         result: pv === null ? '—' : money(pv),
       },
@@ -659,7 +718,7 @@ export function buildYearCalcs(report: Report, year: number): Calc[] {
     {
       format: money,
       plain: (display) =>
-        `Un dividendo de ${mortgage.display} al mes durante ${months} meses, con ${formatRate(method.mortgageRate, 1)} de interés anual, paga un crédito de ${display}.`,
+        `Un dividendo de ${mortgage.display} al mes durante ${months} meses, con ${formatRateExact(creditRate)} de interés anual, paga un crédito de ${display}.`,
     },
   )
   const capacityUf = add(
@@ -669,7 +728,7 @@ export function buildYearCalcs(report: Report, year: number): Calc[] {
       name: 'Credit Capacity en UF',
       definition: 'El Credit Capacity dividido por el valor de la UF de referencia.',
       status: 'por_confirmar',
-      statusNote: 'Falta confirmar qué fecha de la UF corresponde usar.',
+      statusNote: 'El valor de la UF es el que informa el SII. Falta confirmar de qué fecha se toma.',
     },
     arith(
       [
@@ -700,9 +759,9 @@ export function buildYearCalcs(report: Report, year: number): Calc[] {
     question: '¿Cuántas veces ese monto financia una institución?',
     name: 'Factor leverage',
     definition:
-      'El número de veces que una institución está dispuesta a financiar por sobre el Credit Capacity personal.',
-    status: 'por_confirmar',
-    statusNote: 'El factor lo define cada institución. Falta confirmar qué factores mostrar.',
+      'El número de veces que una institución está dispuesta a financiar por sobre el Credit Capacity personal. Cada institución define el suyo.',
+    status: 'calculado',
+    statusNote: null,
     state: !declared ? 'sin_dato' : leverageOk ? 'ok' : 'sin_dato',
     value: null,
     display: leverageOk ? `× ${method.leverageFactors.join(', ')}` : '—',
@@ -840,125 +899,62 @@ export function buildPropertyCalcs(report: Report): { summary: PatrimonySummary;
   return { summary, calcs: [activos, patrimonio, pasivos, ley] }
 }
 
-// ---------- Análisis inmobiliario: lo que está por confirmar o por determinar ----------
+// ---------- Análisis inmobiliario: deuda por institución y lo que está por determinar ----------
 
-export function buildRealEstate(
-  report: Report,
-  summary: PatrimonySummary,
-): { calcs: Calc[]; pending: PendingItem[] } {
-  const { method } = report
+export function buildRealEstate(summary: PatrimonySummary): { calcs: Calc[]; pending: PendingItem[] } {
   const none = summary.count === 0
-  const data = (label: string, value: number | null, display: string): Operand => ({
+  const plural = (count: number) => `${count} ${count === 1 ? 'propiedad' : 'propiedades'}`
+  const bank = (item: PatrimonySummary['byBank'][number]): Operand => ({
     kind: 'sii',
-    label,
-    value,
-    display,
-    source: `Bienes raíces · ${summary.count} ${summary.count === 1 ? 'propiedad' : 'propiedades'}`,
+    label: item.bank,
+    value: item.debtUf,
+    display: item.debtUf === null ? '—' : ufAmount(item.debtUf),
+    source: `Bienes raíces · ${plural(item.properties)}`,
     table: 'patrimonio',
   })
-  const param = (label: string, value: number, display: string, source: string): Operand => ({
-    kind: 'param',
-    label,
-    value,
-    display,
-    source,
-  })
-  const orDash = (value: number | null, format: (value: number) => string) =>
-    value === null ? '—' : format(value)
 
-  const terms = [
-    {
-      op: null,
-      operand: data('Activos inmobiliarios', summary.enajenacionClp, orDash(summary.enajenacionClp, money)),
-    },
-    {
-      op: '−' as Op,
-      operand: data('Pasivo de largo plazo', summary.pagoContadoClp, orDash(summary.pagoContadoClp, money)),
-    },
-    {
-      op: '−' as Op,
-      operand: param('Capital', method.openingCapital, money(method.openingCapital), 'Valor fijo del informe de referencia'),
-    },
-  ]
-  const reservas = evaluate(terms)
-  const ok = !none && reservas !== null
-  const asiento: Calc = {
-    id: 'asiento-apertura',
-    question: '¿Cómo quedaría el asiento de apertura?',
-    name: 'Reservas para futuras capitalizaciones',
+  const total = sumKnown(summary.byBank.map((item) => item.debtUf))
+  const ok = !none && total !== null
+  const display = ok ? ufAmount(Math.round(total * 100) / 100) : '—'
+  const deuda: Calc = {
+    id: 'deuda-institucion',
+    question: '¿Con qué instituciones se financiaron las propiedades?',
+    name: 'Deuda de origen por institución',
     definition:
-      'El asiento con que las propiedades entrarían a una contabilidad: los activos inmobiliarios menos el pasivo de largo plazo y el capital.',
-    status: 'por_confirmar',
-    statusNote:
-      'En el informe de referencia el pasivo de largo plazo coincide con el pago al contado. Falta confirmar si corresponde a ese monto o a lo financiado, y de dónde sale el capital.',
+      'La deuda de origen de cada propiedad es su monto de enajenación menos lo que se pagó al contado. Aquí se suma según la institución que financió la compra. Es lo financiado al comprar, no la deuda vigente.',
+    status: 'calculado',
+    statusNote: null,
     state: ok ? 'ok' : 'sin_dato',
-    value: ok ? reservas : null,
-    display: ok ? money(reservas) : '—',
+    value: ok ? Math.round(total * 100) / 100 : null,
+    display,
     plain: none
       ? FIXED.noProperties
       : ok
-        ? `Activos de ${terms[0].operand.display} menos pasivo y capital dejan ${money(reservas)} en reservas.`
+        ? `Las propiedades suman ${display} de deuda de origen, agrupada según quién financió cada compra.`
         : FIXED.noData,
-    equation: ok ? { kind: 'arith', terms, zeros: 0, result: money(reservas) } : null,
+    equation: ok
+      ? {
+          kind: 'parts',
+          rows: summary.byBank.map((item) => ({
+            operand: bank(item),
+            note: item.share === null ? 'Monto no capturado' : `${formatRate(item.share, 1)} de la deuda`,
+          })),
+          total: display,
+        }
+      : null,
     check: null,
     dependsOn: [],
   }
 
   const pending: PendingItem[] = [
     {
-      id: 'valor-depreciable',
-      name: 'Valor depreciable',
+      id: 'leverage-institucion',
+      name: 'Leverage por institución y total',
       definition:
-        'La parte de la inversión en propiedades que se puede depreciar, descontado el terreno, y su cuota mensual.',
-      inputs: [
-        data('Inversión a costo histórico', summary.enajenacionUf, orDash(summary.enajenacionUf, ufAmount)),
-        param(
-          'Factor terreno no depreciable',
-          method.depreciation.landFactor,
-          factor(method.depreciation.landFactor),
-          'Informe de referencia',
-        ),
-        param(
-          'Vida útil',
-          method.depreciation.months,
-          `${method.depreciation.months} meses`,
-          'Deducida del informe de referencia',
-        ),
-      ],
+        'Cuántas veces la deuda de origen supera la capacidad propia de la persona. En la herramienta de referencia, el leverage de cada institución es su deuda dividida por un mismo número, y la suma de todos da el leverage total.',
+      inputs: summary.byBank.map(bank),
       missing:
-        'Falta la fórmula del valor depreciable total: inversión × (1 − factor de terreno) no reproduce el informe de referencia. Con ella, la cuota mensual es el total dividido por la vida útil.',
-    },
-    {
-      id: 'monto-iva',
-      name: 'Monto IVA total',
-      definition: 'El IVA asociado a la compra de las propiedades.',
-      inputs: [
-        data('Enajenación total', summary.enajenacionClp, orDash(summary.enajenacionClp, money)),
-      ],
-      missing: 'Falta la fórmula con que se obtiene el IVA a partir de la enajenación.',
-    },
-    {
-      id: 'estado-resultados',
-      name: 'Estado de resultados',
-      definition:
-        'Ingresos percibidos, gastos financieros asociados, depreciación del ejercicio, resultado tributario e impuesto a la renta asociado.',
-      inputs: [],
-      missing:
-        'Faltan los datos de ingresos percibidos y gastos financieros, y la fórmula del resultado tributario. En el informe de referencia esta sección está vacía.',
-    },
-    {
-      id: 'deuda-por-banco',
-      name: 'Deuda por institución y leverage',
-      definition: 'La deuda de origen agrupada por institución financiera y su leverage.',
-      inputs: summary.byBank.map((item) =>
-        data(
-          `${item.bank} · ${item.properties} ${item.properties === 1 ? 'propiedad' : 'propiedades'}`,
-          item.debtUf,
-          orDash(item.debtUf, ufAmount),
-        ),
-      ),
-      missing:
-        'Falta la fórmula del leverage por institución y del leverage total que muestra el Capítulo IV.',
+        'Falta saber por qué número se divide la deuda y con la UF de qué fecha. La herramienta de referencia muestra el resultado, pero no ese número.',
     },
     {
       id: 'recomendacion-20455',
@@ -971,7 +967,7 @@ export function buildRealEstate(
     },
   ]
 
-  return { calcs: [asiento], pending }
+  return { calcs: [deuda], pending }
 }
 
 // ---------- Relaciones entre cálculos y datos ----------
@@ -982,6 +978,8 @@ export function operandsOf(equation: Equation): Operand[] {
       return equation.terms.map((term) => term.operand)
     case 'formula':
       return equation.operands
+    case 'parts':
+      return equation.rows.map((row) => row.operand)
     case 'ranges':
       return [equation.input]
     case 'multiples':

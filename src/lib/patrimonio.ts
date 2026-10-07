@@ -8,8 +8,13 @@ export interface GroupCount {
 export interface BankSummary {
   bank: string
   properties: number
+  // Deuda de origen: enajenación menos pago al contado de sus propiedades, en UF.
   debtUf: number | null
+  // Parte de la deuda de origen total.
+  share: number | null
 }
+
+export const NO_BANK = 'Sin institución informada'
 
 export interface PatrimonySummary {
   count: number
@@ -58,20 +63,28 @@ export function summarizeProperties(properties: Property[]): PatrimonySummary {
   const pagoContadoUf = uf(properties.map((item) => item.pagoContadoUf))
   const exempt = properties.filter((item) => item.ley20455)
 
+  // La deuda de origen de una propiedad es lo que no se pagó al contado. Se agrupa por quien
+  // financió la compra; lo que no tiene institución informada queda en un grupo aparte.
   const banks = new Map<string, BankSummary>()
   for (const property of properties) {
-    if (property.institucion === null) continue
-    const current = banks.get(property.institucion) ?? {
-      bank: property.institucion,
-      properties: 0,
-      debtUf: null,
-    }
+    const debt =
+      property.enajenacionUf !== null && property.pagoContadoUf !== null
+        ? property.enajenacionUf - property.pagoContadoUf
+        : null
+    if (property.institucion === null && (debt === null || debt <= 0)) continue
+    const bank = property.institucion ?? NO_BANK
+    const current = banks.get(bank) ?? { bank, properties: 0, debtUf: null, share: null }
     current.properties += 1
-    if (property.financiamientoUf !== null) {
-      current.debtUf = (current.debtUf ?? 0) + property.financiamientoUf
-    }
-    banks.set(property.institucion, current)
+    if (debt !== null) current.debtUf = round2((current.debtUf ?? 0) + debt)
+    banks.set(bank, current)
   }
+  const bankDebt = sumKnown([...banks.values()].map((item) => item.debtUf))
+  const byBank = [...banks.values()]
+    .map((item) => ({
+      ...item,
+      share: item.debtUf !== null && bankDebt ? item.debtUf / bankDebt : null,
+    }))
+    .toSorted((a, b) => (b.debtUf ?? 0) - (a.debtUf ?? 0) || a.bank.localeCompare(b.bank))
 
   return {
     count: properties.length,
@@ -85,7 +98,7 @@ export function summarizeProperties(properties: Property[]): PatrimonySummary {
       enajenacionUf !== null && pagoContadoUf !== null ? round2(enajenacionUf - pagoContadoUf) : null,
     ley20455Count: exempt.length,
     ley20455Uf: uf(exempt.map((item) => item.enajenacionUf)),
-    byBank: [...banks.values()].toSorted((a, b) => (b.debtUf ?? 0) - (a.debtUf ?? 0)),
+    byBank,
     byComuna: countBy(properties, (item) => item.comuna),
     byDestino: countBy(properties, (item) => item.destino),
   }

@@ -16,6 +16,8 @@ export interface ExplorerGroup {
   title: string
   // De dónde salen los datos de este grupo.
   source?: { label: string; href: string }
+  // Dónde siguen los cálculos que dependen de este grupo.
+  next?: { label: string; href: string }
   entries: ExplorerEntry[]
 }
 
@@ -114,6 +116,11 @@ export function CalcExplorer({
                 {group.source && (
                   <a className="index-source" href={group.source.href}>
                     Datos de origen: {group.source.label}
+                  </a>
+                )}
+                {group.next && (
+                  <a className="index-source" href={group.next.href}>
+                    {group.next.label} →
                   </a>
                 )}
               </section>

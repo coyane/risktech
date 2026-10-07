@@ -116,6 +116,28 @@ export function Equation({ equation, name }: { equation: EquationData; name: str
           </ul>
         </div>
       )
+    case 'parts':
+      return (
+        <div className="eq eq-ranges">
+          <ul className="brackets brackets-parts">
+            {equation.rows.map((row) => (
+              <li key={row.operand.label}>
+                <span className="bracket-name">
+                  {row.operand.label}
+                  <span className="bracket-note">
+                    {row.operand.source} · {row.note}
+                  </span>
+                </span>
+                <span className="mono bracket-range">{row.operand.display}</span>
+              </li>
+            ))}
+            <li className="current">
+              <span className="bracket-name">{name}</span>
+              <span className="mono bracket-range">{equation.total}</span>
+            </li>
+          </ul>
+        </div>
+      )
     case 'multiples':
       return (
         <div className="eq eq-ranges">
