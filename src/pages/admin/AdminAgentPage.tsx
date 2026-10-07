@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AskForm } from '../../components/AskForm'
+import { ComingSoon } from '../../components/ComingSoon'
 import { FilterChips } from '../../components/FilterChips'
 import { InsightCard } from '../../components/InsightCard'
 import { AgentLog, ProgressMeter, StatusLine, StepList } from '../../components/RunViews'
@@ -104,6 +105,7 @@ export function AdminAgentPage() {
 
   return (
     <>
+      <ComingSoon />
       <header className="page-head">
         <div className="page-head-text">
           <StatusLine

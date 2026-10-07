@@ -10,6 +10,7 @@ export function ShellFrame({
   name,
   titles,
   footer,
+  contained = false,
   children,
 }: {
   navLabel: string
@@ -17,6 +18,8 @@ export function ShellFrame({
   name: string
   titles: Record<string, string>
   footer: ReactNode
+  // Limita el ancho del contenido al mismo del Diagnóstico Base.
+  contained?: boolean
   children: ReactNode
 }) {
   const { pathname } = useLocation()
@@ -46,7 +49,7 @@ export function ShellFrame({
           <SignOutButton />
         </div>
       </nav>
-      <main id="contenido" className="main" ref={mainRef} tabIndex={-1}>
+      <main id="contenido" className={contained ? 'main main-contained' : 'main'} ref={mainRef} tabIndex={-1}>
         <Suspense fallback={<p className="muted">Cargando…</p>}>
           <Outlet />
         </Suspense>

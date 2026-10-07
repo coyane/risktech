@@ -16,6 +16,7 @@ export function AdminShell() {
 
   return (
     <ShellFrame
+      contained
       navLabel="Administración"
       mark="R"
       name="Risktech"
@@ -37,6 +38,7 @@ export function AdminShell() {
         </NavLink>
         <NavLink to="/admin/agente" className={linkClass}>
           Agente portafolio
+          <span className="nav-soon">Próximamente</span>
         </NavLink>
       </div>
       <div className="nav-sub">

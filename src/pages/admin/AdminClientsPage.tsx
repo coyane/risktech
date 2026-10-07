@@ -1,10 +1,12 @@
+import { Figure, Figures } from '../../components/Figures'
 import {
+  igcLabel,
   portfolioClients,
   portfolioTotals,
   type ClientStatus,
   type PortfolioProperty,
 } from '../../data/portfolio'
-import { formatMoney, formatMoneyMillions, formatNumber, formatRate } from '../../lib/format'
+import { formatMoneyMillions, formatNumber, formatRate } from '../../lib/format'
 
 const statusLabel: Record<ClientStatus, string> = {
   activo: 'Activo',
@@ -42,33 +44,25 @@ export function AdminClientsPage() {
         </div>
       </header>
 
-      <section className="grid-auto" aria-label="Indicadores del portafolio">
-        <div className="kpi">
-          <div className="kpi-label">Propietarios</div>
-          <div className="kpi-value">{summary.clients}</div>
-          <div className="kpi-note">{summary.activos} activos</div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-label">RFN mensual promedio</div>
-          <div className="kpi-value">{formatMoneyMillions(summary.avgRfn)}</div>
-          <div className="kpi-note">AT vigente</div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-label">Capacidad hipotecaria</div>
-          <div className="kpi-value">{formatMoneyMillions(summary.totalMortgage)}</div>
-          <div className="kpi-note">Suma límite 25% RFN</div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-label">Propiedades</div>
-          <div className="kpi-value">{summary.properties}</div>
-          <div className="kpi-note">Avalúo {formatMoney(summary.totalAvaluo)}</div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-label">Advertencias</div>
-          <div className="kpi-value">{summary.warnings}</div>
-          <div className="kpi-note">Requieren revisión</div>
-        </div>
-      </section>
+      <Figures label="Indicadores del portafolio">
+        <Figure label="Propietarios" value={String(summary.clients)} note={`${summary.activos} activos`} />
+        <Figure
+          label="RFN mensual promedio"
+          value={formatMoneyMillions(summary.avgRfn)}
+          note="Año tributario vigente"
+        />
+        <Figure
+          label="Capacidad hipotecaria"
+          value={formatMoneyMillions(summary.totalMortgage)}
+          note="Suma del límite de 25% de la RFN"
+        />
+        <Figure
+          label="Propiedades"
+          value={String(summary.properties)}
+          note={`Avalúo fiscal ${formatMoneyMillions(summary.totalAvaluo)}`}
+        />
+        <Figure label="Advertencias" value={String(summary.warnings)} note="Por revisar" />
+      </Figures>
 
       <section className="card-flush">
         <div className="card-head">
@@ -76,19 +70,19 @@ export function AdminClientsPage() {
           <div className="card-note">Ordenado por orígenes de renta AT vigente</div>
         </div>
         <div className="table-wrap">
-          <table>
+          <table className="table-fit">
             <thead>
               <tr>
                 <th>Propietario</th>
-                <th>Estado</th>
-                <th>Tramo IGC</th>
+                <th className="cell-text">Estado</th>
+                <th className="cell-text">Tramo IGC</th>
                 <th>Tramo 55 bis</th>
                 <th className="cell-text">Región principal</th>
-                <th>Orígenes</th>
+                <th>Orígenes de renta</th>
                 <th>RFN mensual</th>
                 <th>Tasa efectiva</th>
-                <th>Dividendo máx.</th>
-                <th>Props.</th>
+                <th>Dividendo máximo</th>
+                <th>Propie&shy;dades</th>
                 <th>Alertas</th>
               </tr>
             </thead>
@@ -99,12 +93,15 @@ export function AdminClientsPage() {
                     <div className="cell-title">{client.name}</div>
                     <div className="mono cell-sub">{client.rut}</div>
                   </td>
-                  <td>
+                  <td className="cell-text">
                     <span className={`tag ${statusClass[client.status]}`}>
                       {statusLabel[client.status]}
                     </span>
                   </td>
-                  <td>{formatRate(client.igcRate)}</td>
+                  <td className="cell-text">
+                    <div className="cell-title">{igcLabel(client.igcRate)}</div>
+                    <div className="mono cell-sub">{formatRate(client.igcRate)}</div>
+                  </td>
                   <td>{client.bracket55bis}</td>
                   <td className="cell-text">{mainRegion(client.properties)}</td>
                   <td>{formatNumber(client.totalOrigins)}</td>

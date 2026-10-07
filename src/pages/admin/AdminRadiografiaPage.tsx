@@ -1,69 +1,60 @@
 import { BarList } from '../../components/BarList'
-import { dominantBracket, portfolioClients, portfolioTotals } from '../../data/portfolio'
-import { formatMoneyMillions, formatNumber, formatRate } from '../../lib/format'
+import { ColumnChart } from '../../components/ColumnChart'
+import { Figure, Figures } from '../../components/Figures'
+import { dominantBracket, portfolioTotals } from '../../data/portfolio'
+import { formatMoneyMillions, formatRate } from '../../lib/format'
 
-const DESTINO_COLORS: Record<string, string> = {
-  Habitacional: 'var(--accent)',
-  Bodega: 'var(--chart-orange)',
-  Comercial: 'var(--chart-teal)',
-  Oficina: 'var(--chart-rose)',
-  Terreno: 'var(--chart-olive)',
-  'Sitio eriazo': 'var(--chart-grey)',
-  Estacionamiento: 'var(--chart-sky)',
-  Industrial: 'var(--chart-brown)',
-}
-
-const BRACKET_COLORS: Record<string, string> = {
-  A: 'var(--good)',
-  B: 'var(--accent)',
-  C: 'var(--chart-orange)',
-}
+// Un color por unidad que se cuenta: clientes en azul, propiedades en azul marino.
+// Las categorías se leen por su etiqueta, no por el color.
+const CLIENT_COLOR = 'var(--accent)'
+const PROPERTY_COLOR = 'var(--nav)'
 
 const summary = portfolioTotals
+const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`
 
-const allProperties = portfolioClients
-  .flatMap((client) =>
-    client.properties.map((property) => ({
-      ...property,
-      clientName: client.name,
-      clientRut: client.rut,
-      bracket: client.bracket55bis,
-    })),
-  )
-  .toSorted((a, b) => b.avaluo - a.avaluo)
+// Los tramos son una escala ordenada: van en el orden de la tabla del impuesto.
+const igcItems = summary.byIgc.map((item) => ({
+  key: item.label,
+  label: item.label,
+  sublabel: formatRate(item.rate),
+  value: item.count,
+  detail: formatRate(item.count / Math.max(summary.clients, 1), 0),
+}))
+const igcUsed = summary.byIgc.filter((item) => item.count > 0).length
 
 const bracketItems = summary.byBracket.map((item) => ({
   key: item.bracket,
   label: `Tramo ${item.bracket}`,
   value: item.count,
-  detail: `${item.count} cliente${item.count === 1 ? '' : 's'}`,
-  color: BRACKET_COLORS[item.bracket],
+  detail: plural(item.count, 'cliente', 'clientes'),
+  color: CLIENT_COLOR,
 }))
 
-const destinoColor = (destino: string) => DESTINO_COLORS[destino] ?? 'var(--chart-grey)'
+const destinoByCount = summary.byDestino.toSorted((a, b) => b.count - a.count)
 
-const destinoCountItems = summary.byDestino
-  .toSorted((a, b) => b.count - a.count)
-  .map((item) => ({
-    key: item.destino,
-    label: item.destino,
-    value: item.count,
-    detail: `${item.count} rol${item.count === 1 ? '' : 'es'}`,
-    color: destinoColor(item.destino),
-  }))
+const destinoCountItems = destinoByCount.map((item) => ({
+  key: item.destino,
+  label: item.destino,
+  value: item.count,
+  detail: plural(item.count, 'rol', 'roles'),
+  color: PROPERTY_COLOR,
+}))
 
 const avaluoItems = summary.byDestino.map((item) => ({
   key: item.destino,
   label: item.destino,
   value: item.avaluo,
   detail: `${formatMoneyMillions(item.avaluo)} · ${formatRate(item.avaluo / Math.max(summary.totalAvaluo, 1), 0)}`,
-  color: destinoColor(item.destino),
+  color: PROPERTY_COLOR,
 }))
 
-const topDestinos = summary.byDestino
-  .slice(0, 2)
-  .map((item) => item.destino.toLowerCase())
-  .join(' y ')
+const comunaItems = summary.byComuna.map((item) => ({
+  key: item.comuna,
+  label: item.comuna,
+  value: item.count,
+  detail: plural(item.count, 'rol', 'roles'),
+  color: PROPERTY_COLOR,
+}))
 
 export function AdminRadiografiaPage() {
   return (
@@ -75,107 +66,73 @@ export function AdminRadiografiaPage() {
         </div>
       </header>
 
-      <section className="dark-card">
-        <h2 className="label-caps">Lectura rápida</h2>
-        <p className="summary">
-          El portafolio concentra {summary.clients} contribuyentes y {summary.properties}{' '}
-          propiedades. El tramo {dominantBracket.bracket} es el más frecuente; en patrimonio
-          destacan {topDestinos}, con avalúo fiscal agregado de{' '}
-          {formatMoneyMillions(summary.totalAvaluo)}.
-        </p>
-      </section>
+      <Figures label="Composición del portafolio">
+        <Figure label="Contribuyentes" value={String(summary.clients)} note={`${summary.activos} activos`} />
+        <Figure
+          label="Propiedades"
+          value={String(summary.properties)}
+          note={`Destino más frecuente: ${destinoByCount[0]?.destino ?? '—'}`}
+        />
+        <Figure label="Avalúo fiscal total" value={formatMoneyMillions(summary.totalAvaluo)} note="Suma de todos los roles" />
+        <Figure
+          label="Tramo Art. 55 bis más frecuente"
+          value={`Tramo ${dominantBracket.bracket}`}
+          note={plural(dominantBracket.count, 'cliente', 'clientes')}
+        />
+      </Figures>
 
       <div className="row">
-        <section className="card stack col-half">
+        <section className="card stack col-two-thirds">
           <div>
-            <h2>Distribución por tramo Art. 55 bis</h2>
-            <div className="card-note">Cantidad de clientes por tramo</div>
+            <h2>Portafolio por tramo de Global Complementario</h2>
+            <div className="card-note">
+              Clientes en cada tramo del impuesto, del exento al más alto, y su parte del portafolio
+            </div>
           </div>
-          <BarList items={bracketItems} label="Clientes por tramo" />
+          <ColumnChart
+            items={igcItems}
+            label="Clientes por tramo de Global Complementario"
+            unit={['cliente', 'clientes']}
+          />
+          <p className="card-note">
+            {plural(summary.clients, 'cliente', 'clientes')} en {igcUsed} de {summary.byIgc.length} tramos.
+          </p>
         </section>
 
-        <section className="card stack col-half">
+        <section className="card stack col-third">
+          <div>
+            <h2>Clientes por tramo Art. 55 bis</h2>
+            <div className="card-note">Cantidad de clientes por tramo</div>
+          </div>
+          <BarList items={bracketItems} label="Clientes por tramo Art. 55 bis" />
+        </section>
+      </div>
+
+      <div className="row">
+        <section className="card stack col-third">
           <div>
             <h2>Propiedades por destino</h2>
             <div className="card-note">Cantidad de roles por tipo de propiedad</div>
           </div>
           <BarList items={destinoCountItems} label="Roles por destino" />
         </section>
-      </div>
 
-      <div className="row">
         <section className="card stack col-third">
-          <h2>Comunas con más roles</h2>
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Comuna</th>
-                  <th>Roles</th>
-                </tr>
-              </thead>
-              <tbody>
-                {summary.byComuna.map((item) => (
-                  <tr key={item.comuna}>
-                    <td>{item.comuna}</td>
-                    <td>{item.count}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section className="card stack col-two-thirds">
           <div>
             <h2>Avalúo por tipo de propiedad</h2>
-            <div className="card-note">
-              Millones de pesos y participación sobre el avalúo fiscal total
-            </div>
+            <div className="card-note">Millones de pesos y parte del avalúo fiscal total</div>
           </div>
           <BarList items={avaluoItems} label="Avalúo fiscal por destino" />
         </section>
-      </div>
 
-      <section className="card-flush">
-        <div className="card-head">
-          <h2>Inventario de propiedades</h2>
-          <div className="card-note">{allProperties.length} roles · todos los clientes</div>
-        </div>
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Rol</th>
-                <th>Comuna</th>
-                <th>Destino</th>
-                <th>Avalúo</th>
-                <th>Contribución</th>
-                <th>Tramo dueño</th>
-              </tr>
-            </thead>
-            <tbody>
-              {allProperties.map((property) => (
-                <tr key={`${property.clientRut}-${property.rol}`}>
-                  <td>
-                    <div className="cell-title">{property.clientName}</div>
-                    <div className="mono cell-sub">{property.clientRut}</div>
-                  </td>
-                  <td>{property.rol}</td>
-                  <td className="cell-text">{property.comuna}</td>
-                  <td>
-                    <span className="tag tag-neutral">{property.destino}</span>
-                  </td>
-                  <td>{formatNumber(property.avaluo)}</td>
-                  <td>{formatNumber(property.contribucion)}</td>
-                  <td>{property.bracket}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+        <section className="card stack col-third">
+          <div>
+            <h2>Comunas con más roles</h2>
+            <div className="card-note">Las {comunaItems.length} comunas con más propiedades</div>
+          </div>
+          <BarList items={comunaItems} label="Roles por comuna" />
+        </section>
+      </div>
     </>
   )
 }

@@ -400,6 +400,13 @@ export const portfolioClients: PortfolioClient[] = [
   },
 ]
 
+// Nombre del tramo de Global Complementario que corresponde a una tasa.
+export function igcLabel(rate: number) {
+  return (
+    demo.report.method.igcBrackets.find((bracket) => Math.abs(bracket.rate - rate) < 1e-9)?.label ?? '—'
+  )
+}
+
 export function portfolioSummary(clients: PortfolioClient[] = portfolioClients) {
   const properties = clients.flatMap((c) => c.properties)
   const activos = clients.filter((c) => c.status === 'activo').length
@@ -412,6 +419,14 @@ export function portfolioSummary(clients: PortfolioClient[] = portfolioClients) 
   const byBracket = (['A', 'B', 'C'] as const).map((bracket) => ({
     bracket,
     count: clients.filter((c) => c.bracket55bis === bracket).length,
+  }))
+
+  // Todos los tramos de Global Complementario, también los que no tienen clientes,
+  // para que se vea la forma completa de la distribución.
+  const byIgc = demo.report.method.igcBrackets.map((bracket) => ({
+    label: bracket.label,
+    rate: bracket.rate,
+    count: clients.filter((c) => Math.abs(c.igcRate - bracket.rate) < 1e-9).length,
   }))
 
   const byDestinoMap = new Map<string, { count: number; avaluo: number }>()
@@ -443,6 +458,7 @@ export function portfolioSummary(clients: PortfolioClient[] = portfolioClients) 
     avgRfn,
     warnings,
     byBracket,
+    byIgc,
     byDestino,
     byComuna,
   }
