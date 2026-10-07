@@ -162,7 +162,6 @@ export async function getReport(runId?: string): Promise<Report> {
   return {
     ...report,
     properties: [],
-    patrimony: null,
     taxpayer: {
       ...report.taxpayer,
       sources: report.taxpayer.sources.map((item) =>
@@ -182,4 +181,3 @@ export async function getReport(runId?: string): Promise<Report> {
 }
 
 export const loginSources = demo.loginSources as { code: string; text: string }[]
-export const navSections = demo.navSections as { id: string; label: string }[]

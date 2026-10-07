@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { AgentPlan } from '../components/agent/AgentPlan'
 import { Avatar, Message } from '../components/agent/Message'
+import { ComingSoon } from '../components/ComingSoon'
 import { ErrorNotice, Notice } from '../components/Notice'
 import { isRunReady, useRun } from '../context/run'
 import { statusLabel, useThreadActions, useThreads } from '../context/threads'
@@ -14,6 +15,7 @@ import {
   type Question,
 } from '../data/insightPlaybooks'
 import { scrollBehavior } from '../lib/dom'
+import { reportAnchor } from '../lib/routes'
 import type {
   FinancialYear,
   Insight,
@@ -208,6 +210,7 @@ function Workspace({
 
   return (
     <>
+      <ComingSoon />
       <nav className="breadcrumb" aria-label="Ruta">
         <Link to="/analisis">Análisis</Link>
         <span aria-hidden="true">›</span>
@@ -224,7 +227,7 @@ function Workspace({
           <h1>{insight.title}</h1>
           <p className="page-lead">{insight.body}</p>
         </div>
-        <Link to={`/numeros#${insight.anchor}`} className="btn">
+        <Link to={reportAnchor(insight.anchor)} className="btn">
           Ver la tabla
         </Link>
       </header>
@@ -327,7 +330,7 @@ function Workspace({
             <ul className="evidence">
               {origin.evidence.map((item) => (
                 <li key={item.label}>
-                  <Link to={`/numeros#${item.anchor}`}>
+                  <Link to={reportAnchor(item.anchor)}>
                     <span className="evidence-source">{item.source}</span>
                     <span className="evidence-label">{item.label}</span>
                     <span className="mono evidence-value">{item.value}</span>

@@ -8,6 +8,7 @@ import {
   formatUf,
 } from '../lib/format'
 import { presentValue } from '../lib/icred'
+import { reportAnchor } from '../lib/routes'
 import type {
   Cite,
   FinancialYear,
@@ -723,9 +724,9 @@ export const playbooks: Record<string, Playbook> = {
             cites: [CITE.credito],
             proposal: {
               tag: 'Simulador',
-              text: 'En Números puedes probar cualquier combinación de tasa y plazo.',
+              text: 'En el Diagnóstico Base puedes probar cualquier combinación de tasa y plazo.',
               label: 'Abrir el simulador',
-              action: { kind: 'link', to: '/numeros#credito' },
+              action: { kind: 'link', to: reportAnchor('credito') },
             },
           }
         },
@@ -762,7 +763,7 @@ export const playbooks: Record<string, Playbook> = {
               tag: 'Simulador',
               text: 'Ingresa una tasa automotriz en el simulador para ver el monto.',
               label: 'Abrir el simulador',
-              action: { kind: 'link', to: '/numeros#credito' },
+              action: { kind: 'link', to: reportAnchor('credito') },
             },
           }
         },

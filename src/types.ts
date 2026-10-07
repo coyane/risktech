@@ -19,6 +19,9 @@ export interface SourceCoverage {
 export interface Taxpayer {
   rut: string
   name: string
+  birthDate: string | null
+  // Fecha de inicio de actividades en el SII.
+  activityStart: string | null
   capturedAt: string
   sources: SourceCoverage[]
 }
@@ -48,6 +51,33 @@ export interface CodeSeries {
 }
 
 export type IncomeOrigin = CodeSeries
+
+// Rebaja a la renta declarada en el F22. No todas tienen código conocido.
+export interface Deduction {
+  id: string
+  code: string | null
+  label: string
+  values: Record<number, Amount>
+}
+
+export interface Company {
+  rut: string
+  name: string
+  // Participación en porcentaje.
+  share: number
+  since: string
+}
+
+export interface TaxRegime {
+  code: string
+  name: string
+  since: string
+}
+
+export interface Stamping {
+  name: string
+  since: string
+}
 
 export interface IgcBase {
   base170: Record<number, Amount>
@@ -85,6 +115,7 @@ export interface Activity {
 export interface Property {
   rol: string
   comuna: string
+  region: string
   destino: string
   direccion: string | null
   avaluo: number
@@ -93,29 +124,19 @@ export interface Property {
   contribucion: Amount
   superficieTerreno: Amount
   superficieConstruida: Amount
-}
-
-export interface BankDebt {
-  bank: string
-  debtUf: number
-  leverage: number
-  properties: number
-}
-
-export interface Patrimony {
-  avaluoTotal: number
-  enajenacionClp: number
-  enajenacionUf: number
-  pagoContadoClp: number
-  pagoContadoUf: number
-  ivaClp: number
-  patrimonioUf: number
-  activosUf: number
-  pasivosUf: number
-  deudaTotalUf: number
-  leverage: number
-  debts: BankDebt[]
-  note: string
+  // Antecedentes de adquisición y financiamiento de "Mis Bienes" del SII.
+  fechaAdquisicion: string | null
+  tipoActo: string | null
+  precioAdquisicion: Amount
+  pagoContado: Amount
+  montoFinanciado: Amount
+  institucion: string | null
+  financiamientoUf: Amount
+  enajenacionUf: Amount
+  pagoContadoUf: Amount
+  // Propiedad habitacional acogida a la Ley 20.455.
+  ley20455: boolean
+  usoFamiliar: boolean
 }
 
 export type PaymentStatus = 'pagado' | 'pendiente' | 'sin_movimiento'
@@ -157,8 +178,35 @@ export interface MethodFormula {
   pending: boolean
 }
 
+export interface IgcBracket {
+  label: string
+  fromUta: number
+  // null = sin tope.
+  toUta: number | null
+  rate: number
+}
+
+export interface UtaRange {
+  label: string
+  fromUta: number
+  // null = sin tope.
+  toUta: number | null
+}
+
 export interface Method {
   release: string
+  // Códigos de orígenes de renta que no cuentan como renta financiera.
+  rfbExcludedCodes: string[]
+  // Códigos que se suman a la renta financiera bruta (gasto presunto de honorarios).
+  rfbAddCodes: string[]
+  // Factor de renta neta según la tasa efectiva del año.
+  rfnFactorRule: { rateThreshold: number; factorBelow: number; factorFrom: number }
+  utaByYear: Record<number, number>
+  bracket55bis: UtaRange[]
+  igcBrackets: IgcBracket[]
+  leverageFactors: number[]
+  depreciation: { landFactor: number; months: number }
+  openingCapital: number
   uf: { value: number; date: string }
   mortgageFactor: number
   autoFactor: number
@@ -207,10 +255,13 @@ export interface Report {
   incomeOrigins: IncomeOrigin[]
   igcBase: IgcBase
   financial: FinancialYear[]
+  deductions: Deduction[]
   f22Returns: F22Return[]
+  companies: Company[]
+  regimes: TaxRegime[]
+  stampings: Stamping[]
   activities: Activity[]
   properties: Property[]
-  patrimony: Patrimony | null
   f29: F29Period[]
   f50: F50Period[]
   method: Method

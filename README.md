@@ -9,6 +9,7 @@ npm install
 npm run dev        # servidor de desarrollo
 npm run typecheck  # tsc -b
 npm run lint       # oxlint
+npm test           # pruebas del registro de cálculos (casos de referencia y prueba masiva)
 npm run build      # typecheck + build de producción
 ```
 
@@ -17,12 +18,30 @@ npm run build      # typecheck + build de producción
 | Ruta | Acceso | Contenido |
 | --- | --- | --- |
 | `/` | público | Login demo con clave tributaria |
-| `/analisis` | sesión | Avance del agente y, al terminar, el análisis de apertura |
+| `/diagnostico` | sesión | Avance de la captura y, al terminar, el Diagnóstico Base. El fragmento elige la vista: `#resumen`, `#calculos`, `#calc-tasa-efectiva`, `#datos-propiedades`, `#origenes-104`, `#pendientes`, `#glosario` |
+| `/analisis` | sesión | Hallazgos del agente, marcado como "Próximamente" |
 | `/analisis/hallazgo/:id` | sesión | Mesa de trabajo de un hallazgo: origen, preguntas al agente y casos de uso |
-| `/numeros` | sesión | Tablas y gráficos del Capítulo IV; admite anclas (`/numeros#base`) |
-| `/admin` | rol admin | Clientes del portafolio |
+| `/admin` | rol admin | Propietarios del portafolio |
 | `/admin/radiografia` | rol admin | Composición del portafolio |
 | `/admin/agente` | rol admin | Agente del portafolio |
+
+## Diagnóstico Base
+
+Es la vista principal de la fase 1: muestra los datos obtenidos del SII y los cálculos del método sobre esos datos. **No interpreta**: no hay semáforo, evaluaciones ni texto generado. Dos personas con las mismas cifras reciben el mismo informe.
+
+- **Pantalla y PDF son dos presentaciones del mismo contenido.** En pantalla el informe se recorre por vistas (Resumen, Cálculos, Datos del SII, Pendientes, Glosario); no hay una página larga. En Cálculos, todos se ven como bloques agrupados y la explicación de uno queda siempre abierta al lado; presionar otro bloque la cambia. En pantallas angostas la explicación se desliza sobre los bloques al elegir uno. El PDF imprime todo, en el mismo orden. `src/lib/reportViews.ts` traduce el fragmento de la URL a la vista y `src/components/diagnostico/CalcExplorer.tsx` tiene los bloques y el panel de explicación.
+- `src/lib/calculos.ts` es el registro único de cálculos. Cada uno es una función pura con una pregunta, un nombre técnico, una definición fija, una sola plantilla de frase "en simple", su operación con los datos usados y sus dependencias. La pantalla solo recorre el registro.
+- Cada cálculo lleva uno de tres estados: **Calculado** (la fórmula está en un documento del método y cuadra con los casos), **Por confirmar** (la fórmula se dedujo de los casos o usa un parámetro supuesto) y **Por determinar** (falta la fórmula o el dato; la sección aparece igual, con los datos que sí se tienen y lo que falta).
+- Cada dato de una operación es de uno de tres tipos, siempre con etiqueta: **Dato del SII** (formulario, código, año y folio), **Parámetro del método** y **Resultado calculado**. Las fichas enlazan a su fila de origen o al cálculo que las produce, y las tablas del SII indican en qué cálculos se usa cada código.
+- El front recalcula cada operación y la compara con el valor del motor. Si difieren, muestra una frase fija con la diferencia.
+- Los casos especiales son un conjunto cerrado de frases (`FIXED` en el registro): dato no capturado, sin declaración ese año, sin propiedades, división por cero.
+- `src/lib/patrimonio.ts` suma las propiedades (enajenación y pago al contado en UF, Ley 20.455, por institución, comuna y destino) y `src/lib/timeline.ts` ordena por fecha los hechos que ya están en el reporte.
+- El PDF se genera con la impresión del navegador ("Descargar PDF"); los estilos están al final de `src/index.css`.
+- El sistema de diseño está en `design-system/risktech-ceft/` (generado con la skill ui-ux-pro-max).
+
+`npm test` corre tres grupos de pruebas sobre el registro: el caso del Capítulo IV, un caso real de cinco años (anonimizado: solo cifras por código y año) y 1.000 reportes generados al azar, en los que ninguna salida puede contener valores rotos y cada frase debe salir de su plantilla.
+
+Los hallazgos y la mesa de trabajo con el agente no son parte de la fase 1, pero siguen completos y visibles en el menú con la etiqueta "Próximamente". No se ocultan ni se eliminan.
 
 ## Modo demo
 
@@ -33,9 +52,9 @@ npm run build      # typecheck + build de producción
 
 ## Datos de ejemplo
 
-`src/data/demo.json` reproduce el caso del Capítulo IV (Carlos Díaz, AT 2022–2025): los 14 códigos de orígenes de renta, la base imponible, el análisis financiero, las contingencias de los Art. 53 y 97 y los totales de la radiografía patrimonial. Son **ilustrativos** (no vienen del documento) los folios, el detalle de bienes raíces por rol y los períodos del F29.
+`src/data/demo.json` reproduce el caso del Capítulo IV (Carlos Díaz, AT 2022–2025): los 14 códigos de orígenes de renta, la base imponible, el análisis financiero, las contingencias de los Art. 53 y 97 y los totales de propiedades en UF. El total de rebajas de cada año es la diferencia entre los orígenes y la base imponible del caso. Son **ilustrativos** (no vienen del documento) los folios, el desglose de las rebajas, el detalle de bienes raíces por rol (que suma los totales del caso), la sociedad, el régimen tributario, los períodos del F29 y la tabla de tramos.
 
-En los datos, `null` significa "no informado" y se muestra como raya (—); `0` es un valor declarado en cero.
+En los datos, `null` significa "no capturado" y se muestra como raya (—); `0` es un valor en cero. En un F22 capturado, un código ausente equivale a cero (regla del formulario compacto).
 
 ### Escenarios de captura
 
@@ -52,10 +71,11 @@ Agrega `?demo=<nombre>` a la URL del login para simular cada estado terminal del
 ## Estructura
 
 - `src/lib/api.ts` — API simulada (`createConsent`, `createRun`, `getRun`, `cancelRun`, `getReport`); es el punto a reemplazar por el backend.
-- `src/lib/icred.ts` — valor presente de la capacidad de crédito y alertas del método.
+- `src/lib/calculos.ts` — registro de cálculos del Diagnóstico Base.
+- `src/lib/icred.ts` — valor presente de la capacidad de crédito y alertas del método (las alertas solo se usan en la sección del agente).
 - `src/context/` — sesión, corrida (polling y carga del reporte) y conversaciones por hallazgo.
 - `src/data/insightPlaybooks.ts` — guiones del agente por hallazgo: origen, preguntas, simulaciones y casos de uso. Las cifras se calculan desde el reporte; el texto es fijo.
-- `src/components/` — shells, gráficos SVG y piezas compartidas.
+- `src/components/` — shells y piezas compartidas; `diagnostico/` tiene las piezas del informe (fichas, ecuación, bloque de cálculo, explorador de cálculos, cascada, tablas del SII).
 - `src/pages/` — pantallas del cliente y de administración.
 
 ## Despliegue

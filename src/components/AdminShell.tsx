@@ -1,10 +1,11 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useRun } from '../context/run'
 import { portfolioTotals } from '../data/portfolio'
+import { REPORT_PATH } from '../lib/routes'
 import { ShellFrame } from './ShellFrame'
 
 const titles = {
-  '/admin': 'Clientes',
+  '/admin': 'Propietarios',
   '/admin/radiografia': 'Radiografía',
   '/admin/agente': 'Agente portafolio',
 }
@@ -29,7 +30,7 @@ export function AdminShell() {
       <div className="nav-links">
         <div className="nav-sub-title">Administración</div>
         <NavLink to="/admin" end className={linkClass}>
-          Clientes
+          Propietarios
         </NavLink>
         <NavLink to="/admin/radiografia" className={linkClass}>
           Radiografía
@@ -41,7 +42,7 @@ export function AdminShell() {
       <div className="nav-sub">
         <div className="nav-sub-title">Vista cliente</div>
         <Link
-          to="/analisis"
+          to={REPORT_PATH}
           onClick={() => {
             if (!runId) startRun('demo')
           }}

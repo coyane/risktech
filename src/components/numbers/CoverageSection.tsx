@@ -21,7 +21,15 @@ const statusClass: Record<SourceStatus, string> = {
   excluded: 'tag-idle',
 }
 
-export function CoverageSection({ report, consent }: { report: Report; consent: Consent | null }) {
+export function CoverageSection({
+  report,
+  consent,
+  as,
+}: {
+  report: Report
+  consent: Consent | null
+  as?: 'h2' | 'h3' | 'h4'
+}) {
   const signOut = useSignOut()
 
   const onRevoke = async () => {
@@ -34,6 +42,7 @@ export function CoverageSection({ report, consent }: { report: Report; consent: 
     <SectionCard
       id="fuentes"
       title="Fuentes y cobertura"
+      as={as}
       note={`Capturado el ${formatDate(report.taxpayer.capturedAt)}`}
     >
       <TableWrap>

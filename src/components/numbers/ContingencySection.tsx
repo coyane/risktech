@@ -20,11 +20,18 @@ const rows: { label: string; code?: string; total?: boolean; value: (y: Continge
   { label: 'Débito total determinado', total: true, value: (y) => formatNumber(y.totalDebit) },
 ]
 
-export function ContingencySection({ contingency }: { contingency: Contingency }) {
+export function ContingencySection({
+  contingency,
+  as,
+}: {
+  contingency: Contingency
+  as?: 'h2' | 'h3' | 'h4'
+}) {
   return (
     <SectionCard
       id="contingencias"
       title="Contingencias tributarias"
+      as={as}
       note={`Art. 53 y 97 del Código Tributario · al ${formatDate(contingency.asOf)}`}
     >
       <div className="section-body stat-grid stat-grid-3">

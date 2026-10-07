@@ -46,7 +46,7 @@
             "9 roles vigentes"
           ],
           "missing": [],
-          "note": "Totales del Capítulo IV; el detalle por rol es ilustrativo."
+          "note": "Totales del Capítulo IV; el detalle por rol, adquisición y financiamiento es ilustrativo."
         },
         {
           "source": "ACTIVIDADES",
@@ -74,7 +74,9 @@
           "missing": [],
           "note": "Fuente no incluida en esta versión."
         }
-      ]
+      ],
+      "birthDate": null,
+      "activityStart": "2014-10-06"
     },
     "years": [
       2022,
@@ -396,110 +398,218 @@
       {
         "rol": "1204-18",
         "comuna": "Los Ángeles",
+        "region": "Biobío",
         "destino": "Habitacional",
         "direccion": "Av. Alemania 1204, depto. 18",
-        "avaluo": 118450000,
-        "avaluoAfecto": 63450000,
+        "avaluo": 123375000,
+        "avaluoAfecto": 68375000,
         "avaluoExento": 55000000,
-        "contribucion": 622000,
+        "contribucion": 670000,
         "superficieTerreno": null,
-        "superficieConstruida": 62.0
+        "superficieConstruida": 62.0,
+        "fechaAdquisicion": "2019-06-14",
+        "tipoActo": "Compraventa",
+        "precioAdquisicion": 150000000,
+        "pagoContado": 15000000,
+        "montoFinanciado": 135000000,
+        "institucion": "Banco de Chile",
+        "financiamientoUf": 4700,
+        "enajenacionUf": 4792.26,
+        "pagoContadoUf": 441.74,
+        "ley20455": true,
+        "usoFamiliar": false
       },
       {
         "rol": "1204-31",
         "comuna": "Los Ángeles",
+        "region": "Biobío",
         "destino": "Habitacional",
         "direccion": "Av. Alemania 1204, depto. 31",
-        "avaluo": 96320000,
-        "avaluoAfecto": 41320000,
+        "avaluo": 115150000,
+        "avaluoAfecto": 60150000,
         "avaluoExento": 55000000,
-        "contribucion": 405000,
+        "contribucion": 589000,
         "superficieTerreno": null,
-        "superficieConstruida": 54.5
+        "superficieConstruida": 54.5,
+        "fechaAdquisicion": "2020-03-09",
+        "tipoActo": "Compraventa",
+        "precioAdquisicion": 140000000,
+        "pagoContado": 14000000,
+        "montoFinanciado": 126000000,
+        "institucion": "Banco de Chile",
+        "financiamientoUf": 4463,
+        "enajenacionUf": 4472.77,
+        "pagoContadoUf": 412.29,
+        "ley20455": false,
+        "usoFamiliar": false
       },
       {
         "rol": "0877-6",
         "comuna": "Los Ángeles",
+        "region": "Biobío",
         "destino": "Habitacional",
         "direccion": "Calle Colo Colo 877, casa 6",
-        "avaluo": 87900000,
-        "avaluoAfecto": 32900000,
+        "avaluo": 90475000,
+        "avaluoAfecto": 35475000,
         "avaluoExento": 55000000,
-        "contribucion": 322000,
+        "contribucion": 348000,
         "superficieTerreno": 210.0,
-        "superficieConstruida": 96.0
+        "superficieConstruida": 96.0,
+        "fechaAdquisicion": "2021-08-23",
+        "tipoActo": "Compraventa",
+        "precioAdquisicion": 110000000,
+        "pagoContado": 20000000,
+        "montoFinanciado": 90000000,
+        "institucion": "Banco Santander Chile",
+        "financiamientoUf": 3100,
+        "enajenacionUf": 3514.32,
+        "pagoContadoUf": 588.99,
+        "ley20455": false,
+        "usoFamiliar": false
       },
       {
         "rol": "3310-2",
         "comuna": "Los Ángeles",
+        "region": "Biobío",
         "destino": "Sitio eriazo",
         "direccion": "Camino Cerro Colorado, lote 2",
-        "avaluo": 54600000,
-        "avaluoAfecto": 54600000,
+        "avaluo": 39480000,
+        "avaluoAfecto": 39480000,
         "avaluoExento": 0,
-        "contribucion": 535000,
+        "contribucion": 387000,
         "superficieTerreno": 1800.0,
-        "superficieConstruida": 0
+        "superficieConstruida": null,
+        "fechaAdquisicion": "2018-11-05",
+        "tipoActo": "Compraventa",
+        "precioAdquisicion": 48000000,
+        "pagoContado": 48000000,
+        "montoFinanciado": 0,
+        "institucion": null,
+        "financiamientoUf": null,
+        "enajenacionUf": 1533.52,
+        "pagoContadoUf": 1413.57,
+        "ley20455": false,
+        "usoFamiliar": false
       },
       {
         "rol": "0452-11",
         "comuna": "Colina",
+        "region": "Metropolitana",
         "destino": "Habitacional",
         "direccion": "Camino Chicureo 452, casa 11",
-        "avaluo": 168750000,
-        "avaluoAfecto": 113750000,
+        "avaluo": 345451000,
+        "avaluoAfecto": 290451000,
         "avaluoExento": 55000000,
-        "contribucion": 1115000,
+        "contribucion": 2846000,
         "superficieTerreno": 640.0,
-        "superficieConstruida": 148.0
+        "superficieConstruida": 148.0,
+        "fechaAdquisicion": "2022-05-30",
+        "tipoActo": "Compraventa",
+        "precioAdquisicion": 420000000,
+        "pagoContado": 40000000,
+        "montoFinanciado": 380000000,
+        "institucion": "Banco de Crédito e Inversiones",
+        "financiamientoUf": 12870,
+        "enajenacionUf": 13418.32,
+        "pagoContadoUf": 1177.98,
+        "ley20455": false,
+        "usoFamiliar": false
       },
       {
         "rol": "0452-12",
         "comuna": "Colina",
+        "region": "Metropolitana",
         "destino": "Habitacional",
         "direccion": "Camino Chicureo 452, casa 12",
-        "avaluo": 152300000,
-        "avaluoAfecto": 97300000,
+        "avaluo": 115150000,
+        "avaluoAfecto": 60150000,
         "avaluoExento": 55000000,
-        "contribucion": 954000,
+        "contribucion": 589000,
         "superficieTerreno": 610.0,
-        "superficieConstruida": 141.0
+        "superficieConstruida": 141.0,
+        "fechaAdquisicion": "2023-01-17",
+        "tipoActo": "Compraventa",
+        "precioAdquisicion": 140000000,
+        "pagoContado": 13938728,
+        "montoFinanciado": 126061272,
+        "institucion": "Banco Santander Chile",
+        "financiamientoUf": 2849,
+        "enajenacionUf": 4472.77,
+        "pagoContadoUf": 410.49,
+        "ley20455": false,
+        "usoFamiliar": false
       },
       {
         "rol": "0071-4",
         "comuna": "Alto Biobío",
+        "region": "Biobío",
         "destino": "Sitio eriazo",
         "direccion": "Sector Ralco, lote 4",
-        "avaluo": 38200000,
-        "avaluoAfecto": 38200000,
+        "avaluo": 24675000,
+        "avaluoAfecto": 24675000,
         "avaluoExento": 0,
-        "contribucion": 374000,
+        "contribucion": 242000,
         "superficieTerreno": 5200.0,
-        "superficieConstruida": 0
+        "superficieConstruida": null,
+        "fechaAdquisicion": "2017-09-12",
+        "tipoActo": "Compraventa",
+        "precioAdquisicion": 30000000,
+        "pagoContado": 30000000,
+        "montoFinanciado": 0,
+        "institucion": null,
+        "financiamientoUf": null,
+        "enajenacionUf": 958.45,
+        "pagoContadoUf": 883.48,
+        "ley20455": false,
+        "usoFamiliar": false
       },
       {
         "rol": "0071-5",
         "comuna": "Alto Biobío",
+        "region": "Biobío",
         "destino": "Sitio eriazo",
         "direccion": "Sector Ralco, lote 5",
-        "avaluo": 31500000,
-        "avaluoAfecto": 31500000,
+        "avaluo": 21385000,
+        "avaluoAfecto": 21385000,
         "avaluoExento": 0,
-        "contribucion": 309000,
+        "contribucion": 210000,
         "superficieTerreno": 4700.0,
-        "superficieConstruida": 0
+        "superficieConstruida": null,
+        "fechaAdquisicion": "2017-09-12",
+        "tipoActo": "Compraventa",
+        "precioAdquisicion": 26000000,
+        "pagoContado": 26000000,
+        "montoFinanciado": 0,
+        "institucion": null,
+        "financiamientoUf": null,
+        "enajenacionUf": 830.66,
+        "pagoContadoUf": 765.68,
+        "ley20455": false,
+        "usoFamiliar": false
       },
       {
         "rol": "0915-3",
         "comuna": "Quellón",
+        "region": "Los Lagos",
         "destino": "Habitacional",
         "direccion": "Costanera Pedro Montt 915, casa 3",
-        "avaluo": 171788285,
-        "avaluoAfecto": 116788285,
-        "avaluoExento": 55000000,
-        "contribucion": 1145000,
+        "avaluo": 44667285,
+        "avaluoAfecto": 0,
+        "avaluoExento": 44667285,
+        "contribucion": 0,
         "superficieTerreno": 480.0,
-        "superficieConstruida": 132.0
+        "superficieConstruida": 132.0,
+        "fechaAdquisicion": "2016-04-21",
+        "tipoActo": "Compraventa",
+        "precioAdquisicion": 54305776,
+        "pagoContado": 54305776,
+        "montoFinanciado": 0,
+        "institucion": null,
+        "financiamientoUf": null,
+        "enajenacionUf": 1735.0,
+        "pagoContadoUf": 1599.27,
+        "ley20455": true,
+        "usoFamiliar": true
       }
     ],
     "f29": [
@@ -806,9 +916,8 @@
     ],
     "f50": [],
     "warnings": [
-      "Factor RFN, códigos excluidos de la RFB, UTA y rangos del tramo Art. 55 bis están pendientes de validación con el Método ICRED.",
-      "Folios, detalle de bienes raíces por rol y períodos del F29 son ilustrativos: el Capítulo IV solo publica los totales.",
-      "Los códigos 158, 494, 465, 750 y 765 no están informados en el caso de ejemplo."
+      "Las reglas marcadas \"por confirmar\" se dedujeron de los casos de referencia y deben validarse con el Método ICRED.",
+      "Folios, desglose de rebajas, sociedades, regímenes, detalle de bienes raíces por rol y períodos del F29 son ilustrativos: el Capítulo IV solo publica los totales."
     ],
     "f22Returns": [
       {
@@ -836,42 +945,8 @@
         "filingType": "original"
       }
     ],
-    "patrimony": {
-      "avaluoTotal": 919808285,
-      "enajenacionClp": 1118305776,
-      "enajenacionUf": 35728.07,
-      "pagoContadoClp": 261244504,
-      "pagoContadoUf": 7693.49,
-      "ivaClp": 123035076,
-      "patrimonioUf": 7693.49,
-      "activosUf": 35728.07,
-      "pasivosUf": 28034.58,
-      "deudaTotalUf": 27982,
-      "leverage": 5.7,
-      "debts": [
-        {
-          "bank": "Banco de Chile",
-          "debtUf": 9163,
-          "leverage": 1.5,
-          "properties": 2
-        },
-        {
-          "bank": "Banco de Crédito e Inversiones",
-          "debtUf": 12870,
-          "leverage": 2.6,
-          "properties": 1
-        },
-        {
-          "bank": "Banco Santander Chile",
-          "debtUf": 5949,
-          "leverage": 1.3,
-          "properties": 2
-        }
-      ],
-      "note": "Enajenación, pago contado, pasivos y deuda por banco no provienen del SII: los informa el cliente o una fuente externa."
-    },
     "method": {
-      "release": "demo-0.2",
+      "release": "demo-0.4",
       "uf": {
         "value": 38416.69,
         "date": "2024-12-31"
@@ -883,27 +958,33 @@
       "autoMonths": 48,
       "parameters": [
         {
-          "key": "rfb_excluded",
-          "label": "Códigos excluidos de la RFB",
-          "value": "955 y 152",
+          "key": "rfb_rule",
+          "label": "Renta financiera bruta",
+          "value": "Total orígenes − códigos 955 y 152 + código 494",
           "status": "pending"
         },
         {
           "key": "rfn_factor",
-          "label": "Factor RFN",
-          "value": "0,90 hasta AT 2024; 0,80 en AT 2025",
-          "status": "pending"
-        },
-        {
-          "key": "bracket_55bis",
-          "label": "Rangos del tramo Art. 55 bis",
-          "value": "A y B según BIT en UTA",
+          "label": "Factor de renta neta",
+          "value": "0,90 si la tasa efectiva es menor a 15%; 0,80 si es 15% o más",
           "status": "pending"
         },
         {
           "key": "uta",
           "label": "UTA por año tributario",
-          "value": "Valores oficiales SII",
+          "value": "UTA de diciembre del mismo año del AT",
+          "status": "pending"
+        },
+        {
+          "key": "bracket_55bis",
+          "label": "Tramos Art. 55 bis",
+          "value": "A hasta 90 UTA · B de 90 a 150 · C sobre 150",
+          "status": "pending"
+        },
+        {
+          "key": "igc_brackets",
+          "label": "Tramos del Global Complementario",
+          "value": "Tabla oficial en UTA, 8 tramos de 0% a 40%",
           "status": "pending"
         },
         {
@@ -917,6 +998,30 @@
           "label": "Factor crédito automotriz",
           "value": "0,07 de la RFN mensual",
           "status": "confirmed"
+        },
+        {
+          "key": "credit_params",
+          "label": "Tasa, plazo y UF del Credit Capacity",
+          "value": "4% anual · 30 años · UF del 31-12-2024",
+          "status": "pending"
+        },
+        {
+          "key": "leverage",
+          "label": "Factores leverage a mostrar",
+          "value": "1 a 4",
+          "status": "pending"
+        },
+        {
+          "key": "depreciation",
+          "label": "Factor terreno no depreciable y vida útil",
+          "value": "0,17 · 192 meses",
+          "status": "pending"
+        },
+        {
+          "key": "opening_capital",
+          "label": "Capital del asiento de apertura",
+          "value": "$10.000.000",
+          "status": "pending"
         }
       ],
       "formulas": [
@@ -979,18 +1084,18 @@
       ],
       "adjustments": [
         {
-          "code": "158",
-          "label": "Total ingresos brutos afectos",
+          "code": "494",
+          "label": "Gastos presuntos de honorarios",
           "values": {
-            "2022": null,
-            "2023": null,
-            "2024": null,
-            "2025": null
+            "2022": 0,
+            "2023": 0,
+            "2024": 0,
+            "2025": 0
           }
         },
         {
-          "code": "494",
-          "label": "Gastos presuntos de honorarios",
+          "code": "158",
+          "label": "Total ingresos brutos afectos",
           "values": {
             "2022": null,
             "2023": null,
@@ -1002,33 +1107,109 @@
           "code": "465",
           "label": "Gastos efectivos de honorarios",
           "values": {
-            "2022": null,
-            "2023": null,
-            "2024": null,
-            "2025": null
-          }
-        },
-        {
-          "code": "750",
-          "label": "Rebaja intereses hipotecarios Art. 55 bis",
-          "values": {
-            "2022": null,
-            "2023": null,
-            "2024": null,
-            "2025": null
-          }
-        },
-        {
-          "code": "765",
-          "label": "Rebaja ahorro previsional Art. 42 bis",
-          "values": {
-            "2022": null,
-            "2023": null,
-            "2024": null,
-            "2025": null
+            "2022": 0,
+            "2023": 0,
+            "2024": 0,
+            "2025": 0
           }
         }
-      ]
+      ],
+      "igcBrackets": [
+        {
+          "label": "Exento",
+          "fromUta": 0,
+          "toUta": 13.5,
+          "rate": 0
+        },
+        {
+          "label": "Tramo 1",
+          "fromUta": 13.5,
+          "toUta": 30,
+          "rate": 0.04
+        },
+        {
+          "label": "Tramo 2",
+          "fromUta": 30,
+          "toUta": 50,
+          "rate": 0.08
+        },
+        {
+          "label": "Tramo 3",
+          "fromUta": 50,
+          "toUta": 70,
+          "rate": 0.135
+        },
+        {
+          "label": "Tramo 4",
+          "fromUta": 70,
+          "toUta": 90,
+          "rate": 0.23
+        },
+        {
+          "label": "Tramo 5",
+          "fromUta": 90,
+          "toUta": 120,
+          "rate": 0.304
+        },
+        {
+          "label": "Tramo 6",
+          "fromUta": 120,
+          "toUta": 310,
+          "rate": 0.35
+        },
+        {
+          "label": "Tramo 7",
+          "fromUta": 310,
+          "toUta": null,
+          "rate": 0.4
+        }
+      ],
+      "rfbExcludedCodes": [
+        "955",
+        "152"
+      ],
+      "utaByYear": {
+        "2022": 733884,
+        "2023": 770592,
+        "2024": 807528,
+        "2025": 834504
+      },
+      "rfbAddCodes": [
+        "494"
+      ],
+      "rfnFactorRule": {
+        "rateThreshold": 0.15,
+        "factorBelow": 0.9,
+        "factorFrom": 0.8
+      },
+      "bracket55bis": [
+        {
+          "label": "A",
+          "fromUta": 0,
+          "toUta": 90
+        },
+        {
+          "label": "B",
+          "fromUta": 90,
+          "toUta": 150
+        },
+        {
+          "label": "C",
+          "fromUta": 150,
+          "toUta": null
+        }
+      ],
+      "leverageFactors": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "depreciation": {
+        "landFactor": 0.17,
+        "months": 192
+      },
+      "openingCapital": 10000000
     },
     "contingency": {
       "rentsReceivedMonthly": 5370000,
@@ -1086,46 +1267,125 @@
       "Migrar a una estructura empresarial",
       "Mantener un colchón de liquidez de 6 meses",
       "Diversificar las fuentes de ingreso"
-    ]
+    ],
+    "deductions": [
+      {
+        "id": "territorial",
+        "code": null,
+        "label": "Impuesto territorial",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "id": "donaciones-16282",
+        "code": null,
+        "label": "Donaciones Ley 16.282 y DL 45",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "id": "perdida-capitales",
+        "code": null,
+        "label": "Pérdida en operaciones de capitales mobiliarios",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "id": "donaciones-sfl",
+        "code": null,
+        "label": "Donaciones a entidades sin fines de lucro",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "id": "cotizaciones",
+        "code": null,
+        "label": "Cotizaciones previsionales de empresario o socio",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "id": "intereses-55bis",
+        "code": "750",
+        "label": "Intereses pagados Art. 55 bis",
+        "values": {
+          "2022": 4836432,
+          "2023": 4047364,
+          "2024": 3436728,
+          "2025": 3510436
+        }
+      },
+      {
+        "id": "dividendos-19622",
+        "code": null,
+        "label": "Dividendos hipotecarios Ley 19.622",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "id": "fondos-inversion",
+        "code": null,
+        "label": "20% cuotas de fondos de inversión (Ley 19.247)",
+        "values": {
+          "2022": 0,
+          "2023": 0,
+          "2024": 0,
+          "2025": 0
+        }
+      },
+      {
+        "id": "apv-42bis",
+        "code": "765",
+        "label": "Ahorro previsional voluntario Art. 42 bis",
+        "values": {
+          "2022": 3200000,
+          "2023": 3200000,
+          "2024": 2000000,
+          "2025": 2000000
+        }
+      }
+    ],
+    "companies": [
+      {
+        "rut": "76.000.000-K",
+        "name": "Sociedad de ejemplo SpA",
+        "share": 5,
+        "since": "2015-03-16"
+      }
+    ],
+    "regimes": [
+      {
+        "code": "14D1",
+        "name": "Régimen Pro Pyme General (14D)",
+        "since": "2025-01-31"
+      }
+    ],
+    "stampings": []
   },
-  "navSections": [
-    {
-      "id": "fuentes",
-      "label": "Fuentes y cobertura"
-    },
-    {
-      "id": "origenes",
-      "label": "Orígenes de renta"
-    },
-    {
-      "id": "base",
-      "label": "Base imponible IGC"
-    },
-    {
-      "id": "financiero",
-      "label": "Análisis financiero"
-    },
-    {
-      "id": "credito",
-      "label": "Capacidad de crédito"
-    },
-    {
-      "id": "contingencias",
-      "label": "Contingencias"
-    },
-    {
-      "id": "actividades",
-      "label": "Actividades económicas"
-    },
-    {
-      "id": "patrimonio",
-      "label": "Radiografía patrimonial"
-    },
-    {
-      "id": "f29",
-      "label": "F29 y F50"
-    }
-  ],
   "loginSources": [
     {
       "code": "F22",

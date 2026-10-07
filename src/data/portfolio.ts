@@ -17,6 +17,7 @@ export type ClientStatus = 'activo' | 'en_revision' | 'sin_datos'
 export interface PortfolioProperty {
   rol: string
   comuna: string
+  region: string
   destino: PropertyDestino
   avaluo: number
   contribucion: number
@@ -29,6 +30,8 @@ export interface PortfolioClient {
   status: ClientStatus
   lastRunAt: string
   bracket55bis: 'A' | 'B' | 'C'
+  // Tasa del último tramo de Global Complementario (ilustrativa).
+  igcRate: number
   totalOrigins: number
   rfnMonthly: number
   effectiveRate: number
@@ -51,6 +54,7 @@ export interface PortfolioInsight {
 const caseProperties: PortfolioProperty[] = demo.report.properties.map((item) => ({
   rol: item.rol,
   comuna: item.comuna,
+  region: item.region,
   destino: item.destino as PropertyDestino,
   avaluo: item.avaluo,
   contribucion: item.contribucion,
@@ -64,6 +68,7 @@ export const portfolioClients: PortfolioClient[] = [
     status: 'activo',
     lastRunAt: '2026-10-06T11:00:00-03:00',
     bracket55bis: 'B',
+    igcRate: 0.304,
     totalOrigins: 104_832_677,
     rfnMonthly: 5_446_673,
     effectiveRate: 0.16,
@@ -80,6 +85,7 @@ export const portfolioClients: PortfolioClient[] = [
     status: 'activo',
     lastRunAt: '2026-10-05T16:20:00-03:00',
     bracket55bis: 'A',
+    igcRate: 0.08,
     totalOrigins: 48_220_000,
     rfnMonthly: 3_120_000,
     effectiveRate: 0.072,
@@ -90,6 +96,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '8821-1',
         comuna: 'Ñuñoa',
+        region: 'Metropolitana',
         destino: 'Habitacional',
         avaluo: 98_000_000,
         contribucion: 890_000,
@@ -103,6 +110,7 @@ export const portfolioClients: PortfolioClient[] = [
     status: 'en_revision',
     lastRunAt: '2026-10-04T09:40:00-03:00',
     bracket55bis: 'C',
+    igcRate: 0.35,
     totalOrigins: 312_500_000,
     rfnMonthly: 14_800_000,
     effectiveRate: 0.214,
@@ -113,6 +121,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '4401-8',
         comuna: 'Santiago',
+        region: 'Metropolitana',
         destino: 'Comercial',
         avaluo: 420_000_000,
         contribucion: 5_200_000,
@@ -120,6 +129,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '4402-1',
         comuna: 'Quilicura',
+        region: 'Metropolitana',
         destino: 'Bodega',
         avaluo: 210_000_000,
         contribucion: 1_850_000,
@@ -127,6 +137,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '4402-2',
         comuna: 'Quilicura',
+        region: 'Metropolitana',
         destino: 'Bodega',
         avaluo: 195_000_000,
         contribucion: 1_720_000,
@@ -134,6 +145,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '4410-3',
         comuna: 'Huechuraba',
+        region: 'Metropolitana',
         destino: 'Oficina',
         avaluo: 168_000_000,
         contribucion: 1_450_000,
@@ -141,6 +153,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '4411-0',
         comuna: 'Pudahuel',
+        region: 'Metropolitana',
         destino: 'Industrial',
         avaluo: 350_000_000,
         contribucion: 2_900_000,
@@ -154,6 +167,7 @@ export const portfolioClients: PortfolioClient[] = [
     status: 'activo',
     lastRunAt: '2026-10-03T14:05:00-03:00',
     bracket55bis: 'B',
+    igcRate: 0.23,
     totalOrigins: 89_400_000,
     rfnMonthly: 5_010_000,
     effectiveRate: 0.148,
@@ -164,6 +178,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '5510-2',
         comuna: 'La Reina',
+        region: 'Metropolitana',
         destino: 'Habitacional',
         avaluo: 142_000_000,
         contribucion: 1_320_000,
@@ -171,6 +186,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '5510-9',
         comuna: 'La Reina',
+        region: 'Metropolitana',
         destino: 'Estacionamiento',
         avaluo: 8_500_000,
         contribucion: 45_000,
@@ -178,6 +194,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '5522-4',
         comuna: 'Peñalolén',
+        region: 'Metropolitana',
         destino: 'Terreno',
         avaluo: 65_000_000,
         contribucion: 210_000,
@@ -191,6 +208,7 @@ export const portfolioClients: PortfolioClient[] = [
     status: 'sin_datos',
     lastRunAt: '2026-09-28T11:15:00-03:00',
     bracket55bis: 'A',
+    igcRate: 0.04,
     totalOrigins: 32_100_000,
     rfnMonthly: 2_140_000,
     effectiveRate: 0.055,
@@ -206,6 +224,7 @@ export const portfolioClients: PortfolioClient[] = [
     status: 'activo',
     lastRunAt: '2026-10-05T08:30:00-03:00',
     bracket55bis: 'B',
+    igcRate: 0.23,
     totalOrigins: 76_800_000,
     rfnMonthly: 4_620_000,
     effectiveRate: 0.132,
@@ -216,6 +235,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '7001-4',
         comuna: 'Vitacura',
+        region: 'Metropolitana',
         destino: 'Habitacional',
         avaluo: 260_000_000,
         contribucion: 3_100_000,
@@ -223,6 +243,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '7012-8',
         comuna: 'Lo Barnechea',
+        region: 'Metropolitana',
         destino: 'Habitacional',
         avaluo: 310_000_000,
         contribucion: 3_800_000,
@@ -236,6 +257,7 @@ export const portfolioClients: PortfolioClient[] = [
     status: 'activo',
     lastRunAt: '2026-10-02T17:45:00-03:00',
     bracket55bis: 'C',
+    igcRate: 0.35,
     totalOrigins: 198_300_000,
     rfnMonthly: 9_400_000,
     effectiveRate: 0.189,
@@ -246,6 +268,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '9100-1',
         comuna: 'Maipú',
+        region: 'Metropolitana',
         destino: 'Comercial',
         avaluo: 125_000_000,
         contribucion: 1_100_000,
@@ -253,6 +276,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '9101-2',
         comuna: 'Cerrillos',
+        region: 'Metropolitana',
         destino: 'Bodega',
         avaluo: 88_000_000,
         contribucion: 720_000,
@@ -260,6 +284,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '9102-5',
         comuna: 'Estación Central',
+        region: 'Metropolitana',
         destino: 'Oficina',
         avaluo: 74_000_000,
         contribucion: 640_000,
@@ -273,6 +298,7 @@ export const portfolioClients: PortfolioClient[] = [
     status: 'en_revision',
     lastRunAt: '2026-10-01T12:10:00-03:00',
     bracket55bis: 'A',
+    igcRate: 0.08,
     totalOrigins: 41_750_000,
     rfnMonthly: 2_780_000,
     effectiveRate: 0.068,
@@ -283,6 +309,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '2200-7',
         comuna: 'San Miguel',
+        region: 'Metropolitana',
         destino: 'Habitacional',
         avaluo: 72_000_000,
         contribucion: 510_000,
@@ -290,6 +317,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '2211-3',
         comuna: 'La Cisterna',
+        region: 'Metropolitana',
         destino: 'Bodega',
         avaluo: 28_000_000,
         contribucion: 190_000,
@@ -303,6 +331,7 @@ export const portfolioClients: PortfolioClient[] = [
     status: 'activo',
     lastRunAt: '2026-10-06T09:05:00-03:00',
     bracket55bis: 'C',
+    igcRate: 0.4,
     totalOrigins: 455_000_000,
     rfnMonthly: 21_200_000,
     effectiveRate: 0.268,
@@ -313,6 +342,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '3300-1',
         comuna: 'Las Condes',
+        region: 'Metropolitana',
         destino: 'Habitacional',
         avaluo: 520_000_000,
         contribucion: 6_400_000,
@@ -320,6 +350,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '3310-4',
         comuna: 'Vitacura',
+        region: 'Metropolitana',
         destino: 'Oficina',
         avaluo: 290_000_000,
         contribucion: 2_800_000,
@@ -327,6 +358,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '3320-9',
         comuna: 'Colina',
+        region: 'Metropolitana',
         destino: 'Terreno',
         avaluo: 180_000_000,
         contribucion: 420_000,
@@ -334,6 +366,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '3330-2',
         comuna: 'Pudahuel',
+        region: 'Metropolitana',
         destino: 'Bodega',
         avaluo: 155_000_000,
         contribucion: 1_250_000,
@@ -347,6 +380,7 @@ export const portfolioClients: PortfolioClient[] = [
     status: 'activo',
     lastRunAt: '2026-10-04T19:20:00-03:00',
     bracket55bis: 'B',
+    igcRate: 0.135,
     totalOrigins: 67_900_000,
     rfnMonthly: 4_050_000,
     effectiveRate: 0.121,
@@ -357,6 +391,7 @@ export const portfolioClients: PortfolioClient[] = [
       {
         rol: '6601-5',
         comuna: 'Independencia',
+        region: 'Metropolitana',
         destino: 'Habitacional',
         avaluo: 81_000_000,
         contribucion: 620_000,

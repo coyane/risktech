@@ -1,4 +1,9 @@
-import { portfolioClients, portfolioTotals, type ClientStatus } from '../../data/portfolio'
+import {
+  portfolioClients,
+  portfolioTotals,
+  type ClientStatus,
+  type PortfolioProperty,
+} from '../../data/portfolio'
 import { formatMoney, formatMoneyMillions, formatNumber, formatRate } from '../../lib/format'
 
 const statusLabel: Record<ClientStatus, string> = {
@@ -16,6 +21,15 @@ const statusClass: Record<ClientStatus, string> = {
 const sortedClients = portfolioClients.toSorted((a, b) => b.totalOrigins - a.totalOrigins)
 const totalOrigins = portfolioClients.reduce((sum, client) => sum + client.totalOrigins, 0)
 
+// Región con más propiedades del propietario.
+function mainRegion(properties: PortfolioProperty[]) {
+  const counts = new Map<string, number>()
+  for (const property of properties) {
+    counts.set(property.region, (counts.get(property.region) ?? 0) + 1)
+  }
+  return [...counts.entries()].toSorted((a, b) => b[1] - a[1])[0]?.[0] ?? '—'
+}
+
 export function AdminClientsPage() {
   const summary = portfolioTotals
 
@@ -24,13 +38,13 @@ export function AdminClientsPage() {
       <header className="page-head">
         <div>
           <div className="eyebrow">Administración · portafolio CEFT</div>
-          <h1>Clientes en la plataforma</h1>
+          <h1>Propietarios en la plataforma</h1>
         </div>
       </header>
 
       <section className="grid-auto" aria-label="Indicadores del portafolio">
         <div className="kpi">
-          <div className="kpi-label">Clientes</div>
+          <div className="kpi-label">Propietarios</div>
           <div className="kpi-value">{summary.clients}</div>
           <div className="kpi-note">{summary.activos} activos</div>
         </div>
@@ -58,16 +72,18 @@ export function AdminClientsPage() {
 
       <section className="card-flush">
         <div className="card-head">
-          <h2>Resumen por cliente</h2>
+          <h2>Resumen por propietario</h2>
           <div className="card-note">Ordenado por orígenes de renta AT vigente</div>
         </div>
         <div className="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Cliente</th>
+                <th>Propietario</th>
                 <th>Estado</th>
-                <th>Tramo</th>
+                <th>Tramo IGC</th>
+                <th>Tramo 55 bis</th>
+                <th className="cell-text">Región principal</th>
                 <th>Orígenes</th>
                 <th>RFN mensual</th>
                 <th>Tasa efectiva</th>
@@ -88,7 +104,9 @@ export function AdminClientsPage() {
                       {statusLabel[client.status]}
                     </span>
                   </td>
+                  <td>{formatRate(client.igcRate)}</td>
                   <td>{client.bracket55bis}</td>
+                  <td className="cell-text">{mainRegion(client.properties)}</td>
                   <td>{formatNumber(client.totalOrigins)}</td>
                   <td>{formatNumber(client.rfnMonthly)}</td>
                   <td>{formatRate(client.effectiveRate)}</td>
@@ -105,6 +123,8 @@ export function AdminClientsPage() {
               ))}
               <tr className="total">
                 <td>Total / promedio</td>
+                <td />
+                <td />
                 <td />
                 <td />
                 <td>{formatNumber(totalOrigins)}</td>

@@ -26,6 +26,15 @@ export function reportToCsv(report: Report) {
     ]),
   )
   section(
+    'Rebajas',
+    ['Código', 'Glosa', ...years.map((year) => `AT ${year}`)],
+    report.deductions.map((item) => [
+      item.code,
+      item.label,
+      ...years.map((year) => item.values[year] ?? null),
+    ]),
+  )
+  section(
     'Base imponible IGC',
     ['Código', 'Glosa', ...years.map((year) => `AT ${year}`)],
     [
@@ -48,16 +57,26 @@ export function reportToCsv(report: Report) {
   )
   section(
     'Bienes raíces',
-    ['Rol', 'Comuna', 'Destino', 'Dirección', 'Avalúo total', 'Afecto', 'Exento', 'Contribución'],
+    ['Rol', 'Comuna', 'Región', 'Destino', 'Enajenación UF', 'Pago contado UF', 'Dirección', 'Avalúo total', 'Afecto', 'Exento', 'Contribución', 'Fecha adquisición', 'Acto', 'Precio', 'Pago contado', 'Financiado', 'Institución', 'Crédito UF'],
     report.properties.map((item) => [
       item.rol,
       item.comuna,
+      item.region,
       item.destino,
+      item.enajenacionUf,
+      item.pagoContadoUf,
       item.direccion,
       item.avaluo,
       item.avaluoAfecto,
       item.avaluoExento,
       item.contribucion,
+      item.fechaAdquisicion,
+      item.tipoActo,
+      item.precioAdquisicion,
+      item.pagoContado,
+      item.montoFinanciado,
+      item.institucion,
+      item.financiamientoUf,
     ]),
   )
   section(

@@ -16,12 +16,13 @@ const paymentClass: Record<PaymentStatus, string> = {
   sin_movimiento: 'tag-idle',
 }
 
-export function F29Section({ report }: { report: Report }) {
+export function F29Section({ report, as }: { report: Report; as?: 'h2' | 'h3' | 'h4' }) {
   const f50ByPeriod = new Map(report.f50.map((item) => [item.period, item]))
   const coverage = (source: string) => report.taxpayer.sources.find((item) => item.source === source)
 
   return (
-    <SectionCard id="f29" title="F29 y F50 · últimos 24 meses" note="Más reciente primero">
+    <SectionCard id="f29" title="F29 y F50 · últimos 24 meses"
+      as={as} note="Más reciente primero">
       {report.f29.length === 0 ? (
         <EmptyState text={coverage('F29')?.note || 'Sin períodos de F29 en esta extracción.'} />
       ) : (

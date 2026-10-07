@@ -1,16 +1,21 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { useRun } from '../context/run'
+import { isRunReady, useRun } from '../context/run'
 import { useSession } from '../context/session'
-import { navSections } from '../lib/api'
+import { VIEWS, resolvePlace } from '../lib/reportViews'
+import { ANALYSIS_PATH, REPORT_PATH, reportAnchor } from '../lib/routes'
+import { useHash } from '../lib/useHash'
 import { ShellFrame } from './ShellFrame'
 
-const titles = { '/analisis': 'Análisis', '/numeros': 'Números' }
+const titles = { [ANALYSIS_PATH]: 'Análisis', [REPORT_PATH]: 'Diagnóstico Base' }
 const linkClass = ({ isActive }: { isActive: boolean }) => `nav-link${isActive ? ' active' : ''}`
 
 export function AppShell() {
-  const { report } = useRun()
+  const { run, report } = useRun()
   const { role } = useSession()
   const { pathname } = useLocation()
+  const ready = isRunReady(run) && report !== null
+  const { hash } = useHash()
+  const current = resolvePlace(hash).view
 
   return (
     <ShellFrame
@@ -26,19 +31,20 @@ export function AppShell() {
       }
     >
       <div className="nav-links">
-        <NavLink to="/analisis" className={linkClass}>
-          Análisis
+        <NavLink to={REPORT_PATH} className={linkClass}>
+          Diagnóstico Base
         </NavLink>
-        <NavLink to="/numeros" className={linkClass}>
-          Números
+        <NavLink to={ANALYSIS_PATH} className={linkClass}>
+          Análisis con el agente
+          <span className="nav-soon">Próximamente</span>
         </NavLink>
       </div>
-      {pathname === '/numeros' && (
+      {pathname === REPORT_PATH && ready && (
         <div className="nav-sub nav-sections">
-          <div className="nav-sub-title">En esta página</div>
-          {navSections.map((section) => (
-            <Link key={section.id} to={`/numeros#${section.id}`}>
-              {section.label}
+          <div className="nav-sub-title">En este informe</div>
+          {VIEWS.map((view) => (
+            <Link key={view.id} to={reportAnchor(view.id)} aria-current={view.id === current ? 'page' : undefined}>
+              {view.label}
             </Link>
           ))}
         </div>

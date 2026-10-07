@@ -10,6 +10,7 @@ import {
   loginSources,
   type DemoScenario,
 } from '../lib/api'
+import { REPORT_PATH } from '../lib/routes'
 import { formatRut, isValidRut, splitRut } from '../lib/rut'
 
 const CONSENT_PURPOSE = 'Elaborar tu diagnóstico tributario y crediticio con el Método ICRED'
@@ -83,7 +84,7 @@ export function LoginPage() {
       clear()
       signIn('client')
       startRun(id, granted)
-      navigate('/analisis')
+      navigate(REPORT_PATH)
     } catch (err) {
       setError(
         err instanceof Error
@@ -225,7 +226,7 @@ export function LoginPage() {
                     <dt>Vigencia</dt>
                     <dd>Solo esta captura. La clave se usa en una sesión efímera.</dd>
                     <dt>Revocación</dt>
-                    <dd>Puedes revocarla en cualquier momento desde Números.</dd>
+                    <dd>Puedes revocarla en cualquier momento desde el anexo del Diagnóstico Base.</dd>
                   </dl>
                   <p>
                     Prototipo en modo demo: no se envía tu RUT ni tu clave a ningún servidor y no

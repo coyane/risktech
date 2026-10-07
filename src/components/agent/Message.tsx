@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { reportAnchor } from '../../lib/routes'
 import type { Proposal, ThreadMessage } from '../../types'
 import { AgentPlan } from './AgentPlan'
 import { RichText } from './RichText'
@@ -61,7 +62,7 @@ export function Message({
               <span className="msg-cites-label">Respaldo</span>
               {message.cites.map((cite) =>
                 cite.anchor ? (
-                  <Link key={cite.label} className="cite" to={`/numeros#${cite.anchor}`}>
+                  <Link key={cite.label} className="cite" to={reportAnchor(cite.anchor)}>
                     {cite.label}
                   </Link>
                 ) : (

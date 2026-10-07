@@ -12,7 +12,7 @@ function parsePositive(text: string) {
   return Number.isFinite(value) && value >= 0 ? value : null
 }
 
-export function CreditCapacitySection({ report }: { report: Report }) {
+export function CreditCapacitySection({ report, as }: { report: Report; as?: 'h2' | 'h3' | 'h4' }) {
   const { method } = report
   const last = report.financial.at(-1)
   const [rateText, setRateText] = useState(() => formatDecimal(method.mortgageRate * 100, 1))
@@ -34,7 +34,8 @@ export function CreditCapacitySection({ report }: { report: Report }) {
   return (
     <SectionCard
       id="credito"
-      title="Capacidad de crédito"
+      title="Simula tu crédito"
+      as={as}
       note={`Simulación sobre ${formatAt(last.year)} · UF ${formatDecimal(method.uf.value, 2)} al ${formatDate(method.uf.date)}`}
     >
       <div className="section-body stack">
