@@ -1,0 +1,94 @@
+/* Pendientes, línea de tiempo, glosario y pie */
+
+.pending-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.pending-list li {
+  display: grid;
+  grid-template-columns: 150px minmax(160px, 240px) 1fr;
+  align-items: baseline;
+  gap: 8px 16px;
+  padding: 12px 18px;
+  color: var(--ink-2);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+
+.pending-list li + li {
+  border-top: 1px solid var(--line-soft);
+}
+
+.pending-list .status {
+  justify-self: start;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 20px 18px;
+}
+
+.timeline > li {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 16px;
+  padding: 10px 0;
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+
+.timeline > li + li {
+  border-top: 1px solid var(--line-soft);
+}
+
+.timeline time {
+  color: var(--ink-2);
+  font-weight: 500;
+}
+
+.timeline ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--ink-2);
+}
+
+.glossary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+  gap: 16px 28px;
+  margin: 0;
+}
+
+.glossary dt {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+
+.glossary dd {
+  margin: 4px 0 0;
+  color: var(--ink-2);
+  font-size: var(--fs-md);
+  line-height: 1.6;
+}
+
+.report-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  color: var(--faint);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+.nav-sections a[aria-current] {
+  background: var(--nav-line);
+  color: #fff;
+}

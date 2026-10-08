@@ -7,11 +7,23 @@ Prototipo React del agente CEFT (diagnóstico tributario / Método ICRED). Todo 
 ```bash
 npm install
 npm run dev        # servidor de desarrollo
-npm run typecheck  # tsc -b
-npm run lint       # oxlint
-npm test           # pruebas del registro de cálculos (casos de referencia y prueba masiva)
-npm run build      # typecheck + build de producción
+npm run verify     # tipos, lint, pruebas del registro de cálculos y build
+npm run test:ui    # recorrido en Chrome a 1440 y 375 px (usa el Chrome instalado)
+npm run verify:ui  # los dos anteriores, en orden
 ```
+
+`npm run verify` encadena `typecheck`, `lint`, `test` y `build`, que también se pueden correr por separado.
+
+## Documentación
+
+| Documento | Contenido |
+| --- | --- |
+| `AGENTS.md` | Instrucciones para agentes de código; `CLAUDE.md` lo importa |
+| `docs/product.md` | Qué es el producto, para quién y sus reglas |
+| `docs/ui.md` | Cómo está construida la interfaz y cómo extenderla |
+| `docs/sprint-1-v2-diagnostico-base-y-backoffice.md` | Plan vigente, fórmulas y pendientes del método |
+| `docs/decisions/` | Decisiones costosas de revertir |
+| `design-system/risktech-ceft/` | Reglas visuales por página |
 
 ## Rutas
 
@@ -75,6 +87,8 @@ Agrega `?demo=<nombre>` a la URL del login para simular cada estado terminal del
 - `src/lib/icred.ts` — valor presente de la capacidad de crédito y alertas del método (las alertas solo se usan en la sección del agente).
 - `src/context/` — sesión, corrida (polling y carga del reporte) y conversaciones por hallazgo.
 - `src/data/insightPlaybooks.ts` — guiones del agente por hallazgo: origen, preguntas, simulaciones y casos de uso. Las cifras se calculan desde el reporte; el texto es fijo.
+- `src/styles/` — estilos por área; `src/index.css` los importa en el orden de la cascada.
+- `e2e/` — pruebas de interfaz con Playwright.
 - `src/components/` — shells y piezas compartidas; `diagnostico/` tiene las piezas del informe (fichas, ecuación, bloque de cálculo, explorador de cálculos, cascada, tablas del SII).
 - `src/pages/` — pantallas del cliente y de administración.
 

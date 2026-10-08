@@ -1,0 +1,310 @@
+@page {
+  size: A4;
+  margin: 16mm 14mm 18mm;
+
+  @bottom-left {
+    content: "CEFT · Diagnóstico Base · documento referencial";
+    color: #475569;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 9px;
+  }
+
+  @bottom-right {
+    content: "Página " counter(page) " de " counter(pages);
+    color: #475569;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 9px;
+  }
+}
+
+@media print {
+  /* Escala tipográfica propia del papel. */
+  :root {
+    --ground: #fff;
+    --fs-xs: 7.5pt;
+    --fs-sm: 8pt;
+    --fs-md: 9pt;
+    --fs-lg: 10pt;
+    --fs-xl: 11pt;
+    --fs-2xl: 14pt;
+    --fs-3xl: 18pt;
+  }
+
+  body {
+    font-size: 10pt;
+  }
+
+  .nav,
+  .skip-link,
+  .no-print,
+  .thread-input,
+  .thread-suggestions,
+  .ask-form,
+  .disclosure-toggle,
+  .sim-inputs {
+    display: none !important;
+  }
+
+  .print-only {
+    display: inline;
+  }
+
+  .print-block {
+    display: block;
+  }
+
+  /* El PDF trae todas las vistas y todos los cálculos, en orden. */
+  .view[hidden],
+  .data-panel[hidden] {
+    display: flex !important;
+  }
+
+  .explorer-panel[hidden] {
+    display: block !important;
+  }
+
+  .explorer-wrap,
+  .explorer,
+  .explorer-index {
+    display: block;
+  }
+
+  .explorer-wrap > * + * {
+    margin-top: 12px;
+  }
+
+  .index-row::after {
+    content: none;
+  }
+
+  .index-row[aria-current] {
+    background: none;
+    box-shadow: none;
+  }
+
+  .index-row[aria-current] .index-name {
+    color: inherit;
+    font-weight: 500;
+  }
+
+  .explorer-detail[hidden] {
+    display: block !important;
+  }
+
+  .index-grid {
+    gap: 10px;
+  }
+
+  .index-row {
+    min-height: 0;
+    padding-block: 4px;
+  }
+
+  .index-card,
+  .index-row {
+    break-inside: avoid;
+  }
+
+  .report-views {
+    gap: 16px;
+    padding: 0;
+  }
+
+  .report-about {
+    order: 0;
+    gap: 10px;
+  }
+
+  .report-head h1 {
+    font-size: 21pt;
+  }
+
+  .explorer-section-title {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 8pt;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    break-after: avoid;
+  }
+
+  .data-panel {
+    gap: 10px;
+  }
+
+  .shell,
+  .workspace {
+    display: block;
+  }
+
+  .main {
+    padding: 0;
+  }
+
+  .report {
+    gap: 16px;
+    max-width: none;
+  }
+
+  .calc-value,
+  .hero-value {
+    font-size: 18pt;
+  }
+
+  .chip-value {
+    font-size: 11pt;
+  }
+
+  .hero {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .hero-item,
+  .data-chip {
+    padding: 8px 10px;
+  }
+
+  .hero-question {
+    min-height: 0;
+  }
+
+  .legend {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .chapter,
+  .calc,
+  .calc-block {
+    gap: 10px;
+  }
+
+  /* En papel el bloque no es una caja: una caja vacía al pie de página no dice nada.
+     La línea superior viaja con el encabezado del cálculo. */
+  .calc,
+  .cascade {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  .calc-head {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1.5pt solid var(--nav);
+  }
+
+  .calc-pending .calc-head {
+    border-top: 1.5pt dashed var(--field);
+  }
+
+  .calc-links {
+    padding-top: 8px;
+  }
+
+  .calc-check,
+  .calc-note {
+    padding: 6px 10px;
+  }
+
+  .eq {
+    gap: 6px;
+  }
+
+  .data-chip {
+    min-width: 120px;
+    max-width: 220px;
+  }
+
+  .calc:target {
+    border-color: var(--line);
+    box-shadow: none;
+  }
+
+  .calc-answer {
+    padding: 10px 14px;
+  }
+
+  .eq-op {
+    font-size: 13pt;
+  }
+
+  .waterfall-track {
+    height: 14px;
+  }
+
+  .brackets li {
+    min-height: 0;
+    padding: 4px 12px;
+  }
+
+  .section-body,
+  .card-head {
+    padding: 8px 12px;
+  }
+
+  .disclosure-body[hidden] {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .chapter-break {
+    break-before: page;
+  }
+
+  /* Los bloques fluyen entre páginas; solo sus piezas internas no se parten. */
+  .calc-head {
+    break-after: avoid;
+  }
+
+  .calc-head,
+  .calc-answer,
+  .calc-block,
+  .data-chip,
+  .hero-item,
+  .stat-tile,
+  .brackets,
+  .waterfall,
+  .legend,
+  .pending-list li,
+  .timeline > li,
+  .glossary > div,
+  tr {
+    break-inside: avoid;
+  }
+
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
+  }
+
+  .table-wrap {
+    overflow: visible;
+  }
+
+  th,
+  td {
+    padding: 4px 6px;
+    font-size: 7.5pt;
+    white-space: normal;
+  }
+
+  .thread-body {
+    max-height: none;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Fondos de fichas, barras y estados deben imprimirse. */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

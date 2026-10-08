@@ -88,6 +88,7 @@ El front (React + Vite) está construido y funciona contra una API simulada en `
 - **PDF:** impresión del navegador, con todas las vistas y todos los cálculos.
 - **Backoffice:** Propietarios (cifras del portafolio y tabla por cliente) y Radiografía (clientes por tramo de Global Complementario y de Art. 55 bis; propiedades por destino, avalúo y comuna). Hoy usan un portafolio de ejemplo de 10 clientes.
 - **Escenarios de prueba:** `?demo=captcha|mfa|clave|parcial|fallo|error` en el login simula cada estado sin tocar el SII.
+- **Verificación:** `npm run verify` corre tipos, lint, las pruebas del registro y el build; `npm run test:ui` recorre la aplicación en Chrome a 1440 y 375 px. Las reglas de trabajo para agentes están en `AGENTS.md`, el contexto de producto en `docs/product.md` y la guía de interfaz en `docs/ui.md`.
 
 Los dos agentes (el del cliente y el del portafolio) están construidos y siguen visibles con la etiqueta "Próximamente". No son alcance de este sprint, pero no se ocultan ni se eliminan.
 

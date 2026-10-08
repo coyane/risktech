@@ -1,0 +1,266 @@
+/* ---------- Cabeceras de página ---------- */
+
+.page-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.page-head h1,
+.notice h1 {
+  font-size: var(--fs-3xl);
+  font-weight: 600;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+/* Los títulos de página miden lo mismo en toda la aplicación. */
+.page-head h1,
+.report-head h1 {
+  font-size: clamp(26px, 3.4vw, 34px);
+  line-height: 1.15;
+}
+
+.page-head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.page-lead {
+  max-width: 640px;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+
+.page-head-text .page-lead {
+  margin-top: 0;
+}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.eyebrow {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.status-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.status-line.done {
+  color: var(--good);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.progress-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.progress-label {
+  min-height: 1lh;
+  font-size: var(--fs-sm);
+}
+
+.progress {
+  width: 220px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--line);
+}
+
+.progress > div {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--accent);
+  transition: width 0.4s;
+}
+
+/* ---------- Tarjetas ---------- */
+
+.card {
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.card-flush {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.section-card {
+  scroll-margin-top: 24px;
+}
+
+.card-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding: 18px 20px 12px;
+}
+
+.card h2,
+.card-head h2,
+.card-heading {
+  margin: 0;
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+
+.card-note {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.card-head .card-note,
+.card-title-row .card-note {
+  margin-top: 0;
+}
+
+.card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.dark-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px 28px;
+  border-radius: 12px;
+  background: var(--nav);
+  color: var(--nav-ink);
+}
+
+.label-caps {
+  color: var(--nav-muted);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.summary {
+  max-width: 900px;
+  font-size: var(--fs-xl);
+  line-height: 1.6;
+}
+
+.notice {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 640px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  line-height: 1.5;
+}
+
+.notice-error {
+  border-color: var(--danger);
+}
+
+.notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* ---------- Layout ---------- */
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.row-start {
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.col-step {
+  flex: 1 1 380px;
+}
+
+.col-step h2 {
+  margin-bottom: 8px;
+}
+
+.col-log {
+  display: flex;
+  flex: 1 1 380px;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.col-half {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+
+.col-third {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.col-two-thirds {
+  flex: 2 1 440px;
+  min-width: 0;
+}
+
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-head h2 {
+  font-size: var(--fs-xl);
+  font-weight: 600;
+}

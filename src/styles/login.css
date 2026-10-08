@@ -1,0 +1,150 @@
+/* ---------- Login ---------- */
+
+.login {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 100dvh;
+}
+
+.login-hero {
+  display: flex;
+  flex: 1 1 560px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 48px;
+  padding: 64px 72px;
+  background: var(--nav);
+  color: var(--nav-ink);
+}
+
+.login-brand {
+  padding: 0;
+  font-size: var(--fs-xl);
+}
+
+.login-brand .brand-mark {
+  width: 36px;
+  height: 36px;
+}
+
+.login-pitch {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 520px;
+}
+
+.login-pitch h1 {
+  font-size: clamp(30px, 5vw, 44px);
+  font-weight: 600;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.login-pitch p {
+  color: var(--nav-text);
+  font-size: var(--fs-xl);
+  line-height: 1.6;
+}
+
+.login-sources {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 520px;
+}
+
+.login-sources li {
+  padding: 16px;
+  border: 1px solid var(--nav-line);
+  border-radius: 10px;
+  font-size: var(--fs-md);
+}
+
+.login-source-code {
+  margin-bottom: 6px;
+  color: var(--nav-muted);
+  font-size: var(--fs-sm);
+}
+
+.login-main {
+  display: flex;
+  flex: 1 1 480px;
+  justify-content: center;
+  align-items: center;
+  padding: 64px 48px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+  border-radius: 14px;
+}
+
+.login-form-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login-form-head h2 {
+  font-size: var(--fs-2xl);
+}
+
+.login-form-head p {
+  font-size: var(--fs-md);
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+.consent input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.consent .btn-link {
+  min-height: 24px;
+  padding: 0;
+}
+
+.terms {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--line-soft);
+}
+
+.login-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line-soft);
+  font-size: var(--fs-sm);
+}
+
+.login-safe {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+.login-safe svg {
+  flex: none;
+}

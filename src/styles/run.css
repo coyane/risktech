@@ -1,0 +1,123 @@
+/* ---------- Pasos y bitácora ---------- */
+
+@keyframes pulse {
+  0%,
+  to {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.pulse {
+  animation: 1.4s infinite pulse;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.step:last-child {
+  border-bottom: none;
+}
+
+.step-dot {
+  display: flex;
+  flex: none;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.step-dot.done {
+  background: var(--good-bg);
+  color: var(--good);
+}
+
+.step-dot.running {
+  background: var(--accent);
+  color: #fff;
+}
+
+.step-dot.queued {
+  background: var(--idle-bg);
+  color: var(--muted);
+}
+
+.step-dot.error {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.step-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.step-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.step-title {
+  font-size: var(--fs-md);
+  font-weight: 500;
+}
+
+.step-detail {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.step-state {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.step-state.done {
+  color: var(--good);
+}
+
+.step-state.running {
+  color: var(--accent);
+}
+
+.step-state.queued {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.step-state.error {
+  color: var(--warn);
+}
+
+.log {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.log-row {
+  display: flex;
+  gap: 14px;
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+
+.log-time {
+  flex: none;
+  color: var(--nav-muted);
+}

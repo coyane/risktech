@@ -1,0 +1,49 @@
+/* ---------- Tokens ---------- */
+
+:root {
+  /* Paleta "banca tradicional" del sistema de diseño (design-system/risktech-ceft). */
+  --ground: #f8fafc;
+  --panel: #fff;
+  --ink: #020617;
+  --ink-2: #1e293b;
+  --muted: #475569;
+  --faint: #5b6b82;
+  --line: #e2e8f0;
+  --line-soft: #eef2f6;
+  /* Borde de controles: 3,6:1 sobre blanco (WCAG 1.4.11). */
+  --field: #7a889c;
+  --axis: #7a889c;
+  --nav: #0f172a;
+  --nav-2: #1e3a8a;
+  --nav-line: #1e293b;
+  --nav-ink: #f8fafc;
+  --nav-text: #cbd5e1;
+  --nav-muted: #94a3b8;
+  --accent: #1e3a8a;
+  --accent-dark: #172554;
+  /* Dorado: solo para énfasis puntual. */
+  --gold: #a16207;
+  --good: #166534;
+  --good-ink: #166534;
+  --good-bg: #dcfce7;
+  --info-bg: #e8eefb;
+  --info: #1e3a8a;
+  --warn-bg: #fef3c7;
+  --warn: #854d0e;
+  --danger: #b91c1c;
+  --danger-bg: #fee2e2;
+  --idle-bg: #f1f5f9;
+  --th-bg: #f8fafc;
+  /* Series de gráficos: todas ≥ 3:1 sobre el panel. */
+  /* Escala tipográfica */
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 18px;
+  --fs-2xl: 24px;
+  --fs-3xl: 30px;
+  --sans: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --ease: 0.2s ease-out;
+}

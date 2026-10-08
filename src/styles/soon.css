@@ -1,0 +1,46 @@
+/* ---------- Próximamente ---------- */
+
+.tag-soon {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.nav-soon {
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--gold);
+  color: #fff;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+.banner-soon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink-2);
+}
+
+.soon-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.soon-card h2 {
+  margin: 8px 0 6px;
+  font-size: var(--fs-xl);
+}
+
+.soon-card p {
+  max-width: 62ch;
+  color: var(--ink-2);
+  font-size: var(--fs-md);
+  line-height: 1.6;
+}

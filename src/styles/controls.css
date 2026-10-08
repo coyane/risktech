@@ -1,0 +1,138 @@
+/* ---------- Botones y controles ---------- */
+
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--field);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: var(--fs-md);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    background-color var(--ease),
+    border-color var(--ease),
+    color var(--ease);
+}
+
+.btn:hover {
+  border-color: var(--ink-2);
+  background: var(--line-soft);
+  color: var(--ink);
+}
+
+.btn:active {
+  background: var(--line);
+}
+
+.btn-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover,
+.btn-primary:active {
+  border-color: var(--accent-dark);
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.btn-outline {
+  border-color: var(--accent);
+  background: none;
+  color: var(--accent);
+}
+
+.btn-outline:hover,
+.btn-outline:active {
+  border-color: var(--accent-dark);
+  background: var(--info-bg);
+  color: var(--accent-dark);
+}
+
+.btn-dark {
+  border-color: var(--nav);
+  background: var(--nav);
+  color: #fff;
+}
+
+.btn-dark:hover,
+.btn-dark:active {
+  border-color: var(--nav-2);
+  background: var(--nav-2);
+  color: #fff;
+}
+
+.btn-sm {
+  padding: 0 14px;
+  font-size: var(--fs-sm);
+}
+
+.btn-lg {
+  min-height: 52px;
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-link {
+  min-height: 44px;
+  padding: 0 4px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn-link:hover {
+  color: var(--accent-dark);
+  text-decoration: underline;
+}
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--field);
+  border-radius: 22px;
+  background: var(--panel);
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    background-color var(--ease),
+    border-color var(--ease),
+    color var(--ease);
+}
+
+.chip:hover {
+  border-color: var(--ink-2);
+  background: var(--line-soft);
+}
+
+.chip.on {
+  border-color: var(--nav);
+  background: var(--nav);
+  color: #fff;
+}

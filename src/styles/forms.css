@@ -1,0 +1,94 @@
+/* ---------- Formularios ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.field input,
+.ask-input {
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--field);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  /* 16px evita el zoom automático de iOS al enfocar. */
+  font-size: var(--fs-lg);
+}
+
+.field input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.field-row {
+  display: flex;
+  gap: 8px;
+}
+
+.field-row input {
+  flex: 1;
+}
+
+.field-row .btn {
+  min-height: 48px;
+}
+
+.field-error {
+  color: var(--danger);
+  font-size: var(--fs-sm);
+}
+
+.form-error {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+
+.ask-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 20px;
+}
+
+.ask-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.ask-row label {
+  font-size: var(--fs-md);
+  font-weight: 500;
+}
+
+.ask-input {
+  flex: 1 1 280px;
+}
+
+.ask-answer {
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--info-bg);
+  color: var(--info);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+}
+
+.footnote {
+  color: var(--faint);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+}

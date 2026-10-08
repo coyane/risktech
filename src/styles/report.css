@@ -1,0 +1,219 @@
+/* ---------- Diagnóstico Base: informe de una columna ---------- */
+
+.report {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.print-only,
+.print-block {
+  display: none;
+}
+
+.report-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px 24px;
+}
+
+.report-head h1 {
+  margin-top: 6px;
+  font-size: clamp(26px, 3.4vw, 34px);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.report-who {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: var(--fs-md);
+  overflow-wrap: anywhere;
+}
+
+/* Barra de vistas: queda a la vista al bajar por la página. */
+.report-bar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px 24px;
+  border-bottom: 1px solid var(--line);
+  background: var(--ground);
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 14px;
+  border-bottom: 3px solid transparent;
+  color: var(--ink-2);
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    border-color var(--ease),
+    color var(--ease);
+}
+
+.tab:hover {
+  border-bottom-color: var(--field);
+  color: var(--ink);
+}
+
+.tab[aria-current] {
+  border-bottom-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.tab-count {
+  min-width: 22px;
+  padding: 1px 7px;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  color: var(--warn);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-align: center;
+}
+
+.report-views {
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+}
+
+/* Los destinos de un enlace quedan bajo la barra fija, no detrás. */
+.report [id] {
+  scroll-margin-top: 76px;
+}
+
+/* En pantalla el título de la vista ya está en su pestaña; en el PDF se imprime. */
+@media screen {
+  .view-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Los datos del informe abren el PDF; en pantalla van después de los resultados. */
+.report-about {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  order: 90;
+}
+
+.view > .soon-card {
+  order: 99;
+}
+
+.cover-lead,
+.chapter-lead {
+  max-width: 68ch;
+  color: var(--ink-2);
+  font-size: var(--fs-xl);
+  line-height: 1.6;
+}
+
+.chapter-lead {
+  color: var(--muted);
+  font-size: var(--fs-lg);
+}
+
+.cover-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px 24px;
+  margin: 0;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.cover-meta dt {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.cover-meta dd {
+  margin: 2px 0 0;
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.cover-notes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  gap: 12px 28px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+.cover-notes strong {
+  color: var(--ink-2);
+}
+
+.chapter {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  scroll-margin-top: 24px;
+}
+
+.chapter > h2 {
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.chapter-sub {
+  margin-top: 8px;
+  font-size: var(--fs-xl);
+  font-weight: 600;
+}
+
+.year-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.year-picker-label {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.year-picker .chip {
+  min-height: 40px;
+  padding: 0 14px;
+}

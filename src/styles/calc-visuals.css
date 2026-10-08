@@ -1,0 +1,202 @@
+/* Leyenda de tipos y estados */
+
+.legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+  gap: 18px 32px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.legend ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.legend li {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink-2);
+  font-size: var(--fs-md);
+  line-height: 1.45;
+}
+
+.legend li > :first-child {
+  justify-self: start;
+}
+
+/* Estado en el borde de una fila del índice */
+
+.status-edge-por_confirmar {
+  border-left-color: var(--gold);
+}
+
+.status-edge-por_determinar {
+  border-left-style: dashed;
+  border-left-color: var(--field);
+}
+
+/* Cascada */
+
+.cascade {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.cascade-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.waterfall {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.waterfall-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 260px) 1fr minmax(130px, auto);
+  align-items: center;
+  gap: 12px;
+  font-size: var(--fs-md);
+}
+
+.waterfall-track {
+  position: relative;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--line-soft);
+}
+
+.waterfall-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 6px;
+  background: var(--nav);
+}
+
+.waterfall-row.minus .waterfall-bar,
+.waterfall-row.plus .waterfall-bar {
+  border: 1.5px solid var(--gold);
+  background: repeating-linear-gradient(135deg, var(--warn-bg) 0 6px, #fff 6px 12px);
+}
+
+.waterfall-row.plus .waterfall-bar {
+  border-color: var(--good);
+  background: repeating-linear-gradient(135deg, var(--good-bg) 0 6px, #fff 6px 12px);
+}
+
+.waterfall-row.total .waterfall-label {
+  font-weight: 600;
+}
+
+.waterfall-value {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Tramos y múltiplos */
+
+.brackets {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 620px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.brackets li {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) minmax(150px, auto) 96px;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 6px 16px;
+  color: var(--ink-2);
+  font-size: var(--fs-md);
+}
+
+.brackets li + li {
+  border-top: 1px solid var(--line-soft);
+}
+
+.brackets li.current {
+  background: var(--info-bg);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.bracket-range {
+  text-align: right;
+}
+
+/* Crédito: campos numéricos libres y tabla de consulta */
+
+.credit-inputs .sim-inputs {
+  grid-template-columns: repeat(2, minmax(160px, 220px)) auto;
+  align-items: start;
+}
+
+.credit-inputs .sim-inputs > .btn {
+  align-self: start;
+  justify-self: start;
+  margin-top: 27px;
+  min-height: 48px;
+}
+
+.credit-inputs .field input {
+  font-size: var(--fs-xl);
+  font-variant-numeric: tabular-nums;
+}
+
+.sim-narrow {
+  grid-template-columns: minmax(160px, 260px);
+}
+
+.credit-table .cell-selected {
+  background: var(--nav);
+  color: #fff;
+}
+
+.credit-table .row-selected td:first-child {
+  background: var(--info-bg);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Desglose por partes: cada fila con su fuente y su parte del total. */
+.brackets-parts {
+  max-width: 720px;
+}
+
+.brackets-parts li {
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding-block: 8px;
+}
+
+.bracket-note {
+  display: block;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+}
+
+.brackets .tag {
+  justify-self: end;
+}
