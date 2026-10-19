@@ -21,6 +21,7 @@ Risktech · CEFT es un prototipo de front (React, Vite y TypeScript) de un diagn
 | --- | --- |
 | Qué es el producto y sus reglas | `docs/product.md` |
 | Plan vigente, fórmulas y pendientes del método | `docs/sprint-1-v2-diagnostico-base-y-backoffice.md` |
+| Catálogo exacto de fórmulas y su fuente | `docs/sprint-2-formulas-del-metodo.md` |
 | Cómo construir y verificar interfaz | `docs/ui.md` |
 | Reglas visuales por página | `design-system/risktech-ceft/pages/` |
 | Decisiones costosas de revertir | `docs/decisions/` |

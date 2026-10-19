@@ -22,6 +22,7 @@ npm run verify:ui  # los dos anteriores, en orden
 | `docs/product.md` | Qué es el producto, para quién y sus reglas |
 | `docs/ui.md` | Cómo está construida la interfaz y cómo extenderla |
 | `docs/sprint-1-v2-diagnostico-base-y-backoffice.md` | Plan vigente, fórmulas y pendientes del método |
+| `docs/sprint-2-formulas-del-metodo.md` | Catálogo exacto de fórmulas, su fuente y su revisión por Ricardo |
 | `docs/decisions/` | Decisiones costosas de revertir |
 | `design-system/risktech-ceft/` | Reglas visuales por página |
 
