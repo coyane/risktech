@@ -43,7 +43,14 @@ export interface Operand {
 }
 
 export type Equation =
-  | { kind: 'arith'; terms: { op: Op | null; operand: Operand }[]; zeros: number; result: string }
+  | {
+      kind: 'arith'
+      terms: { op: Op | null; operand: Operand }[]
+      zeros: number
+      // Nombres de los conceptos en cero que no se dibujan.
+      omitted?: string[]
+      result: string
+    }
   | { kind: 'formula'; formula: string; operands: Operand[]; result: string }
   | { kind: 'ranges'; input: Operand; ranges: { label: string; range: string; current: boolean }[] }
   | { kind: 'multiples'; base: Operand; rows: { label: string; result: string }[] }
@@ -276,36 +283,45 @@ export function buildYearCalcs(report: Report, year: number, credit?: CreditChoi
     }))
     // Sin códigos distintos de cero, la suma es 0 (no "sin dato").
     if (declared && active.length === 0) {
-      const equation: Equation = { kind: 'arith', terms: [], zeros: rows.length, result: money(0) }
+      const equation: Equation = {
+        kind: 'arith',
+        terms: [],
+        zeros: rows.length,
+        omitted: rows.map((row) => row.label),
+        result: money(0),
+      }
       return { value: 0, equation }
     }
-    return arith(terms, money, rows.length - active.length)
+    const built = arith(terms, money, rows.length - active.length)
+    if (built.equation?.kind === 'arith') {
+      built.equation.omitted = rows.filter((row) => !active.includes(row)).map((row) => row.label)
+    }
+    return built
   }
 
-  // 1. Total de orígenes de renta
+  // 1. Total de orígenes de renta (GIF, Capítulo IV): ingresos brutos afectos sin las rentas nominales
   const total = add(
     {
       id: 'total-origenes',
-      question: '¿Cuánto se declaró en el año?',
+      question: '¿Cuánto ingreso se declaró en el año?',
       name: 'Total de orígenes de renta',
       definition:
-        'La suma de todas las rentas declaradas al SII en el año: sueldos, honorarios, arriendos, dividendos, intereses y otras.',
+        'Los ingresos brutos afectos del año (código 158) sin las rentas nominales, que no son flujo de dinero: gastos rechazados (código 106) y rentas presuntas (código 108). El método lo llama GIF.',
       status: 'calculado',
       statusNote: null,
     },
-    sumOf(
-      report.incomeOrigins.map((item) => ({
-        label: item.label,
-        code: item.code,
-        row: item.code,
-        value: fromF22(item.values[year]),
-      })),
-      'origenes',
+    arith(
+      [
+        { op: null, operand: sii(adjustmentLabel('158'), '158', 'ajustes', adjustment('158')) },
+        { op: '−', operand: sii(originLabel('106'), '106', 'origenes', origin('106')) },
+        { op: '−', operand: sii(originLabel('108'), '108', 'origenes', origin('108')) },
+      ],
+      money,
     ),
     {
       format: money,
-      reported: fin?.totalOrigins,
-      plain: (display) => `En la declaración de renta ${year} se informaron rentas por ${display}.`,
+      plain: (display) =>
+        `En la declaración de renta ${year}, los ingresos brutos afectos sin rentas nominales suman ${display}.`,
     },
   )
 
@@ -392,79 +408,60 @@ export function buildYearCalcs(report: Report, year: number, credit?: CreditChoi
     },
   )
 
-  // 5. Renta financiera bruta
+  // 5. Renta financiera bruta (GIF bruto ajustado, Capítulo IV)
   const rfb = add(
     {
       id: 'renta-bruta',
-      question: '¿Cuánto de lo declarado cuenta como ingreso personal?',
+      question: '¿Cuánto es el ingreso financiero bruto?',
       name: 'Renta financiera bruta (RFB)',
       definition:
-        'Las rentas del año que el método considera ingreso personal: el total declarado, sin arriendos ni rentas exentas, más el gasto presunto de honorarios.',
-      status: 'por_confirmar',
-      statusNote:
-        'Los códigos que se restan y se suman se dedujeron de los casos de referencia. En ellos, el valor del sistema difiere entre 5 y 10 pesos de esta operación.',
-    },
-    arith(
-      [
-        { op: null, operand: ref(total) },
-        ...method.rfbExcludedCodes.map((code) => ({
-          op: '−' as Op,
-          operand: sii(originLabel(code), code, 'origenes', origin(code)),
-        })),
-        ...method.rfbAddCodes.map((code) => ({
-          op: '+' as Op,
-          operand: sii(adjustmentLabel(code), code, 'ajustes', adjustment(code)),
-        })),
-      ],
-      money,
-    ),
-    {
-      format: money,
-      reported: fin?.rfb,
-      plain: (display) =>
-        `De los ${total.display} declarados, ${display} cuentan como ingreso personal según el método.`,
-    },
-  )
-
-  // 6. Renta financiera neta
-  const rule = method.rfnFactorRule
-  // Con base imponible 0 no hay tasa; para la regla del factor equivale a tasa 0.
-  const ruleRate = rate.value ?? (base170 === 0 ? 0 : null)
-  const rfnFactor =
-    ruleRate === null ? null : ruleRate < rule.rateThreshold ? rule.factorBelow : rule.factorFrom
-  const rfn = add(
-    {
-      id: 'renta-neta',
-      question: '¿Cuánto queda como renta neta?',
-      name: 'Renta financiera neta (RFN)',
-      definition: `La renta financiera bruta multiplicada por el factor de renta neta del método: ${factor(rule.factorBelow)} si la tasa efectiva es menor a ${formatRate(rule.rateThreshold, 0)}; ${factor(rule.factorFrom)} si es ${formatRate(rule.rateThreshold, 0)} o más.`,
+        'El total de orígenes de renta más el gasto presunto de honorarios (código 494). Ese código es mayor que cero solo si la persona emite boletas con gasto presunto: el SII ya le descontó 30% de sus honorarios, y aquí se suma para volver al ingreso real. Con gasto efectivo vale cero y no cambia nada.',
       status: 'calculado',
       statusNote: null,
     },
     arith(
       [
-        { op: null, operand: ref(rfb) },
-        {
-          op: '×',
-          operand: param(
-            'Factor de renta neta',
-            rfnFactor,
-            rfnFactor === null ? '—' : factor(rfnFactor),
-            `Regla del método según la tasa efectiva (${rate.display})`,
-          ),
-        },
+        { op: null, operand: ref(total) },
+        { op: '+', operand: sii(adjustmentLabel('494'), '494', 'ajustes', adjustment('494')) },
       ],
       money,
     ),
     {
       format: money,
-      reported: fin?.rfn,
-      tolerance: 1,
       plain: (display) =>
-        `A la renta financiera bruta de ${rfb.display} se le aplica el factor ${rfnFactor === null ? '—' : factor(rfnFactor)}: quedan ${display}.`,
+        `Al total de orígenes de ${total.display} se le suma el gasto presunto de honorarios: ${display}.`,
     },
   )
-  rfn.dependsOn = [...new Set([...rfn.dependsOn, rate.id])]
+
+  // 6. Renta financiera neta (Capítulo IV): la bruta sin la parte que se va en impuesto
+  const exactRate = base170 === null || tax157 === null || base170 === 0 ? null : tax157 / base170
+  const rfnValue = rfb.value === null || exactRate === null ? null : Math.round(rfb.value * (1 - exactRate))
+  const rfn = add(
+    {
+      id: 'renta-neta',
+      question: '¿Cuánto queda como renta neta?',
+      name: 'Renta financiera neta (RFN)',
+      definition:
+        'La renta financiera bruta sin la parte que se paga de impuesto: se multiplica por uno menos la tasa efectiva de tributación.',
+      status: 'calculado',
+      statusNote: null,
+    },
+    {
+      value: rfnValue,
+      equation: {
+        kind: 'formula',
+        formula: 'Renta financiera bruta × (1 − tasa efectiva de tributación)',
+        operands: [ref(rfb), ref(rate)],
+        result: rfnValue === null ? '—' : money(rfnValue),
+      },
+    },
+    {
+      format: money,
+      zero: base170 === 0 ? 'la base imponible' : undefined,
+      plain: (display) =>
+        `A la renta financiera bruta de ${rfb.display} se le descuenta la tasa efectiva de ${rate.display}: quedan ${display}.`,
+    },
+  )
 
   // 7. RFN mensual
   const monthly = add(
@@ -485,7 +482,6 @@ export function buildYearCalcs(report: Report, year: number, credit?: CreditChoi
     ),
     {
       format: money,
-      reported: fin?.rfnMonthly,
       tolerance: 1,
       plain: (display) => `La renta financiera neta de ${rfn.display} al año equivale a ${display} al mes.`,
     },
@@ -520,10 +516,10 @@ export function buildYearCalcs(report: Report, year: number, credit?: CreditChoi
   const mortgage = share(
     'limite-hipotecario',
     '¿Cuánto se podría pagar de dividendo al mes?',
-    'Límite capacidad crédito hipotecario',
+    'Límite capacidad crédito hipotecario mensual',
     'La cuota mensual de referencia para un crédito hipotecario: una fracción fija de la renta financiera neta mensual.',
     method.mortgageFactor,
-    fin?.mortgageLimit,
+    null,
   )
   share(
     'cuota-automotriz',

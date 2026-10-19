@@ -20,24 +20,51 @@ const calcOf = (report: Report, year: number, id: string) =>
 describe('caso del Capítulo IV (Carlos Díaz)', () => {
   it('reproduce la tabla de análisis financiero de AT 2025', () => {
     const get = (id: string) => calcOf(capituloIV, 2025, id)
+    // Fórmulas del Capítulo IV (páginas 5 y 6). El código 158 del caso es ilustrativo.
     expect(get('total-origenes').value).toBe(104_832_677)
     expect(get('base-imponible').value).toBe(99_322_241)
     expect(get('tasa-efectiva').display).toBe('16,04%')
-    expect(get('renta-bruta').value).toBe(81_700_093)
-    expect(get('renta-neta').value).toBe(65_360_074)
-    expect(get('rfn-mensual').value).toBe(5_446_673)
-    expect(get('limite-hipotecario').value).toBe(1_361_668)
-    expect(get('cuota-automotriz').value).toBe(381_267)
+    expect(get('renta-bruta').value).toBe(104_832_677)
+    expect(get('renta-neta').value).toBe(88_017_575)
+    expect(get('rfn-mensual').value).toBe(7_334_798)
+    expect(get('limite-hipotecario').value).toBe(1_833_700)
+    expect(get('cuota-automotriz').value).toBe(513_436)
     expect(get('tramo-55bis').display).toBe('B')
+  })
+
+  it('total de orígenes, renta bruta y renta neta siguen las fórmulas escritas del método', () => {
+    const report = {
+      ...capituloIV,
+      incomeOrigins: capituloIV.incomeOrigins.map((item) =>
+        item.code === '106' ? { ...item, values: { ...item.values, 2025: 1_000_000 } } : item.code === '108' ? { ...item, values: { ...item.values, 2025: 500_000 } } : item,
+      ),
+      method: {
+        ...capituloIV.method,
+        adjustments: capituloIV.method.adjustments.map((item) =>
+          item.code === '158' ? { ...item, values: { ...item.values, 2025: 110_000_000 } } : item.code === '494' ? { ...item, values: { ...item.values, 2025: 2_000_000 } } : item,
+        ),
+      },
+    }
+    const get = (id: string) => calcOf(report, 2025, id)
+    // GIF = 158 − (106 + 108)
+    expect(get('total-origenes').value).toBe(110_000_000 - 1_000_000 - 500_000)
+    // RFB = GIF + 494 cuando hay gasto presunto
+    expect(get('renta-bruta').value).toBe(108_500_000 + 2_000_000)
+    // RFN = RFB × (1 − 157 ÷ 170)
+    expect(get('renta-neta').value).toBe(Math.round(110_500_000 * (1 - 15_931_231 / 99_322_241)))
+    expect(get('renta-neta').dependsOn).toEqual(['renta-bruta', 'tasa-efectiva'])
+    // Sin base imponible no hay tasa efectiva, y la renta neta no se calcula.
+    const noBase = { ...report, igcBase: { ...report.igcBase, base170: { ...report.igcBase.base170, 2025: 0 } } }
+    expect(calcOf(noBase, 2025, 'renta-neta').plain).toBe('No se puede calcular: la base imponible es 0.')
   })
 
   it('lo que confirmó el método queda como calculado', () => {
     const get = (id: string) => calcOf(capituloIV, 2025, id)
-    for (const id of ['base-imponible', 'bit-uta', 'tramo-55bis', 'tope-55bis', 'renta-neta', 'credit-capacity', 'factor-leverage']) {
+    for (const id of ['total-origenes', 'base-imponible', 'bit-uta', 'tramo-55bis', 'tope-55bis', 'renta-bruta', 'renta-neta', 'credit-capacity', 'factor-leverage']) {
       expect(get(id).status, id).toBe('calculado')
       expect(get(id).statusNote, id).toBeNull()
     }
-    for (const id of ['renta-bruta', 'tramo-igc', 'credit-capacity-uf']) {
+    for (const id of ['tramo-igc', 'credit-capacity-uf']) {
       expect(get(id).status, id).toBe('por_confirmar')
     }
   })
@@ -67,38 +94,38 @@ describe('caso del Capítulo IV (Carlos Díaz)', () => {
   })
 
   it('reproduce el Credit Capacity y el factor leverage del caso', () => {
-    expect(calcOf(capituloIV, 2025, 'credit-capacity').value).toBe(285_216_668)
-    expect(calcOf(capituloIV, 2025, 'credit-capacity-uf').display).toBe('UF 7.424')
+    expect(calcOf(capituloIV, 2025, 'credit-capacity').value).toBe(384_089_077)
+    expect(calcOf(capituloIV, 2025, 'credit-capacity-uf').display).toBe('UF 9.998')
     const leverage = calcOf(capituloIV, 2025, 'factor-leverage').equation!
     expect(leverage.kind === 'multiples' && leverage.rows.map((row) => row.result)).toEqual([
-      'UF 7.424',
-      'UF 14.849',
-      'UF 22.273',
-      'UF 29.697',
-      'UF 37.121',
+      'UF 9.998',
+      'UF 19.996',
+      'UF 29.994',
+      'UF 39.992',
+      'UF 49.990',
     ])
     const { method } = capituloIV
-    expect(Math.round(presentValue(1_361_668, method.mortgageRate, method.mortgageYears * 12))).toBe(285_216_668)
+    expect(Math.round(presentValue(1_833_700, method.mortgageRate, method.mortgageYears * 12))).toBe(384_089_077)
   })
 
   it('al ajustar la tasa y el plazo se recalculan el Credit Capacity, su valor en UF y el leverage', () => {
     const calcs = buildYearCalcs(capituloIV, 2025, { rate: 0.035, years: 20 })
     const get = (id: string) => calcs.find((item) => item.id === id)!
-    const expected = Math.round(presentValue(1_361_668, 0.035, 240))
+    const expected = Math.round(presentValue(1_833_700, 0.035, 240))
     expect(get('credit-capacity').value).toBe(expected)
     expect(get('credit-capacity').plain).toContain('240 meses, con 3,5% de interés anual')
     // Una tasa con dos decimales se muestra tal como se escribió, sin redondearla.
     const exact = buildYearCalcs(capituloIV, 2025, { rate: 0.0375, years: 23 }).find((item) => item.id === 'credit-capacity')!
     expect(exact.plain).toContain('276 meses, con 3,75% de interés anual')
-    expect(exact.value).toBe(Math.round(presentValue(1_361_668, 0.0375, 276)))
+    expect(exact.value).toBe(Math.round(presentValue(1_833_700, 0.0375, 276)))
     expect(get('credit-capacity-uf').value).toBeCloseTo(expected / capituloIV.method.uf.value, 6)
     const sources = operandsOf(get('credit-capacity').equation!).map((operand) => operand.source)
     expect(sources).toEqual(['Calculado en este informe', 'Valor ajustado en este informe', 'Valor ajustado en este informe'])
     // Lo que no depende del crédito no cambia.
-    expect(get('limite-hipotecario').value).toBe(1_361_668)
+    expect(get('limite-hipotecario').value).toBe(1_833_700)
     // Con la misma tasa y plazo de la referencia, el resultado es el del Capítulo IV.
     const same = buildYearCalcs(capituloIV, 2025, { rate: 0.04, years: 30 })
-    expect(same.find((item) => item.id === 'credit-capacity')!.value).toBe(285_216_668)
+    expect(same.find((item) => item.id === 'credit-capacity')!.value).toBe(384_089_077)
     expect(operandsOf(same.find((item) => item.id === 'credit-capacity')!.equation!)[1].source).toBe('Referencia del Capítulo IV')
   })
 
@@ -107,7 +134,7 @@ describe('caso del Capítulo IV (Carlos Díaz)', () => {
     const get = (id: string) => calcs.find((item) => item.id === id)!
     expect(summary.avaluoTotal).toBe(919_808_285)
     expect(summary.enajenacionClp).toBe(1_118_305_776)
-    expect(summary.pagoContadoClp).toBe(261_244_504)
+    expect(summary.pagoContadoClp).toBe(240_809_503)
     expect(get('prop-activos').value).toBe(35_728.07)
     expect(get('prop-patrimonio').value).toBe(7_693.49)
     expect(get('prop-pasivos').value).toBe(28_034.58)
@@ -116,36 +143,22 @@ describe('caso del Capítulo IV (Carlos Díaz)', () => {
 
 describe('caso de referencia (informe real, 5 años)', () => {
   const years = casoReferencia.years
-  const fin = (year: number) => casoReferencia.financial.find((item) => item.year === year)!
 
-  it('la renta financiera bruta cuadra con ±10 pesos en los 5 años', () => {
+  it('la renta bruta suma el gasto presunto de honorarios cuando existe', () => {
     for (const year of years) {
-      const rfb = calcOf(casoReferencia, year, 'renta-bruta')
-      const recomputed = evaluate(rfb.equation!.kind === 'arith' ? rfb.equation!.terms : [])!
-      expect(Math.abs(Math.round(recomputed) - fin(year).rfb), String(year)).toBeLessThanOrEqual(10)
+      const total = calcOf(casoReferencia, year, 'total-origenes').value!
+      const presunto = casoReferencia.method.adjustments.find((item) => item.code === '494')!.values[year]!
+      expect(presunto, String(year)).toBeGreaterThan(0)
+      expect(calcOf(casoReferencia, year, 'renta-bruta').value, String(year)).toBe(total + presunto)
     }
   })
 
-  it('la regla del factor (0,90 bajo 15% de tasa; 0,80 desde 15%) reproduce la renta neta', () => {
+  it('tasa efectiva, base en UTA y tramo no difieren del informe', () => {
     for (const year of years) {
-      const rfn = calcOf(casoReferencia, year, 'renta-neta')
-      expect(rfn.check, String(year)).toBeNull()
-      expect(rfn.value).toBe(fin(year).rfn)
-    }
-    const factorOf = (year: number) => {
-      const equation = calcOf(casoReferencia, year, 'renta-neta').equation!
-      return equation.kind === 'arith' ? equation.terms[1].operand.value : null
-    }
-    expect(years.map(factorOf)).toEqual([0.8, 0.9, 0.9, 0.8, 0.9])
-  })
-
-  it('renta mensual, límite hipotecario, tasa, BIT y tramo no difieren del informe', () => {
-    for (const year of years) {
-      for (const id of ['rfn-mensual', 'limite-hipotecario', 'tasa-efectiva', 'bit-uta', 'tramo-55bis']) {
+      for (const id of ['tasa-efectiva', 'bit-uta', 'tramo-55bis']) {
         expect(calcOf(casoReferencia, year, id).check, `${id} ${year}`).toBeNull()
       }
     }
-    expect(calcOf(casoReferencia, 2026, 'limite-hipotecario').value).toBe(2_100_130)
     expect(calcOf(casoReferencia, 2026, 'tasa-efectiva').display).toBe('12,76%')
     expect(calcOf(casoReferencia, 2025, 'bit-uta').display).toBe('120,45 UTA')
   })
@@ -188,7 +201,10 @@ describe('trazabilidad', () => {
 
   it('cada código usado en un cálculo queda marcado en su tabla de origen', () => {
     const usage = usageByCode(calcs)
-    expect(usage.get('origenes:955')!.map((item) => item.id)).toEqual(['total-origenes', 'renta-bruta'])
+    expect(usage.get('ajustes:158')!.map((item) => item.id)).toEqual(['total-origenes'])
+    expect(usage.get('origenes:106')!.map((item) => item.id)).toEqual(['total-origenes'])
+    // Los arriendos no entran en ninguna fórmula por separado: ya están dentro del 158.
+    expect(usage.get('origenes:955')).toBeUndefined()
     expect(usage.get('base:170')!.map((item) => item.id)).toEqual(['tasa-efectiva', 'bit-uta'])
     expect(usage.get('ajustes:494')!.map((item) => item.id)).toEqual(['renta-bruta'])
   })

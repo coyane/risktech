@@ -9,6 +9,8 @@ const escape = (cell: Cell) => {
 }
 
 // CSV con separador ";" y BOM, que Excel en español abre directamente.
+const yesNo = (value: boolean | null) => (value === null ? null : value ? 'Sí' : 'No')
+
 export function reportToCsv(report: Report) {
   const rows: Cell[][] = []
   const years = report.years
@@ -57,7 +59,7 @@ export function reportToCsv(report: Report) {
   )
   section(
     'Bienes raíces',
-    ['Rol', 'Comuna', 'Región', 'Destino', 'Enajenación UF', 'Pago contado UF', 'Dirección', 'Avalúo total', 'Afecto', 'Exento', 'Contribución', 'Fecha adquisición', 'Acto', 'Precio', 'Pago contado', 'Financiado', 'Institución', 'Crédito UF'],
+    ['Rol', 'Comuna', 'Región', 'Destino', 'Enajenación UF', 'Pago contado UF', 'Dirección', 'Avalúo total', 'Afecto', 'Exento', 'Contribución', 'Fecha escritura', 'Naturaleza escritura', 'Enajenación', 'Pago contado', 'Financiado', 'Institución', 'Crédito UF', 'Plazo meses', 'Derechos %', 'Repertorio', 'Fojas', 'Inscripción', 'Fecha inscripción', 'Dominio pleno', 'Es nueva', 'DFL2', 'Monto IVA', 'Ley 20.455', 'Uso familiar'],
     report.properties.map((item) => [
       item.rol,
       item.comuna,
@@ -77,6 +79,18 @@ export function reportToCsv(report: Report) {
       item.montoFinanciado,
       item.institucion,
       item.financiamientoUf,
+      item.plazoMeses,
+      item.derechos,
+      item.repertorio,
+      item.fojas,
+      item.inscripcion,
+      item.fechaInscripcion,
+      yesNo(item.dominioPleno),
+      yesNo(item.esNueva),
+      yesNo(item.dfl2),
+      item.montoIva,
+      yesNo(item.ley20455),
+      yesNo(item.usoFamiliar),
     ]),
   )
   section(

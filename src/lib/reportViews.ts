@@ -32,6 +32,7 @@ const DATA_SECTIONS: Record<string, DataTabId> = {
   ajustes: 'renta',
   f29: 'mensuales',
   patrimonio: 'propiedades',
+  financiamiento: 'propiedades',
   propiedades: 'propiedades',
   actividades: 'contribuyente',
   sociedades: 'contribuyente',

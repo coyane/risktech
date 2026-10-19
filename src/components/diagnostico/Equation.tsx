@@ -76,7 +76,9 @@ export function Equation({ equation, name }: { equation: EquationData; name: str
           </span>
           {equation.terms.length > 0 && equation.zeros > 0 && (
             <span className="eq-note">
-              {equation.zeros} {equation.zeros === 1 ? 'concepto en cero no se muestra' : 'conceptos en cero no se muestran'}.
+              {equation.omitted && equation.omitted.length > 0
+                ? `En cero, no se dibujan: ${equation.omitted.join(' · ')}.`
+                : `${equation.zeros} ${equation.zeros === 1 ? 'concepto en cero no se muestra' : 'conceptos en cero no se muestran'}.`}
             </span>
           )}
         </div>

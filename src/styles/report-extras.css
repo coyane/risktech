@@ -1,3 +1,59 @@
+/* Ficha registral de cada propiedad */
+
+.property-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.property-title {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+
+.property-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: 12px 28px;
+  margin-top: 12px;
+}
+
+.property-groups dl {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+}
+
+.property-group {
+  margin-bottom: 2px;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.property-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: var(--fs-md);
+}
+
+.property-row dt {
+  color: var(--muted);
+}
+
+.property-row dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
 /* Pendientes, línea de tiempo, glosario y pie */
 
 .pending-list {

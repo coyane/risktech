@@ -35,7 +35,7 @@ Se revisaron con él los pendientes del método. Este documento y el prototipo y
 | Deuda por institución | Sale de la tabla de propiedades: valor de compra menos pie, sumado por institución | Nuevo cálculo, verificado contra la vista de BICRED |
 | Asiento de apertura, valor depreciable, monto IVA y estado de resultados | Son contables; no van | Salen del informe |
 | Renta financiera bruta | Dio el concepto (código 158 menos gastos rechazados y rentas presuntas) y no recordó los códigos | Sigue por confirmar: su descripción no reproduce sus casos |
-| Factor de renta neta | En la reunión grabada no recordó el contexto. Cristóbal informa que lo validó después | Pasa a "calculado" con la regla tal como estaba: 0,90 bajo 15% de tasa efectiva y 0,80 desde 15% |
+| Factor de renta neta | En la segunda revisión dijo que el factor 0,90 / 0,80 "no tiene ningún asidero": fue para fines pedagógicos | Se elimina. La renta neta pasa a la fórmula escrita del capítulo |
 | Leverage por institución | "Súper importante"; no dio la fórmula | Por determinar: falta el divisor |
 
 No se trataron: la fecha de la UF, la tasa del crédito automotriz, el código de cada rebaja, el origen de la marca de Ley 20.455 y la recomendación sobre esa ley.
@@ -66,7 +66,7 @@ Lo que no cambia: el informe **no interpreta**. No tiene semáforo, evaluaciones
 
 **Criterio de terminado**
 
-1. Con los códigos del caso Carlos Díaz (AT 2022–2025), el motor reproduce la tabla "Análisis financiero" del Capítulo IV con tolerancia de ±10 pesos y el Credit Capacity del caso: $285.216.668, UF 7.424.
+1. Cada fórmula del motor coincide al peso con la fórmula escrita del Capítulo IV para valores de entrada conocidos. Las tablas de los casos y de BICRED son ejemplos, no la referencia: BICRED usa aproximaciones.
 2. Con un RUT real de prueba, el recorrido completo de conexión a Diagnóstico Base toma menos de 10 minutos y todos los cálculos usan datos de esa captura.
 3. Cada cifra del diagnóstico responde "¿de dónde salió este número?": la operación completa y, por cada dato, formulario, año, código, folio y valor.
 4. Ninguna frase del informe depende del caso: solo cambian cifras, fechas y nombres propios. Lo pendiente aparece rotulado, no se omite.
@@ -192,7 +192,7 @@ El listado entrega una fila por rol; los antecedentes o el PDF de cada rol entre
 | Acogida a la Ley 20.455 | Por confirmar si viene del SII | `properties.ley20455` | 20 |
 | Uso familiar | Por confirmar si viene del SII | `properties.usoFamiliar` | Ninguno: solo se muestra |
 
-La vista de propiedades de la herramienta de referencia (BICRED) muestra además estos datos por propiedad, que hoy no están en el reporte: porcentaje de derechos, repertorio, naturaleza de la escritura, acogida a DFL2, plazo del crédito en meses, monto de IVA, fojas, número y fecha de inscripción, si adquiere dominio pleno y si es nueva. Ningún cálculo vigente los usa. Se agregan al reporte cuando el conector de bienes raíces confirme que el SII los entrega.
+El reporte trae además, por propiedad, los antecedentes que muestra la matriz de BICRED: porcentaje de derechos, repertorio, acogida a DFL2, plazo del crédito en meses, monto de IVA, fojas, número y fecha de inscripción, si adquiere dominio pleno y si es nueva. La fecha y la naturaleza de la escritura son `fechaAdquisicion` y `tipoActo`. Ningún cálculo los usa; se muestran en "Datos del SII → Propiedades": la tabla por rol (con la entidad que financió, la deuda de origen y el plazo), el financiamiento por institución y la ficha registral de cada propiedad. Falta confirmar que el conector de "Mis Bienes" los entregue todos.
 
 Reglas de bienes raíces:
 
@@ -225,7 +225,7 @@ No vienen de la sesión del contribuyente. Se cargan una vez por período y viaj
 | Rangos del Art. 55 bis | Ley de la Renta (confirmado) | A hasta 90 UTA, B sobre 90 y bajo 150, C desde 150 | 6 |
 | Rebaja máxima de intereses del Art. 55 bis | Ley de la Renta (confirmado) | Tope de 8 UTA; entre 90 y 150 UTA, porcentaje = 250 − 1,667 × base en UTA | 7 |
 | Códigos que restan y suman en la RFB | Ricardo | 955, 152 y 494 (por confirmar) | 9 |
-| Regla del factor de renta neta | Ricardo (validada) | 0,90 si la tasa efectiva es menor a 15%; 0,80 si es 15% o más | 10 |
+| Renta financiera neta | Capítulo IV, página 6 | Renta financiera bruta × (1 − tasa efectiva) | 10 |
 | Factor hipotecario y automotriz | Capítulo IV | 0,25 y 0,07 | 12 y 13 |
 | Tasa y plazo de partida | Capítulo IV | 4% anual a 30 años; la persona escribe los suyos | 14 |
 | Rango de la tabla de consulta | Ricardo, más el plazo del Capítulo IV | Tasas de 3,0% a 5,0% de 0,1 en 0,1; plazos de 5, 10, 15, 20, 25 y 30 años | Tabla de la vista Crédito |
@@ -292,7 +292,7 @@ La evidencia son 9 años de datos: los 4 del Capítulo IV (Carlos Díaz) y los 5
 
 | N° | Cálculo | Fórmula | Estado | Evidencia | Control |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Total de orígenes de renta | Suma de los 14 códigos de orígenes | Calculado | 9 de 9 años | $104.832.677 |
+| 1 | Total de orígenes de renta (GIF) | Código 158 − (código 106 + código 108) | Calculado | Capítulo IV, página 5. Confirmado por Ricardo en la segunda revisión | $104.832.677 (158 ilustrativo) |
 | 2 | Total de rebajas | Suma de los 9 conceptos de rebajas | Calculado | Suma directa de lo declarado | $5.510.436 |
 | 3 | Base imponible | (1) − (2), comparada con el código 170 declarado | Calculado | Confirmado por Ricardo: tiene que coincidir. Es exacto en 4 de 5 años del informe real; la diferencia de AT 2022 ($1.252.199) es un error de ese informe | $99.322.241 |
 | 4 | Tasa efectiva de tributación | Código 157 ÷ código 170 | Calculado | 9 de 9 | 16,04% |
@@ -328,25 +328,23 @@ Detalles:
 
 | N° | Cálculo | Fórmula | Estado | Evidencia | Control |
 | --- | --- | --- | --- | --- | --- |
-| 9 | Renta financiera bruta (RFB) | (1) − código 955 − código 152 + código 494 | Por confirmar | Cuadra con 5 a 10 pesos de diferencia en los 9 años. No coincide con la descripción que dio Ricardo (ver abajo) | $81.700.093 |
-| 10 | Renta financiera neta (RFN) | (9) × factor. Factor 0,90 si (4) es menor a 15%; 0,80 si es 15% o más | Calculado | La regla reproduce los 9 años. Validada por Ricardo según informó Cristóbal; la reunión grabada no lo registra | $65.360.074 |
-| 11 | RFN mensual | (10) ÷ 12 | Calculado | 9 de 9 | $5.446.673 |
-| 12 | Límite crédito hipotecario | (11) × 0,25 | Calculado | Capítulo IV | $1.361.668 |
-| 13 | Límite crédito automotriz | (11) × 0,07 | Calculado | Capítulo IV | $381.267 |
-| 14 | Credit Capacity | PV = PMT × (1 − (1 + i)^−n) ÷ i, con PMT = (12), i = tasa anual ÷ 12, n = años × 12. La tasa y el plazo los escribe la persona | Calculado | La fórmula es la del Capítulo IV. Ricardo: no hay tasa ni plazo únicos; tiene que ser interactivo | $285.216.668 con 4% a 30 años |
-| 15 | Credit Capacity en UF | (14) ÷ UF del SII en la fecha de referencia | Por confirmar | El valor sale de la tabla diaria del SII; falta confirmar qué fecha se usa | UF 7.424 (UF 38.416,69 al 31-12-2024) |
-| 16 | Factor leverage | (15) × factor, para los factores 1 a 5 | Calculado | Confirmado por Ricardo: lo define cada institución y son niveles F1 a F5 | Factor 2: UF 14.849 · Factor 3: UF 22.273 |
+| 9 | Renta financiera bruta (RFB) | (1) + código 494. El 494 es mayor que cero solo con gasto presunto de honorarios; con gasto efectivo vale cero | Calculado | Capítulo IV, páginas 5 y 6 (GIF bruto ajustado). Confirmado por Ricardo | $104.832.677 |
+| 10 | Renta financiera neta (RFN) | (9) × (1 − (4)), con la tasa efectiva exacta 157 ÷ 170 | Calculado | Capítulo IV, página 6. Confirmado por Ricardo | $88.017.575 |
+| 11 | RFN mensual | (10) ÷ 12 | Calculado | 9 de 9 | $7.334.798 |
+| 12 | Límite crédito hipotecario | (11) × 0,25 | Calculado | Capítulo IV | $1.833.700 |
+| 13 | Límite crédito automotriz | (11) × 0,07 | Calculado | Capítulo IV | $513.436 |
+| 14 | Credit Capacity | PV = PMT × (1 − (1 + i)^−n) ÷ i, con PMT = (12), i = tasa anual ÷ 12, n = años × 12. La tasa y el plazo los escribe la persona | Calculado | La fórmula es la del Capítulo IV. Ricardo: no hay tasa ni plazo únicos; tiene que ser interactivo | $384.089.077 con 4% a 30 años |
+| 15 | Credit Capacity en UF | (14) ÷ UF del SII en la fecha de referencia | Por confirmar | El valor sale de la tabla diaria del SII; falta confirmar qué fecha se usa | UF 9.998 (UF 38.416,69 al 31-12-2024) |
+| 16 | Factor leverage | (15) × factor, para los factores 1 a 5 | Calculado | Confirmado por Ricardo: lo define cada institución y son niveles F1 a F5 | Factor 2: UF 19.996 · Factor 3: UF 29.994 |
 
 Detalles:
 
-- RFB: en AT 2025 la operación da $81.700.084 y el caso informa $81.700.093. El informe muestra el valor del caso y la diferencia de $9.
-- Factor de renta neta: si el código 170 es cero, la tasa efectiva se toma como 0 y el factor es 0,90.
+- Total de orígenes: el capítulo no trae el código 158 de Carlos Díaz. En el caso de ejemplo se tomó igual a la suma de sus orígenes de renta, y está rotulado como ilustrativo.
+- Renta neta: si el código 170 es cero no hay tasa efectiva, y la renta neta muestra "No se puede calcular".
 - RFN mensual y los dos límites: tolerancia de 1 peso.
 - Credit Capacity: si la tasa es 0, PV = PMT × n. El resultado se redondea al peso.
 
-**Renta financiera bruta: lo que dijo Ricardo y por qué sigue abierta.** En la reunión la describió como el código 158 menos los gastos rechazados (106) y las rentas presuntas (108), que es la fórmula del manual, más el código 494 cuando existe. No recordó los códigos exactos. Esa descripción no reproduce sus propios casos: en ambos, los códigos 106 y 108 están en cero, así que daría cerca del total declarado ($104,8 millones en AT 2025), y su tabla dice $81,7 millones, que es lo que da la fórmula de esta tabla en los 9 años. Hay que revisarlo con él con los números a la vista.
-
-**Factor de renta neta.** Quedó validado con la regla por tasa efectiva. Para tenerlo presente: los datos solo fijan el corte entre 14,56% y 16,04% (15% es el número redondo dentro de ese tramo), y no hay casos con tasa efectiva sobre 17,39%, así que no se sabe si existe un tercer escalón.
+**Por qué cambiaron estas tres fórmulas.** Las versiones anteriores (total = suma de 14 códigos; renta bruta = total − 955 − 152 + 494; renta neta = bruta × 0,90 o 0,80) se dedujeron de las tablas de BICRED que aparecen en el capítulo, no del texto del método. En la segunda revisión Ricardo indicó que la fórmula es la escrita y que no se programa a partir de un caso. Con las fórmulas escritas, las cifras ya no coinciden con esas tablas, y no deben: BICRED usa aproximaciones. En Carlos Díaz AT 2025, la renta neta pasa de $65.360.074 a $88.017.575, y el Credit Capacity a 4% y 30 años de $285.216.668 a $384.089.077. La diferencia viene sobre todo de que los arriendos ahora están dentro del ingreso, como dice el texto.
 
 **Vista Crédito (front).** Como no hay una tasa ni un plazo únicos, el Credit Capacity tiene su propia vista en el informe, separada de los demás cálculos:
 
@@ -442,7 +440,7 @@ La numeración es la del catálogo de fórmulas. "Necesita" es lo mínimo que de
 
 | N° | Cálculo | Toma del SII | Parámetros | Cálculos previos | Necesita | Si falta | Lo usan |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Total de orígenes de renta | Los 14 códigos de orígenes del F22 del año | — | — | F22 del año capturado | Sin declaración ese año | 3 y 9; backoffice |
+| 1 | Total de orígenes de renta | Códigos 158, 106 y 108 del F22 del año | — | — | F22 del año capturado | Sin declaración ese año | 3 y 9; backoffice |
 | 2 | Total de rebajas | Los 9 conceptos de rebajas del F22 del año | — | — | F22 del año capturado | Sin declaración ese año | 3 |
 | 3 | Base imponible | Código 170, para comparar | — | 1 y 2 | F22 del año capturado | Sin declaración ese año | Ninguno |
 | 4 | Tasa efectiva | Códigos 157 y 170 | — | — | F22 del año, con código 170 distinto de cero | No se puede calcular: la base imponible es 0 | 10; backoffice |
@@ -455,8 +453,8 @@ La numeración es la del catálogo de fórmulas. "Necesita" es lo mínimo que de
 
 | N° | Cálculo | Toma del SII | Parámetros | Cálculos previos | Necesita | Si falta | Lo usan |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 9 | Renta financiera bruta | Códigos 955, 152 y 494 del F22 del año | Lista de códigos que restan y suman | 1 | F22 del año capturado | Sin declaración ese año | 10 |
-| 10 | Renta financiera neta | — | Regla del factor (umbral de 15%, 0,90 y 0,80) | 9 y 4 | Cálculo 9 con valor. Si el código 170 es cero, la tasa se toma como 0 | Dato no capturado | 11 |
+| 9 | Renta financiera bruta | Código 494 del F22 del año | — | 1 | F22 del año capturado | Sin declaración ese año | 10 |
+| 10 | Renta financiera neta | — | — | 9 y 4 | Cálculos 9 y 4 con valor | No se puede calcular, si el código 170 es cero | 11 |
 | 11 | RFN mensual | — | — | 10 | Cálculo 10 con valor | Dato no capturado | 12 y 13; backoffice |
 | 12 | Límite crédito hipotecario | — | Factor 0,25 | 11 | Cálculo 11 con valor | Dato no capturado | 14 y la tabla de consulta de la vista Crédito; backoffice |
 | 13 | Límite crédito automotriz | — | Factor 0,07 | 11 | Cálculo 11 con valor | Dato no capturado | Crédito automotriz |
@@ -498,8 +496,8 @@ Nada que cambie con el tiempo queda fijo en el código. Todos viajan en `method`
 
 | Parámetro | Valor inicial | Estado |
 | --- | --- | --- |
-| Códigos que se restan y se suman en la RFB | Restan 955 y 152; suma 494 | Por confirmar |
-| Regla del factor de renta neta | 0,90 bajo 15% de tasa efectiva; 0,80 desde 15% | Confirmado |
+| Fórmula de la renta financiera bruta | Código 158 + 494 − 106 − 108 | Confirmado (Capítulo IV) |
+| Fórmula de la renta financiera neta | Renta bruta × (1 − tasa efectiva) | Confirmado (Capítulo IV) |
 | UTA por año | Diciembre del mismo año de la declaración | Confirmado |
 | Rangos del tramo Art. 55 bis | A hasta 90 UTA, B sobre 90 y bajo 150, C desde 150 | Confirmado |
 | Rebaja máxima de intereses del Art. 55 bis | Tope de 8 UTA; porcentaje = 250 − 1,667 × base en UTA entre 90 y 150 UTA | Confirmado |
@@ -510,7 +508,6 @@ Nada que cambie con el tiempo queda fijo en el código. Todos viajan en `method`
 | Rango de la tabla de consulta | Tasas de 3,0% a 5,0%; plazos de 5 a 30 años | Confirmado de 5 a 25 años; el de 30 se agregó por el caso del Capítulo IV |
 | Plazo automotriz de referencia | 48 meses | Capítulo IV; falta la tasa |
 | Factores leverage | 1 a 5 | Confirmado: cada institución define el suyo |
-| Tolerancia de la prueba dorada | ±10 pesos | Hasta aclarar la diferencia de la RFB |
 
 ## Reglas para que el informe sea determinístico
 
@@ -719,14 +716,13 @@ Es la misma lista que el informe muestra en su vista "Pendientes", más los dato
 - [x] Tramo Art. 55 bis y rebaja máxima de intereses.
 - [x] Tramo de Global Complementario: tabla del Art. 52 de cada año tributario.
 - [x] Credit Capacity: no hay tasa ni plazo únicos; la persona escribe ambos en la vista Crédito.
-- [x] Factor de renta neta: 0,90 bajo 15% de tasa efectiva y 0,80 desde 15% (validado después de la reunión, según informó Cristóbal).
+- [x] Total de orígenes, renta financiera bruta y neta: las fórmulas escritas del capítulo (segunda revisión). El factor 0,90 / 0,80 se eliminó.
 - [x] Factor leverage: lo define cada institución; niveles F1 a F5.
 - [x] Deuda por institución: valor de compra menos pie, sumado por institución.
 - [x] Asiento de apertura, valor depreciable, monto IVA y estado de resultados: fuera del informe.
 
 **Por confirmar** (hoy se calcula con una regla deducida de los casos)
 
-- [ ] Renta financiera bruta: la fórmula que reproduce los casos es total de orígenes − 955 − 152 + 494. La que describió Ricardo (código 158 − 106 − 108, más el 494) no los reproduce. ¿Cuál es la correcta y de dónde salen los 5 a 10 pesos de diferencia?
 - [ ] Credit Capacity en UF: el valor de la UF se toma del SII; ¿de qué fecha? ¿31 de diciembre del año comercial, como en el caso, o el día de la captura?
 - [ ] Crédito automotriz: tasa de referencia.
 - [ ] Rebajas: código del F22 de cada concepto.

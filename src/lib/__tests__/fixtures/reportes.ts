@@ -30,6 +30,16 @@ const property = (partial: Partial<Property>, index: number): Property => ({
   pagoContadoUf: null,
   ley20455: false,
   usoFamiliar: false,
+  derechos: null,
+  repertorio: null,
+  dfl2: null,
+  plazoMeses: null,
+  montoIva: null,
+  fojas: null,
+  inscripcion: null,
+  fechaInscripcion: null,
+  dominioPleno: null,
+  esNueva: null,
   ...partial,
 })
 
@@ -38,6 +48,7 @@ export interface CaseInput {
   origins: Record<string, number[]>
   deductions: Record<string, number[]>
   gastoPresunto: number[]
+  code158?: number[]
   base170: number[]
   tax157: number[]
   financial: {
@@ -98,6 +109,18 @@ export function makeReport(input: CaseInput): Report {
       ...capituloIV.method,
       utaByYear: byYear(years, input.uta),
       adjustments: [
+        {
+          code: '158',
+          label: 'Total ingresos brutos afectos',
+          // Sin el dato real, se toma la suma de los orígenes de renta del año.
+          values: byYear(
+            years,
+            input.code158 ??
+              years.map((_, index) =>
+                Object.values(input.origins).reduce((sum, values) => sum + (values[index] ?? 0), 0),
+              ),
+          ),
+        },
         { code: '494', label: 'Gastos presuntos de honorarios', values: byYear(years, input.gastoPresunto) },
       ],
     },
@@ -189,16 +212,10 @@ export function randomReport(seed: number): Report {
   const base = years.map((_, index) => pick([total[index] - sum(deductions, index), 0, total[index]]))
   const tax = base.map((value) => (value > 0 ? Math.round(value * rnd() * 0.4) : 0))
   const uta = years.map(() => 700_000 + int(200_000))
-  const rule = capituloIV.method.rfnFactorRule
-
   const rate = base.map((value, index) => (value === 0 ? 0 : tax[index] / value))
-  // El "motor" de la prueba: mismas reglas, con la diferencia de pocos pesos que se ve en los casos reales.
-  const rfb = total.map(
-    (value, index) => value - origins['955'][index] - origins['152'][index] + gastoPresunto[index] + int(11),
-  )
-  const rfn = rfb.map((value, index) =>
-    Math.round(value * (rate[index] < rule.rateThreshold ? rule.factorBelow : rule.factorFrom)),
-  )
+  // Valores informados por un "motor" externo, para ejercitar la autoverificación.
+  const rfb = total.map((value, index) => value + gastoPresunto[index] + int(11))
+  const rfn = rfb.map((value, index) => Math.round(value * (1 - rate[index])))
   const monthly = rfn.map((value) => Math.round(value / 12))
   const bit = base.map((value, index) => Math.round((value / uta[index]) * 100) / 100)
 

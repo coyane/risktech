@@ -46,7 +46,7 @@
             "9 roles vigentes"
           ],
           "missing": [],
-          "note": "Totales del Capítulo IV; el detalle por rol, adquisición y financiamiento es ilustrativo."
+          "note": "Totales del Capítulo IV; el detalle por rol, la escritura, la inscripción y el crédito de cada propiedad son ilustrativos."
         },
         {
           "source": "ACTIVIDADES",
@@ -410,14 +410,24 @@
         "fechaAdquisicion": "2019-06-14",
         "tipoActo": "Compraventa",
         "precioAdquisicion": 150000000,
-        "pagoContado": 15000000,
-        "montoFinanciado": 135000000,
+        "pagoContado": 12891099,
+        "montoFinanciado": 137108901,
         "institucion": "Banco de Chile",
-        "financiamientoUf": 4350.52,
+        "financiamientoUf": 4380.41,
         "enajenacionUf": 4792.26,
-        "pagoContadoUf": 441.74,
+        "pagoContadoUf": 411.85,
         "ley20455": true,
-        "usoFamiliar": false
+        "usoFamiliar": false,
+        "derechos": 100,
+        "repertorio": "4100",
+        "dfl2": true,
+        "plazoMeses": 300,
+        "montoIva": null,
+        "fojas": "1200",
+        "inscripcion": "2300",
+        "fechaInscripcion": "2019-06-28",
+        "dominioPleno": true,
+        "esNueva": false
       },
       {
         "rol": "1204-31",
@@ -434,14 +444,24 @@
         "fechaAdquisicion": "2020-03-09",
         "tipoActo": "Compraventa",
         "precioAdquisicion": 140000000,
-        "pagoContado": 14000000,
-        "montoFinanciado": 126000000,
+        "pagoContado": 12031918,
+        "montoFinanciado": 127968082,
         "institucion": "Banco de Chile",
-        "financiamientoUf": 4060.48,
+        "financiamientoUf": 4088.37,
         "enajenacionUf": 4472.77,
-        "pagoContadoUf": 412.29,
+        "pagoContadoUf": 384.4,
         "ley20455": false,
-        "usoFamiliar": false
+        "usoFamiliar": false,
+        "derechos": 100,
+        "repertorio": "4417",
+        "dfl2": true,
+        "plazoMeses": 300,
+        "montoIva": null,
+        "fojas": "1285",
+        "inscripcion": "2441",
+        "fechaInscripcion": "2020-03-28",
+        "dominioPleno": true,
+        "esNueva": false
       },
       {
         "rol": "0877-6",
@@ -458,14 +478,24 @@
         "fechaAdquisicion": "2021-08-23",
         "tipoActo": "Compraventa",
         "precioAdquisicion": 110000000,
-        "pagoContado": 20000000,
-        "montoFinanciado": 90000000,
+        "pagoContado": 9453692,
+        "montoFinanciado": 100546308,
         "institucion": "Banco Santander Chile",
-        "financiamientoUf": 2925.33,
+        "financiamientoUf": 3212.29,
         "enajenacionUf": 3514.32,
-        "pagoContadoUf": 588.99,
+        "pagoContadoUf": 302.03,
         "ley20455": false,
-        "usoFamiliar": false
+        "usoFamiliar": false,
+        "derechos": 100,
+        "repertorio": "4734",
+        "dfl2": true,
+        "plazoMeses": 240,
+        "montoIva": null,
+        "fojas": "1370",
+        "inscripcion": "2582",
+        "fechaInscripcion": "2021-08-28",
+        "dominioPleno": true,
+        "esNueva": true
       },
       {
         "rol": "3310-2",
@@ -487,9 +517,19 @@
         "institucion": null,
         "financiamientoUf": null,
         "enajenacionUf": 1533.52,
-        "pagoContadoUf": 1413.57,
+        "pagoContadoUf": 1533.52,
         "ley20455": false,
-        "usoFamiliar": false
+        "usoFamiliar": false,
+        "derechos": 100,
+        "repertorio": "5051",
+        "dfl2": false,
+        "plazoMeses": null,
+        "montoIva": null,
+        "fojas": "1455",
+        "inscripcion": "2723",
+        "fechaInscripcion": "2018-11-28",
+        "dominioPleno": true,
+        "esNueva": false
       },
       {
         "rol": "0452-11",
@@ -506,14 +546,24 @@
         "fechaAdquisicion": "2022-05-30",
         "tipoActo": "Compraventa",
         "precioAdquisicion": 420000000,
-        "pagoContado": 40000000,
-        "montoFinanciado": 380000000,
+        "pagoContado": 36095413,
+        "montoFinanciado": 383904587,
         "institucion": "Banco de Crédito e Inversiones",
-        "financiamientoUf": 12240.34,
+        "financiamientoUf": 12265.13,
         "enajenacionUf": 13418.32,
-        "pagoContadoUf": 1177.98,
+        "pagoContadoUf": 1153.19,
         "ley20455": false,
-        "usoFamiliar": false
+        "usoFamiliar": false,
+        "derechos": 100,
+        "repertorio": "5368",
+        "dfl2": true,
+        "plazoMeses": 360,
+        "montoIva": null,
+        "fojas": "1540",
+        "inscripcion": "2864",
+        "fechaInscripcion": "2022-05-28",
+        "dominioPleno": true,
+        "esNueva": true
       },
       {
         "rol": "0452-12",
@@ -530,14 +580,24 @@
         "fechaAdquisicion": "2023-01-17",
         "tipoActo": "Compraventa",
         "precioAdquisicion": 140000000,
-        "pagoContado": 13938728,
-        "montoFinanciado": 126061272,
+        "pagoContado": 12031605,
+        "montoFinanciado": 127968395,
         "institucion": "Banco Santander Chile",
-        "financiamientoUf": 4062.28,
+        "financiamientoUf": 4088.38,
         "enajenacionUf": 4472.77,
-        "pagoContadoUf": 410.49,
+        "pagoContadoUf": 384.39,
         "ley20455": false,
-        "usoFamiliar": false
+        "usoFamiliar": false,
+        "derechos": 100,
+        "repertorio": "5685",
+        "dfl2": true,
+        "plazoMeses": 240,
+        "montoIva": null,
+        "fojas": "1625",
+        "inscripcion": "3005",
+        "fechaInscripcion": "2023-01-28",
+        "dominioPleno": true,
+        "esNueva": true
       },
       {
         "rol": "0071-4",
@@ -559,9 +619,19 @@
         "institucion": null,
         "financiamientoUf": null,
         "enajenacionUf": 958.45,
-        "pagoContadoUf": 883.48,
+        "pagoContadoUf": 958.45,
         "ley20455": false,
-        "usoFamiliar": false
+        "usoFamiliar": false,
+        "derechos": 100,
+        "repertorio": "6002",
+        "dfl2": false,
+        "plazoMeses": null,
+        "montoIva": null,
+        "fojas": "1710",
+        "inscripcion": "3146",
+        "fechaInscripcion": "2017-09-28",
+        "dominioPleno": true,
+        "esNueva": false
       },
       {
         "rol": "0071-5",
@@ -583,9 +653,19 @@
         "institucion": null,
         "financiamientoUf": null,
         "enajenacionUf": 830.66,
-        "pagoContadoUf": 765.68,
+        "pagoContadoUf": 830.66,
         "ley20455": false,
-        "usoFamiliar": false
+        "usoFamiliar": false,
+        "derechos": 100,
+        "repertorio": "6319",
+        "dfl2": false,
+        "plazoMeses": null,
+        "montoIva": null,
+        "fojas": "1795",
+        "inscripcion": "3287",
+        "fechaInscripcion": "2017-09-28",
+        "dominioPleno": true,
+        "esNueva": false
       },
       {
         "rol": "0915-3",
@@ -607,9 +687,19 @@
         "institucion": null,
         "financiamientoUf": null,
         "enajenacionUf": 1735.0,
-        "pagoContadoUf": 1599.27,
+        "pagoContadoUf": 1735.0,
         "ley20455": true,
-        "usoFamiliar": true
+        "usoFamiliar": true,
+        "derechos": 100,
+        "repertorio": "6636",
+        "dfl2": true,
+        "plazoMeses": null,
+        "montoIva": null,
+        "fojas": "1880",
+        "inscripcion": "3428",
+        "fechaInscripcion": "2016-04-28",
+        "dominioPleno": true,
+        "esNueva": false
       }
     ],
     "f29": [
@@ -917,7 +1007,7 @@
     "f50": [],
     "warnings": [
       "Las reglas marcadas \"por confirmar\" se dedujeron de los casos de referencia y aún no están validadas por el Método ICRED.",
-      "Folios, desglose de rebajas, sociedades, regímenes, detalle de bienes raíces por rol y períodos del F29 son ilustrativos: el Capítulo IV solo publica los totales."
+      "Folios, desglose de rebajas, sociedades, regímenes, detalle de bienes raíces por rol y períodos del F29 son ilustrativos: el Capítulo IV solo publica los totales. El código 158 de cada año también es ilustrativo: el Capítulo IV no lo trae, y se tomó igual a la suma de los orígenes de renta."
     ],
     "f22Returns": [
       {
@@ -960,13 +1050,13 @@
         {
           "key": "rfb_rule",
           "label": "Renta financiera bruta",
-          "value": "Total orígenes − códigos 955 y 152 + código 494",
-          "status": "pending"
+          "value": "Código 158 + 494 − 106 − 108 (Capítulo IV, páginas 5 y 6)",
+          "status": "confirmed"
         },
         {
-          "key": "rfn_factor",
-          "label": "Factor de renta neta",
-          "value": "0,90 si la tasa efectiva es menor a 15%; 0,80 si es 15% o más",
+          "key": "rfn_rule",
+          "label": "Renta financiera neta",
+          "value": "Renta financiera bruta × (1 − tasa efectiva)",
           "status": "confirmed"
         },
         {
@@ -1027,7 +1117,7 @@
       "formulas": [
         {
           "indicator": "Total orígenes de renta",
-          "formula": "Suma de los 14 códigos de orígenes de renta",
+          "formula": "Código 158 − (código 106 + código 108)",
           "pending": false
         },
         {
@@ -1037,12 +1127,12 @@
         },
         {
           "indicator": "Renta financiera bruta (RFB)",
-          "formula": "Total orígenes − códigos 955 y 152 + código 494",
-          "pending": true
+          "formula": "Total orígenes + código 494",
+          "pending": false
         },
         {
           "indicator": "Renta financiera neta (RFN)",
-          "formula": "RFB × factor de renta neta",
+          "formula": "RFB × (1 − tasa efectiva)",
           "pending": false
         },
         {
@@ -1097,10 +1187,10 @@
           "code": "158",
           "label": "Total ingresos brutos afectos",
           "values": {
-            "2022": null,
-            "2023": null,
-            "2024": null,
-            "2025": null
+            "2022": 52455880,
+            "2023": 73822589,
+            "2024": 92020675,
+            "2025": 104832677
           }
         },
         {
@@ -1171,23 +1261,11 @@
           "rate": 0.4
         }
       ],
-      "rfbExcludedCodes": [
-        "955",
-        "152"
-      ],
       "utaByYear": {
         "2022": 733884,
         "2023": 770592,
         "2024": 807528,
         "2025": 834504
-      },
-      "rfbAddCodes": [
-        "494"
-      ],
-      "rfnFactorRule": {
-        "rateThreshold": 0.15,
-        "factorBelow": 0.9,
-        "factorFrom": 0.8
       },
       "bracket55bis": [
         {

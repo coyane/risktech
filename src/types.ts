@@ -137,6 +137,17 @@ export interface Property {
   // Propiedad habitacional acogida a la Ley 20.455.
   ley20455: boolean
   usoFamiliar: boolean
+  // Antecedentes registrales y del crédito, como los muestra la matriz de BICRED.
+  derechos: number | null
+  repertorio: string | null
+  dfl2: boolean | null
+  plazoMeses: number | null
+  montoIva: Amount
+  fojas: string | null
+  inscripcion: string | null
+  fechaInscripcion: string | null
+  dominioPleno: boolean | null
+  esNueva: boolean | null
 }
 
 export type PaymentStatus = 'pagado' | 'pendiente' | 'sin_movimiento'
@@ -197,12 +208,6 @@ export interface UtaRange {
 
 export interface Method {
   release: string
-  // Códigos de orígenes de renta que no cuentan como renta financiera.
-  rfbExcludedCodes: string[]
-  // Códigos que se suman a la renta financiera bruta (gasto presunto de honorarios).
-  rfbAddCodes: string[]
-  // Factor de renta neta según la tasa efectiva del año.
-  rfnFactorRule: { rateThreshold: number; factorBelow: number; factorFrom: number }
   utaByYear: Record<number, number>
   bracket55bis: UtaRange[]
   igcBrackets: IgcBracket[]

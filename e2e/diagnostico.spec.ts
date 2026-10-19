@@ -32,9 +32,9 @@ test.describe('Diagnóstico Base', () => {
     test.skip(!isDesktop(page), 'En pantallas angostas la explicación se abre al elegir un bloque')
     await page.click('.tab[href="#calculos"]')
     const open = page.locator('.explorer-detail .explorer-panel:not([hidden])')
-    await expect(open.locator('h3')).toHaveText('¿Cuánto se declaró en el año?')
+    await expect(open.locator('h3')).toHaveText('¿Cuánto ingreso se declaró en el año?')
     await page.click('.index-row[href="#calc-renta-bruta"]')
-    await expect(open.locator('h3')).toHaveText('¿Cuánto de lo declarado cuenta como ingreso personal?')
+    await expect(open.locator('h3')).toHaveText('¿Cuánto es el ingreso financiero bruto?')
     await expect(page.locator('.index-row[aria-current]')).toContainText('Renta financiera bruta')
   })
 
@@ -70,11 +70,11 @@ test.describe('Diagnóstico Base', () => {
   test('Crédito: la tasa y el plazo escritos recalculan todo el informe', async ({ page }) => {
     await page.click('.tab[href="#credito"]')
     const figures = page.locator('.credit-inputs .hero-item')
-    await expect(figures.nth(1).locator('.hero-value')).toHaveText('$285.216.668')
+    await expect(figures.nth(1).locator('.hero-value')).toHaveText('$384.089.077')
 
     await page.fill('#sim-rate', '3,75')
     await page.fill('#sim-years', '23')
-    await expect(figures.nth(1).locator('.hero-value')).toHaveText('$251.560.624')
+    await expect(figures.nth(1).locator('.hero-value')).toHaveText('$338.765.923')
     // Lo escrito se muestra tal cual, sin redondearlo.
     await expect(figures.nth(1).locator('.hero-name')).toHaveText('Con 3,75% anual a 23 años')
     await expect(page.locator('[data-view="credito"] .data-panel:not([hidden]) .calc-plain')).toContainText(
@@ -84,16 +84,16 @@ test.describe('Diagnóstico Base', () => {
     // Un valor inválido se avisa y el informe conserva el último válido.
     await page.fill('#sim-rate', 'abc')
     await expect(page.locator('#sim-rate-error')).toBeVisible()
-    await expect(figures.nth(1).locator('.hero-value')).toHaveText('$251.560.624')
+    await expect(figures.nth(1).locator('.hero-value')).toHaveText('$338.765.923')
     await page.fill('#sim-rate', '3,75')
 
     await page.click('.tab[href="#resumen"]')
-    await expect(page.locator('.hero-item[href="#calc-credit-capacity"] .hero-value')).toHaveText('$251.560.624')
+    await expect(page.locator('.hero-item[href="#calc-credit-capacity"] .hero-value')).toHaveText('$338.765.923')
     await expect(page.locator('#financiero .card-note')).toHaveText('Credit Capacity con 3,75% anual a 23 años')
 
     await page.click('.tab[href="#credito"]')
     await page.getByRole('button', { name: /Volver a la referencia/ }).click()
-    await expect(figures.nth(1).locator('.hero-value')).toHaveText('$285.216.668')
+    await expect(figures.nth(1).locator('.hero-value')).toHaveText('$384.089.077')
   })
 
   test('los cálculos de crédito se abren en la pestaña Crédito', async ({ page }) => {
@@ -144,4 +144,19 @@ test.describe('Diagnóstico Base', () => {
 test('una captura parcial lo dice en el informe', async ({ page }) => {
   await loginAsClient(page, '?demo=parcial')
   await expect(page.locator('.report .banner-warn')).toContainText('Captura parcial')
+})
+
+test('cada propiedad muestra la entidad que la financió, por cuánto y a qué plazo', async ({ page }) => {
+  await loginAsClient(page)
+  await page.goto('/diagnostico#datos-propiedades')
+  const table = page.locator('#patrimonio table')
+  await expect(table.locator('thead')).toContainText('Entidad que financió')
+  await expect(table.locator('tbody tr').first()).toContainText('Banco de Chile')
+  await expect(table.locator('tbody tr').first()).toContainText('4.380,41')
+  await expect(table.locator('tbody tr').first()).toContainText('300 meses')
+  // La deuda por institución suma los pasivos de origen del caso.
+  await expect(page.locator('#financiamiento tbody tr')).toHaveCount(3)
+  await page.getByRole('button', { name: 'Ficha registral de cada propiedad' }).click()
+  await expect(page.locator('.property-card')).toHaveCount(9)
+  await expect(page.locator('.property-card').first()).toContainText('Repertorio')
 })

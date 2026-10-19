@@ -25,3 +25,6 @@ dist-ssr
 .vercel
 test-results
 playwright-report
+
+# Documentos del método: no se publican (el repositorio es público)
+*.pdf
