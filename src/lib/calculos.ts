@@ -3,13 +3,14 @@ import {
   formatAt,
   formatDate,
   formatDecimal,
+  formatExact,
   formatMoney,
   formatRate,
   formatRateExact,
   formatUf,
 } from './format'
-import { presentValue } from './icred'
-import { sumKnown, summarizeProperties, type PatrimonySummary } from './patrimonio'
+import { presentValue } from './finanzas'
+import { formatMeses, plazoCredito, sumKnown, summarizeProperties, type PatrimonySummary } from './patrimonio'
 
 // Registro único de cálculos del Diagnóstico Base.
 //
@@ -32,7 +33,7 @@ export interface Operand {
   label: string
   value: number | null
   display: string
-  // De dónde viene: formulario, código y año; regla del método; u otro cálculo.
+  // De dónde viene: formulario, código y año; valor de referencia; u otro cálculo.
   source: string
   // Sección del informe donde está el dato (kind 'sii') o cálculo que lo produce.
   table?: SiiTable
@@ -90,7 +91,7 @@ export const statusLabel: Record<CalcStatus, string> = {
 
 export const kindLabel: Record<OperandKind, string> = {
   sii: 'Dato del SII',
-  param: 'Parámetro del método',
+  param: 'Valor de referencia',
   calc: 'Resultado calculado',
 }
 
@@ -102,6 +103,93 @@ export const FIXED = {
   mismatch: (reported: string, diff: string) =>
     `El valor informado por el sistema es ${reported}; difiere en ${diff} del resultado de esta operación.`,
 }
+
+// ---------- Textos fijos de la interfaz ----------
+// Iguales para cualquier persona: hablan del dato y de su origen, nunca del caso.
+
+type Method = Report['method']
+
+// Qué significa cada estado, en palabras de quien lee el informe.
+export const statusHelp: Record<CalcStatus, string> = {
+  calculado: 'La operación y todos sus datos están completos.',
+  por_confirmar: 'Falta confirmar un dato o un supuesto de este cálculo.',
+  por_determinar: 'Falta un dato o la forma de calcularlo. Se muestra lo que ya se tiene.',
+}
+
+// Qué es cada tipo de dato de una operación.
+export const kindHelp: Record<OperandKind, string> = {
+  sii: 'Lo declarado o registrado en el SII, con su formulario, código y año.',
+  param: 'Un valor fijo, igual para todas las personas, como los 12 meses del año o la UF.',
+  calc: 'El resultado de otro cálculo de este informe.',
+}
+
+export const CREDIT_HELP = (method: Method) =>
+  `No hay una tasa ni un plazo únicos: cada institución define los suyos. El informe parte con una tasa de referencia de ${formatRateExact(method.mortgageRate)} anual a ${method.mortgageYears} años.`
+
+// Plazo del crédito de cada propiedad. El SII registra el plazo pactado, no los pagos.
+export const PLAZO_TEXT = {
+  name: 'Plazo transcurrido del crédito',
+  definition:
+    'El tiempo desde la fecha de la escritura hasta la fecha de captura, contado sobre el plazo pactado del crédito de cada propiedad.',
+  status: 'por_confirmar' as CalcStatus,
+  statusNote:
+    'El SII registra el plazo pactado, no los dividendos pagados: se supone que los pagos están al día.',
+  plain: (transcurrido: string, pactado: string, restante: string) =>
+    `Desde la escritura han pasado ${transcurrido} de un plazo pactado de ${pactado}; quedan ${restante}.`,
+  sinPlazo: 'Plazo no informado en la escritura.',
+  sinCredito: 'Sin crédito',
+  question: '¿Cuánto del plazo pactado ha transcurrido en cada crédito?',
+  formula: 'Fecha de captura − fecha de escritura, sin pasar del plazo pactado',
+  source: (escritura: string, pactado: string) =>
+    `SII · Mis Bienes · escritura del ${escritura}, plazo pactado de ${pactado}`,
+  // Frase del cálculo para todo el grupo de propiedades con crédito.
+  todas: (count: number, captura: string) =>
+    `Para ${count === 1 ? 'la propiedad' : `cada una de las ${count} propiedades`} con crédito se cuenta el tiempo desde la escritura hasta la captura del ${captura}.`,
+  ninguna: 'Ninguna propiedad tiene crédito.',
+  // Fila de la lista: "7 años y 3 meses de 25 años".
+  of: (transcurrido: string, pactado: string) => `${transcurrido} de ${pactado}`,
+  left: (restante: string) => `Quedan ${restante}`,
+}
+
+// Qué muestra cada columna de la lista de propiedades.
+export const PROPERTY_COLUMNS: { key: string; label: string; help: string }[] = [
+  { key: 'propiedad', label: 'Comuna y destino', help: 'Dónde está la propiedad y para qué está inscrita: habitacional, sitio eriazo u otro destino.' },
+  { key: 'compra', label: 'Compra', help: 'El año de la escritura de compra.' },
+  { key: 'institucion', label: 'Institución', help: 'Quién financió la compra. “Ninguna” si se pagó todo al contado.' },
+  {
+    key: 'plazo',
+    label: 'Plazo transcurrido',
+    help: 'El tiempo desde la escritura hasta la fecha de captura, sobre el plazo pactado del crédito. La barra muestra la parte transcurrida.',
+  },
+  {
+    key: 'financiado',
+    label: 'Financiado',
+    help: 'Lo que no se pagó al contado. En la barra, lo liso es lo pagado al contado y lo rayado, lo financiado.',
+  },
+  { key: 'precio', label: 'Precio', help: 'El monto de enajenación: lo que costó la propiedad, en UF.' },
+]
+
+// Actividades económicas: el dato tal como lo registra el SII, sin evaluarlo.
+export const ACTIVITY_TEXT = {
+  title: 'Actividades económicas registradas',
+  source: 'SII · Datos del contribuyente',
+  none: 'Sin actividades económicas registradas.',
+  afectaIva: (value: boolean | null) => (value === null ? '—' : value ? 'Sí' : 'No'),
+}
+
+export const CREDIT_DISCLAIMER = 'Valores referenciales: no constituyen una oferta ni una aprobación de crédito.'
+
+// De dónde salen la tasa y el plazo del Credit Capacity.
+export function creditSource(method: Method, credit?: CreditChoice) {
+  const rate = credit?.rate ?? method.mortgageRate
+  const years = credit?.years ?? method.mortgageYears
+  return rate === method.mortgageRate && years === method.mortgageYears
+    ? 'Tasa y plazo de referencia'
+    : 'Tasa y plazo escritos en este informe'
+}
+
+export const CREDIT_TERMS = (method: Method, credit: CreditChoice) =>
+  `Con ${formatRateExact(credit.rate)} anual a ${formatExact(credit.years)} años · ${creditSource(method, credit)}`
 
 const money = (value: number) => formatMoney(Math.round(value))
 const uta = (value: number) => `${formatDecimal(value, 2)} UTA`
@@ -299,14 +387,14 @@ export function buildYearCalcs(report: Report, year: number, credit?: CreditChoi
     return built
   }
 
-  // 1. Total de orígenes de renta (GIF, Capítulo IV): ingresos brutos afectos sin las rentas nominales
+  // 1. Total de orígenes de renta: ingresos brutos afectos sin las rentas nominales
   const total = add(
     {
       id: 'total-origenes',
       question: '¿Cuánto ingreso se declaró en el año?',
       name: 'Total de orígenes de renta',
       definition:
-        'Los ingresos brutos afectos del año (código 158) sin las rentas nominales, que no son flujo de dinero: gastos rechazados (código 106) y rentas presuntas (código 108). El método lo llama GIF.',
+        'Los ingresos brutos afectos del año (código 158) sin las rentas nominales, que no son flujo de dinero: gastos rechazados (código 106) y rentas presuntas (código 108).',
       status: 'calculado',
       statusNote: null,
     },
@@ -408,7 +496,7 @@ export function buildYearCalcs(report: Report, year: number, credit?: CreditChoi
     },
   )
 
-  // 5. Renta financiera bruta (GIF bruto ajustado, Capítulo IV)
+  // 5. Renta financiera bruta
   const rfb = add(
     {
       id: 'renta-bruta',
@@ -433,7 +521,7 @@ export function buildYearCalcs(report: Report, year: number, credit?: CreditChoi
     },
   )
 
-  // 6. Renta financiera neta (Capítulo IV): la bruta sin la parte que se va en impuesto
+  // 6. Renta financiera neta: la bruta sin la parte que se va en impuesto
   const exactRate = base170 === null || tax157 === null || base170 === 0 ? null : tax157 / base170
   const rfnValue = rfb.value === null || exactRate === null ? null : Math.round(rfb.value * (1 - exactRate))
   const rfn = add(
@@ -501,7 +589,7 @@ export function buildYearCalcs(report: Report, year: number, credit?: CreditChoi
       arith(
         [
           { op: null, operand: ref(monthly) },
-          { op: '×', operand: param('Factor del método', value, factor(value), 'Capítulo IV: factor de referencia recomendado') },
+          { op: '×', operand: param('Porcentaje de referencia', value, factor(value), 'Fracción de la renta mensual que se toma como cuota') },
         ],
         money,
       ),
@@ -510,7 +598,7 @@ export function buildYearCalcs(report: Report, year: number, credit?: CreditChoi
         reported,
         tolerance: 1,
         plain: (display) =>
-          `El método toma ${formatRate(value, 0)} de la renta mensual de ${monthly.display}: ${display}.`,
+          `El ${formatRate(value, 0)} de la renta neta mensual de ${monthly.display} es ${display}.`,
       },
     )
   const mortgage = share(
@@ -679,13 +767,10 @@ export function buildYearCalcs(report: Report, year: number, credit?: CreditChoi
   )
 
   // 13 a 15. Credit Capacity
-  // La tasa y el plazo parten en la referencia del Capítulo IV y la persona puede ajustarlos.
+  // La tasa y el plazo parten en la referencia y la persona puede ajustarlos.
   const creditRate = credit?.rate ?? method.mortgageRate
   const creditYears = credit?.years ?? method.mortgageYears
-  const creditSource =
-    creditRate === method.mortgageRate && creditYears === method.mortgageYears
-      ? 'Referencia del Capítulo IV'
-      : 'Valor ajustado en este informe'
+  const creditOrigin = creditSource(method, { rate: creditRate, years: creditYears })
   const months = Math.round(creditYears * 12)
   const pv = mortgage.value === null ? null : Math.round(presentValue(mortgage.value, creditRate, months))
   const capacity = add(
@@ -705,8 +790,8 @@ export function buildYearCalcs(report: Report, year: number, credit?: CreditChoi
         formula: 'Dividendo × (1 − (1 + tasa mensual) ^ −meses) ÷ tasa mensual',
         operands: [
           ref(mortgage),
-          param('Tasa anual', creditRate, formatRateExact(creditRate), creditSource),
-          param('Plazo', months, `${months} meses`, creditSource),
+          param('Tasa anual', creditRate, formatRateExact(creditRate), creditOrigin),
+          param('Plazo', months, `${months} meses`, creditOrigin),
         ],
         result: pv === null ? '—' : money(pv),
       },
@@ -892,7 +977,54 @@ export function buildPropertyCalcs(report: Report): { summary: PatrimonySummary;
       `Sin las ${summary.ley20455Count} propiedades acogidas a la Ley 20.455, el monto de adquisición es ${display}.`,
   )
 
-  return { summary, calcs: [activos, patrimonio, pasivos, ley] }
+  return { summary, calcs: [activos, patrimonio, pasivos, ley, buildPlazoCalc(report)] }
+}
+
+// Plazo transcurrido del crédito de cada propiedad: desde la escritura hasta la captura,
+// con tope en el plazo pactado. El SII no informa los dividendos pagados: queda por confirmar.
+function buildPlazoCalc(report: Report): Calc {
+  const captura = formatDate(report.taxpayer.capturedAt)
+  const financed = report.properties.filter(
+    (item) =>
+      item.institucion !== null ||
+      (item.enajenacionUf !== null && item.pagoContadoUf !== null && item.enajenacionUf > item.pagoContadoUf),
+  )
+  const operands: Operand[] = financed.map((item) => {
+    const plazo = plazoCredito(item, report.taxpayer.capturedAt)
+    const escritura = item.fechaAdquisicion ?? item.fechaInscripcion
+    return {
+      kind: 'calc',
+      label: `Rol ${item.rol} · ${item.comuna}`,
+      value: plazo?.transcurridoMeses ?? null,
+      display: plazo ? PLAZO_TEXT.of(formatMeses(plazo.transcurridoMeses), formatMeses(plazo.pactadoMeses)) : PLAZO_TEXT.sinPlazo,
+      source: plazo && escritura ? PLAZO_TEXT.source(formatDate(escritura), formatMeses(plazo.pactadoMeses)) : PLAZO_TEXT.sinPlazo,
+    }
+  })
+  const counted = operands.filter((operand) => operand.value !== null).length
+  const ok = counted > 0
+  const display = ok ? `${counted} ${counted === 1 ? 'crédito' : 'créditos'}` : '—'
+  return {
+    id: 'plazo-credito',
+    question: PLAZO_TEXT.question,
+    name: PLAZO_TEXT.name,
+    definition: PLAZO_TEXT.definition,
+    status: PLAZO_TEXT.status,
+    statusNote: PLAZO_TEXT.statusNote,
+    state: ok ? 'ok' : 'sin_dato',
+    value: ok ? counted : null,
+    display,
+    plain:
+      report.properties.length === 0
+        ? FIXED.noProperties
+        : financed.length === 0
+          ? PLAZO_TEXT.ninguna
+          : ok
+            ? PLAZO_TEXT.todas(counted, captura)
+            : PLAZO_TEXT.sinPlazo,
+    equation: ok ? { kind: 'formula', formula: PLAZO_TEXT.formula, operands, result: display } : null,
+    check: null,
+    dependsOn: [],
+  }
 }
 
 // ---------- Análisis inmobiliario: deuda por institución y lo que está por determinar ----------
@@ -947,23 +1079,32 @@ export function buildRealEstate(summary: PatrimonySummary): { calcs: Calc[]; pen
       id: 'leverage-institucion',
       name: 'Leverage por institución y total',
       definition:
-        'Cuántas veces la deuda de origen supera la capacidad propia de la persona. En la herramienta de referencia, el leverage de cada institución es su deuda dividida por un mismo número, y la suma de todos da el leverage total.',
+        'Cuántas veces la deuda de origen supera la capacidad propia de la persona. El de cada institución es su deuda dividida por un mismo número, y la suma de todos da el leverage total.',
       inputs: summary.byBank.map(bank),
       missing:
-        'Falta saber por qué número se divide la deuda y con la UF de qué fecha. La herramienta de referencia muestra el resultado, pero no ese número.',
+        'Falta definir por qué número se divide la deuda y con la UF de qué fecha.',
     },
     {
       id: 'recomendacion-20455',
       name: 'Recomendación sobre la Ley 20.455',
       definition:
-        'El informe de referencia cierra con una recomendación sobre incorporar las propiedades al régimen de Primera Categoría.',
+        'Una recomendación sobre incorporar las propiedades al régimen de Primera Categoría.',
       inputs: [],
       missing:
-        'Falta confirmar si esa recomendación es un texto fijo para todos los casos o depende de una regla.',
+        'Falta confirmar si la recomendación es igual para todas las personas o depende de sus datos.',
     },
   ]
 
   return { calcs: [deuda], pending }
+}
+
+// Cuántos cálculos del informe están por confirmar o por determinar (último año).
+export function countPending(report: Report): number {
+  const last = report.years[report.years.length - 1]
+  const property = buildPropertyCalcs(report)
+  const estate = buildRealEstate(property.summary)
+  const calcs = [...(last === undefined ? [] : buildYearCalcs(report, last)), ...property.calcs, ...estate.calcs]
+  return calcs.filter((calc) => calc.status !== 'calculado').length + estate.pending.length
 }
 
 // ---------- Relaciones entre cálculos y datos ----------

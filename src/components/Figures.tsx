@@ -9,11 +9,15 @@ export function Figures({ label, children }: { label: string; children: ReactNod
   )
 }
 
-export function Figure({ label, value, note }: { label: string; value: string; note?: string }) {
+// Si la cifra trae unidad ("UF"), la unidad va más chica para que el número no se corte.
+export function Figure({ label, value, note, unit }: { label: string; value: string; note?: string; unit?: string }) {
   return (
     <div className="hero-item hero-static">
       <span className="hero-question">{label}</span>
-      <span className="hero-value">{value}</span>
+      <span className="hero-value">
+        {value}
+        {unit && <span className="hero-unit"> {unit}</span>}
+      </span>
       {note && <span className="hero-name">{note}</span>}
     </div>
   )

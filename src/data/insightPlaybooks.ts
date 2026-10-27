@@ -7,7 +7,7 @@ import {
   formatRate,
   formatUf,
 } from '../lib/format'
-import { presentValue } from '../lib/icred'
+import { presentValue } from '../lib/finanzas'
 import { reportAnchor } from '../lib/routes'
 import type {
   Cite,
@@ -191,13 +191,13 @@ export const playbooks: Record<string, Playbook> = {
         id: 'flujo',
         label: '¿Todo ese ingreso es flujo real?',
         keywords: ['flujo', 'real', 'nominal', 'presunta', 'rechazado'],
-        tools: ['F22 · 106 y 108', 'Método ICRED'],
+        tools: ['F22 · 106 y 108', 'Cálculo del informe'],
         answer: ({ report, last }) => {
           const nominal = (code(report, '106')[last.year] ?? 0) + (code(report, '108')[last.year] ?? 0)
           return {
             text:
               nominal === 0
-                ? `El método separa la **renta financiera** (flujo efectivo) de la **renta nominal** (gastos rechazados y rentas presuntas, códigos 106 y 108). En este caso ambos códigos están en cero, así que no hay rentas nominales que depurar. Aun así, el total no es tu renta personal: el método excluye arriendos y rentas exentas al calcular la renta financiera.`
+                ? `El informe separa la **renta financiera** (flujo efectivo) de la **renta nominal** (gastos rechazados y rentas presuntas, códigos 106 y 108). En este caso ambos códigos están en cero, así que no hay rentas nominales que depurar. Aun así, el total no es tu renta personal: se excluyen arriendos y rentas exentas al calcular la renta financiera.`
                 : `No todo. Hay ${formatMoney(nominal)} en rentas nominales (códigos 106 y 108) que forman parte de la base tributaria pero no son flujo de dinero.`,
             cites: [CITE.origenes, CITE.financiero],
             proposal: {
@@ -215,7 +215,7 @@ export const playbooks: Record<string, Playbook> = {
         keywords: ['renta financiera', 'rfb', 'rfn', 'cuanto'],
         tools: ['Análisis financiero'],
         answer: ({ last }) => ({
-          text: `De los ${formatMoney(last.totalOrigins)} de ${formatAt(last.year)}, la renta financiera bruta es ${formatMoney(last.rfb)} y la neta ${formatMoney(last.rfn)}. La diferencia con el total corresponde a los códigos que el método excluye (arriendos y rentas exentas).`,
+          text: `De los ${formatMoney(last.totalOrigins)} de ${formatAt(last.year)}, la renta financiera bruta es ${formatMoney(last.rfb)} y la neta ${formatMoney(last.rfn)}. La diferencia con el total corresponde a los códigos que se excluyen (arriendos y rentas exentas).`,
           cites: [CITE.financiero],
         }),
       },
@@ -252,9 +252,9 @@ export const playbooks: Record<string, Playbook> = {
           },
           {
             id: 'a3',
-            title: 'Aplicar el criterio del método',
+            title: 'Aplicar el criterio del informe',
             detail: 'Los arriendos no entran en la renta financiera personal.',
-            tools: ['Método ICRED'],
+            tools: ['Cálculo del informe'],
           },
         ],
         evidence: [
@@ -267,11 +267,11 @@ export const playbooks: Record<string, Playbook> = {
     questions: [
       {
         id: 'por-que-excluye',
-        label: '¿Por qué el método no los cuenta como renta personal?',
+        label: '¿Por qué no se cuentan como renta personal?',
         keywords: ['por que', 'excluye', 'cuenta', 'renta personal', 'personal'],
-        tools: ['Método ICRED'],
+        tools: ['Cálculo del informe'],
         answer: () => ({
-          text: 'Porque miden cosas distintas. La **capacidad personal** es lo que puedes pagar con tus ingresos propios. Los arriendos, en cambio, son el flujo que sirve la deuda hipotecaria de las mismas propiedades: el método los trata con el **factor leverage**, no como sueldo. Sumarlos a tu renta personal contaría dos veces el mismo flujo.',
+          text: 'Porque miden cosas distintas. La **capacidad personal** es lo que puedes pagar con tus ingresos propios. Los arriendos, en cambio, son el flujo que sirve la deuda hipotecaria de las mismas propiedades: se consideran con el **factor leverage**, no como sueldo. Sumarlos a tu renta personal contaría dos veces el mismo flujo.',
           cites: [CITE.financiero, CITE.credito],
         }),
       },
@@ -287,11 +287,11 @@ export const playbooks: Record<string, Playbook> = {
           const exentas = code(report, '152')[last.year] ?? 0
           const rfnWith = ((last.totalOrigins - exentas) * factor) / 12
           return {
-            text: `Simulación sobre ${formatAt(last.year)}, manteniendo el factor de renta neta del año (${formatDecimal(factor, 2)}). Incluir los arriendos subiría el dividendo de referencia, pero el método no lo recomienda para medir capacidad personal.`,
+            text: `Simulación sobre ${formatAt(last.year)}, manteniendo el factor de renta neta del año (${formatDecimal(factor, 2)}). Incluir los arriendos subiría el dividendo de referencia, pero no se usa para medir capacidad personal.`,
             table: {
               head: ['Escenario', 'RFN mensual', 'Dividendo de referencia', 'Capacidad'],
               rows: [
-                mortgageRow('Método (sin arriendos)', last.rfnMonthly, ctx),
+                mortgageRow('Informe (sin arriendos)', last.rfnMonthly, ctx),
                 mortgageRow('Con arriendos', rfnWith, ctx),
               ],
             },
@@ -424,9 +424,9 @@ export const playbooks: Record<string, Playbook> = {
         id: 'opciones',
         label: '¿Qué opciones tengo?',
         keywords: ['opcion', 'que hago', 'hacer', 'solucion', 'rectific', 'propuesta'],
-        tools: ['Método ICRED'],
+        tools: ['Cálculo del informe'],
         answer: ({ report }) => ({
-          text: `El método propone esta secuencia: ${(report.contingency?.proposal ?? []).map((item, index) => `(${index + 1}) ${item}`).join(' ')}`,
+          text: `La secuencia propuesta es: ${(report.contingency?.proposal ?? []).map((item, index) => `(${index + 1}) ${item}`).join(' ')}`,
           cites: [CITE.contingencias],
           proposal: reviewProposal,
         }),
@@ -435,7 +435,7 @@ export const playbooks: Record<string, Playbook> = {
         id: 'regimen',
         label: '¿Qué cambia si paso a Primera Categoría?',
         keywords: ['primera categoria', 'regimen', 'empresario', '14 a', 'cambi'],
-        tools: ['Método ICRED'],
+        tools: ['Cálculo del informe'],
         answer: () => ({
           text: 'Como persona natural, los arriendos se suman completos a la base del Global Complementario y no traen créditos. Como **empresario individual** (Art. 14 letra A) puedes imputar gastos financieros sin límite, depreciación y demás gastos necesarios; por regla general eso genera pérdida tributaria. A cambio debes llevar contabilidad y declarar PPM mensual en el F29. No puedo cuantificarlo con los datos de esta captura.',
           cites: [CITE.actividades, CITE.f29],
@@ -518,7 +518,7 @@ export const playbooks: Record<string, Playbook> = {
         keywords: ['tramo', '55 bis', 'uta', 'que es'],
         tools: ['Parámetros', 'UTA'],
         answer: ({ report }) => ({
-          text: `El método clasifica la base imponible, medida en UTA, en tramos del Art. 55 bis (la franquicia por intereses hipotecarios, código 750). En este caso: ${report.financial.map((item) => `${formatAt(item.year)} ${formatDecimal(item.bitUta)} UTA → tramo ${report.igcBase.bracket55bis[item.year] ?? '—'}`).join('; ')}. Los rangos exactos de cada tramo siguen **pendientes de validación**, así que no puedo decirte dónde está el límite.`,
+          text: `El informe clasifica la base imponible, medida en UTA, en tramos del Art. 55 bis (la franquicia por intereses hipotecarios, código 750). En este caso: ${report.financial.map((item) => `${formatAt(item.year)} ${formatDecimal(item.bitUta)} UTA → tramo ${report.igcBase.bracket55bis[item.year] ?? '—'}`).join('; ')}. Los rangos exactos de cada tramo siguen **pendientes de validación**, así que no puedo decirte dónde está el límite.`,
           cites: [CITE.financiero],
         }),
       },
@@ -526,9 +526,9 @@ export const playbooks: Record<string, Playbook> = {
         id: 'usar-170',
         label: '¿Puedo usar la base imponible como mi ingreso?',
         keywords: ['170', 'base imponible', 'usar', 'ingreso'],
-        tools: ['Método ICRED'],
+        tools: ['Cálculo del informe'],
         answer: () => ({
-          text: 'No. El método es explícito: **nunca** se usa el código 170 como base de ingresos. Por un lado no depura las rentas nominales; por otro, queda rebajado por las franquicias de los Art. 55 bis y 42 bis (códigos 750 y 765), lo que subvalúa tu ingreso financiero.',
+          text: 'No. El cálculo es explícito: **nunca** se usa el código 170 como base de ingresos. Por un lado no depura las rentas nominales; por otro, queda rebajado por las franquicias de los Art. 55 bis y 42 bis (códigos 750 y 765), lo que subvalúa tu ingreso financiero.',
           cites: [CITE.financiero],
         }),
       },
@@ -547,7 +547,7 @@ export const playbooks: Record<string, Playbook> = {
     origin: ({ report, last }) => {
       const factor = last.rfn / last.rfb
       return {
-        summary: `Partí del total de orígenes, resté los códigos que el método excluye y apliqué el factor del año: ${formatMoney(last.rfb)} × ${formatDecimal(factor, 2)} = ${formatMoney(last.rfn)}, es decir ${formatMoney(last.rfnMonthly)} al mes.`,
+        summary: `Partí del total de orígenes, resté los códigos que se excluyen y apliqué el factor del año: ${formatMoney(last.rfb)} × ${formatDecimal(factor, 2)} = ${formatMoney(last.rfn)}, es decir ${formatMoney(last.rfnMonthly)} al mes.`,
         formula: 'RFN = (total orígenes − códigos excluidos) × factor RFN · RFN mensual = RFN / 12',
         steps: [
           {
@@ -586,7 +586,7 @@ export const playbooks: Record<string, Playbook> = {
         keywords: ['factor', 'cambio', '0,80', '0,90', 'por que'],
         tools: ['Parámetros'],
         answer: ({ report }) => ({
-          text: `No lo sé todavía, y prefiero decirlo así. El factor es ${report.financial.map((item) => `${formatDecimal(item.rfn / item.rfb, 2)} en ${formatAt(item.year)}`).join(', ')}: son los valores que reproducen la tabla del caso, pero la **regla que los define está pendiente** de validación con el autor del método.`,
+          text: `No lo sé todavía, y prefiero decirlo así. El factor es ${report.financial.map((item) => `${formatDecimal(item.rfn / item.rfb, 2)} en ${formatAt(item.year)}`).join(', ')}: son los valores que reproducen la tabla del caso, pero la **regla que los define está pendiente** de confirmación.`,
           cites: [CITE.financiero],
           proposal: {
             tag: 'Simulación',
@@ -622,11 +622,11 @@ export const playbooks: Record<string, Playbook> = {
       },
       {
         id: 'gif',
-        label: '¿Cómo se relaciona con el GIF y el IFN del método?',
-        keywords: ['gif', 'ifn', '158', '494', 'metodo'],
-        tools: ['Método ICRED', 'F22 · 158 y 494'],
+        label: '¿Cómo se relaciona con el GIF y el IFN?',
+        keywords: ['gif', 'ifn', '158', '494', 'camino'],
+        tools: ['Cálculo del informe', 'F22 · 158 y 494'],
         answer: ({ report }) => ({
-          text: `El Capítulo IV define el camino completo así: ${report.method.reference.slice(0, 3).join(' · ')}. Esta captura no trae los códigos 158 ni 494, por eso el análisis usa la tabla del caso (RFB y RFN) y no puedo recalcular GIF ni IFN.`,
+          text: `El camino completo es: ${report.method.reference.slice(0, 3).join(' · ')}. Esta captura no trae los códigos 158 ni 494, por eso el análisis usa la tabla del caso (RFB y RFN) y no puedo recalcular GIF ni IFN.`,
           cites: [CITE.financiero],
         }),
       },
@@ -735,7 +735,7 @@ export const playbooks: Record<string, Playbook> = {
         id: 'leverage',
         label: '¿Qué es el factor leverage?',
         keywords: ['leverage', 'apalanc', 'veces', 'inversion'],
-        tools: ['Método ICRED', 'Valor presente'],
+        tools: ['Cálculo del informe', 'Valor presente'],
         answer: ({ report, last }) => {
           const { method } = report
           const pv = presentValue(last.mortgageLimit, method.mortgageRate, method.mortgageYears * 12)
@@ -757,7 +757,7 @@ export const playbooks: Record<string, Playbook> = {
         answer: ({ report, last }) => {
           const { method } = report
           return {
-            text: `Para un automotriz el método usa el ${formatRate(method.autoFactor, 0)} de tu renta financiera neta mensual: una cuota de referencia de **${formatMoney(Math.round(last.rfnMonthly * method.autoFactor))}** a ${method.autoMonths} meses. El monto que eso financia depende de la tasa, que el método no fija.`,
+            text: `Para un automotriz se usa el ${formatRate(method.autoFactor, 0)} de tu renta financiera neta mensual: una cuota de referencia de **${formatMoney(Math.round(last.rfnMonthly * method.autoFactor))}** a ${method.autoMonths} meses. El monto que eso financia depende de la tasa, que no es fija.`,
             cites: [CITE.financiero],
             proposal: {
               tag: 'Simulador',
@@ -826,7 +826,7 @@ export const playbooks: Record<string, Playbook> = {
         id: 'implica',
         label: '¿Qué implica haber iniciado actividades?',
         keywords: ['implica', 'inicio', 'actividad', 'obliga'],
-        tools: ['Método ICRED', 'F29'],
+        tools: ['Cálculo del informe', 'F29'],
         answer: ({ report }) => ({
           text: `Desde el inicio de actividades corresponde declarar el F29 todos los meses, aunque no haya movimiento. En esta captura hay ${report.f29.length} períodos, todos declarados sin movimiento. Si además cambias a Primera Categoría como empresario individual, se suma el PPM mensual y la contabilidad completa.`,
           cites: [CITE.actividades, CITE.f29],

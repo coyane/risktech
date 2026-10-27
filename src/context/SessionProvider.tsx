@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState, type ReactNode } from 'react'
 import { readSession, removeSession, writeSession } from '../lib/storage'
 import { SessionContext, type Role } from './session'
 
-const SESSION_KEY = 'ceft.session.v1'
+const SESSION_KEY = 'innovacred.session.v1'
 
 // Sesión de demo: solo ordena la navegación por rol. No es autenticación;
 // el control de acceso real debe resolverlo el backend.

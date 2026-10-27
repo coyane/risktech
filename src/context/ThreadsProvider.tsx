@@ -3,7 +3,7 @@ import { readSession, writeSession } from '../lib/storage'
 import type { InsightStatus, ThreadMessage } from '../types'
 import { ThreadsActionsContext, ThreadsStateContext, type ThreadsState } from './threads'
 
-const THREADS_KEY = 'ceft.threads.v1'
+const THREADS_KEY = 'innovacred.threads.v1'
 const EMPTY: ThreadsState = { threads: {}, status: {} }
 
 // Una conversación con el agente por hallazgo, guardada durante la sesión.

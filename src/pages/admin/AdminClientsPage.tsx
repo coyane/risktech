@@ -39,7 +39,7 @@ export function AdminClientsPage() {
     <>
       <header className="page-head">
         <div>
-          <div className="eyebrow">Administración · portafolio CEFT</div>
+          <div className="eyebrow">Administración · portafolio Innovacred</div>
           <h1>Propietarios en la plataforma</h1>
         </div>
       </header>

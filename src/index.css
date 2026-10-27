@@ -16,10 +16,8 @@
 @import './styles/sections.css';
 @import './styles/report.css';
 @import './styles/figures.css';
-@import './styles/calc.css';
-@import './styles/explorer.css';
-@import './styles/calc-visuals.css';
-@import './styles/report-extras.css';
+@import './styles/panel.css';
+@import './styles/deudas.css';
 @import './styles/soon.css';
 @import './styles/responsive.css';
 @import './styles/print.css';

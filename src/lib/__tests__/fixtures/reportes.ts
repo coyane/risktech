@@ -1,8 +1,8 @@
 import demo from '../../../data/demo.json'
 import type { Property, Report } from '../../../types'
 
-// El caso del Capítulo IV (Carlos Díaz, AT 2022–2025), tal como lo usa la demo.
-export const capituloIV = demo.report as unknown as Report
+// El caso de ejemplo de la demo (AT 2022–2025).
+export const casoEjemplo = demo.report as unknown as Report
 
 const byYear = <T,>(years: number[], values: T[]) =>
   Object.fromEntries(years.map((year, index) => [year, values[index]])) as Record<number, T>
@@ -65,17 +65,17 @@ export interface CaseInput {
   properties: Partial<Property>[]
 }
 
-// Arma un reporte completo con las reglas del método de la demo y los datos del caso.
+// Arma un reporte completo con los parámetros de la demo y los datos del caso.
 export function makeReport(input: CaseInput): Report {
   const { years } = input
   return {
-    ...capituloIV,
+    ...casoEjemplo,
     years,
-    incomeOrigins: capituloIV.incomeOrigins.map((item) => ({
+    incomeOrigins: casoEjemplo.incomeOrigins.map((item) => ({
       ...item,
       values: byYear(years, input.origins[item.code] ?? years.map(() => 0)),
     })),
-    deductions: capituloIV.deductions.map((item) => ({
+    deductions: casoEjemplo.deductions.map((item) => ({
       ...item,
       values: byYear(years, input.deductions[item.id] ?? years.map(() => 0)),
     })),
@@ -106,7 +106,7 @@ export function makeReport(input: CaseInput): Report {
     stampings: [],
     contingency: null,
     method: {
-      ...capituloIV.method,
+      ...casoEjemplo.method,
       utaByYear: byYear(years, input.uta),
       adjustments: [
         {
@@ -127,7 +127,7 @@ export function makeReport(input: CaseInput): Report {
   }
 }
 
-// Caso de referencia: cifras de un Informe de Apertura real de BICRED (AT 2022–2026),
+// Caso de referencia: cifras de un informe de apertura real (AT 2022–2026),
 // sin nombre, RUT, roles ni sociedades. El código 494 no viene en ese informe: se
 // infiere como 3/7 de los honorarios (gasto presunto de 30% sobre el bruto).
 const refYears = [2022, 2023, 2024, 2025, 2026]
@@ -198,9 +198,9 @@ export function randomReport(seed: number): Report {
 
   const count = 1 + int(6)
   const years = Array.from({ length: count }, (_, index) => 2027 - count + index)
-  const codes = capituloIV.incomeOrigins.map((item) => item.code)
+  const codes = casoEjemplo.incomeOrigins.map((item) => item.code)
   const origins = Object.fromEntries(codes.map((code) => [code, years.map(amount)]))
-  const deductionIds = capituloIV.deductions.map((item) => item.id)
+  const deductionIds = casoEjemplo.deductions.map((item) => item.id)
   const deductions = Object.fromEntries(
     deductionIds.map((id) => [id, years.map(() => Math.abs(pick([0, 0, int(8_000_000)])))]),
   )
@@ -234,7 +234,7 @@ export function randomReport(seed: number): Report {
       rfnMonthly: monthly,
       bitUta: bit,
       bracket: bit.map((value) => (value < 90 ? 'A' : value < 150 ? 'B' : 'C')),
-      mortgageLimit: monthly.map((value) => Math.round(value * capituloIV.method.mortgageFactor)),
+      mortgageLimit: monthly.map((value) => Math.round(value * casoEjemplo.method.mortgageFactor)),
     },
     uta,
     properties: Array.from({ length: int(9) }, () => {

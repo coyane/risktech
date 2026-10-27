@@ -79,7 +79,7 @@ export function ContingencySection({
         </table>
       </TableWrap>
       <div className="section-body stack">
-        <h3 className="section-subtitle flush">Solución propuesta por el método</h3>
+        <h3 className="section-subtitle flush">Solución propuesta</h3>
         <ol className="numbered-list">
           {contingency.proposal.map((item) => (
             <li key={item}>{item}</li>

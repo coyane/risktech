@@ -3,7 +3,6 @@ import { formatAmount, formatAt } from '../../lib/format'
 import type { Report } from '../../types'
 import { TableWrap } from '../SectionCard'
 
-const HERO = ['total-origenes', 'tasa-efectiva', 'rfn-mensual', 'limite-hipotecario', 'credit-capacity', 'credit-capacity-uf']
 const ROWS = [
   'tasa-efectiva',
   'renta-bruta',
@@ -15,22 +14,6 @@ const ROWS = [
   'credit-capacity',
   'credit-capacity-uf',
 ]
-
-// Las cifras principales del año elegido, cada una con su pregunta.
-export function ResultsHero({ calcs, ids = HERO }: { calcs: Calc[]; ids?: string[] }) {
-  const items = ids.map((id) => calcs.find((calc) => calc.id === id)).filter((item) => item !== undefined)
-  return (
-    <div className="hero">
-      {items.map((calc) => (
-        <a key={calc.id} className="hero-item" href={`#calc-${calc.id}`}>
-          <span className="hero-question">{calc.question}</span>
-          <span className="hero-value">{calc.display}</span>
-          <span className="hero-name">{calc.name}</span>
-        </a>
-      ))}
-    </div>
-  )
-}
 
 // La tabla "Análisis financiero" del informe de referencia, con todos los años.
 export function ResultsTable({
@@ -107,34 +90,5 @@ function ResultRow({
         </td>
       ))}
     </tr>
-  )
-}
-
-export function YearPicker({
-  years,
-  selected,
-  onSelect,
-}: {
-  years: number[]
-  selected: number
-  onSelect: (year: number) => void
-}) {
-  return (
-    <div className="year-picker">
-      <span className="year-picker-label">Año</span>
-      <div className="chip-group" role="group" aria-label="Año de la declaración">
-        {years.map((year) => (
-          <button
-            key={year}
-            type="button"
-            className={`chip${year === selected ? ' on' : ''}`}
-            aria-pressed={year === selected}
-            onClick={() => onSelect(year)}
-          >
-            {formatAt(year)}
-          </button>
-        ))}
-      </div>
-    </div>
   )
 }

@@ -1,40 +1,61 @@
 /* ---------- Tokens ---------- */
 
 :root {
-  /* Paleta "banca tradicional" del sistema de diseño (design-system/risktech-ceft). */
-  --ground: #f8fafc;
+  /* Paleta Innovacred: una familia petróleo y neutros fríos (design-system/risktech-ceft/MASTER.md).
+     Los nombres antiguos (--ground, --nav, --accent…) se conservan para el resto de la interfaz. */
+  --canvas: #e4e8e7;
+  --shell: #f3f5f4;
   --panel: #fff;
-  --ink: #020617;
-  --ink-2: #1e293b;
-  --muted: #475569;
-  --faint: #5b6b82;
-  --line: #e2e8f0;
-  --line-soft: #eef2f6;
-  /* Borde de controles: 3,6:1 sobre blanco (WCAG 1.4.11). */
-  --field: #7a889c;
-  --axis: #7a889c;
-  --nav: #0f172a;
-  --nav-2: #1e3a8a;
-  --nav-line: #1e293b;
-  --nav-ink: #f8fafc;
-  --nav-text: #cbd5e1;
-  --nav-muted: #94a3b8;
-  --accent: #1e3a8a;
-  --accent-dark: #172554;
-  /* Dorado: solo para énfasis puntual. */
-  --gold: #a16207;
-  --good: #166534;
-  --good-ink: #166534;
-  --good-bg: #dcfce7;
-  --info-bg: #e8eefb;
-  --info: #1e3a8a;
-  --warn-bg: #fef3c7;
-  --warn: #854d0e;
-  --danger: #b91c1c;
-  --danger-bg: #fee2e2;
-  --idle-bg: #f1f5f9;
-  --th-bg: #f8fafc;
-  /* Series de gráficos: todas ≥ 3:1 sobre el panel. */
+  --ground: #f3f5f4;
+  --ink: #0d1b1e;
+  --ink-2: #3a484c;
+  --muted: #5a676b;
+  --faint: #5a676b;
+  --line: #e2e7e6;
+  --line-soft: #edf1f0;
+  --line-2: #cbd4d2;
+  /* Borde de controles: ≥ 3:1 sobre blanco (WCAG 1.4.11). */
+  --field: #7d8b88;
+  --axis: #5a676b;
+
+  /* Familia petróleo, de la más oscura a la más clara. */
+  --p900: #0b2e33;
+  --p800: #0f3d43;
+  --p700: #135159;
+  --p500: #1c7a73;
+  --p300: #7cc9bb;
+  --p200: #b9e3da;
+  --p100: #e1f2ee;
+  --on-dark: #eef8f6;
+  --on-dark-2: #a9cdc7;
+
+  --nav: var(--p900);
+  --nav-2: var(--p700);
+  --nav-line: #1c4a50;
+  --nav-ink: var(--on-dark);
+  --nav-text: #c7dedb;
+  --nav-muted: var(--on-dark-2);
+  --accent: var(--p700);
+  --accent-dark: var(--p900);
+  --gold: #8a4b00;
+
+  /* Estados: siempre con ícono y texto, nunca solo color. */
+  --good: #1d6a46;
+  --good-ink: #1d6a46;
+  --good-bg: #e1f1e8;
+  --info-bg: var(--p100);
+  --info: var(--p700);
+  --warn-bg: #fbf0dc;
+  --warn: #8a4b00;
+  --warn-line: #e6c999;
+  --danger: #b42318;
+  --danger-bg: #fde7e4;
+  --idle-bg: #eef1f0;
+  --th-bg: #f3f5f4;
+
+  /* Lo pendiente o lo financiado se dibuja rayado, para no depender del color. */
+  --hatch: repeating-linear-gradient(135deg, #8fa3a0 0 2px, transparent 2px 7px);
+
   /* Escala tipográfica */
   --fs-xs: 12px;
   --fs-sm: 13px;
@@ -43,7 +64,20 @@
   --fs-xl: 18px;
   --fs-2xl: 24px;
   --fs-3xl: 30px;
-  --sans: "IBM Plex Sans", system-ui, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --fs-figure: clamp(30px, 2.6vw, 40px);
+  --fs-hero: clamp(40px, 4vw, 60px);
+
+  /* Instrument Sans para el texto y Bricolage Grotesque, liviana, para cifras y títulos.
+     Las dos se sirven desde el paquete (@fontsource): el PDF y el uso sin conexión las necesitan. */
+  --sans: "Instrument Sans", system-ui, sans-serif;
+  --display: "Bricolage Grotesque", "Instrument Sans", system-ui, sans-serif;
+  --mono: "Instrument Sans", system-ui, sans-serif;
+
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+
   --ease: 0.2s ease-out;
+  --ease-out: cubic-bezier(0.22, 0.9, 0.24, 1);
 }

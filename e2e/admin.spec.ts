@@ -1,8 +1,14 @@
-import { expect, expectNoHorizontalScroll, loginAsAdmin, test } from './helpers.ts'
+import { expect, expectNoHorizontalScroll, hasSidebar, loginAsAdmin, openNavLink, test } from './helpers.ts'
 
 test.describe('Backoffice', () => {
   test.beforeEach(async ({ page }) => {
     await loginAsAdmin(page)
+  })
+
+  test('la consola lleva la misma marca que la vista cliente', async ({ page }) => {
+    await expect(page).toHaveTitle(/Innovacred/)
+    const brand = hasSidebar(page) ? page.locator('.side .brand') : page.locator('.mtop .brand')
+    await expect(brand).toHaveText(/Innovacred/)
   })
 
   test('Propietarios muestra las cifras del portafolio y una fila por cliente', async ({ page }) => {
@@ -14,7 +20,7 @@ test.describe('Backoffice', () => {
   })
 
   test('Radiografía agrupa el portafolio por tramo de Global Complementario', async ({ page }) => {
-    await page.locator('.nav a', { hasText: 'Radiografía' }).click()
+    await openNavLink(page, 'Radiografía')
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Radiografía general')
     const columns = page.getByRole('list', { name: 'Clientes por tramo de Global Complementario' }).locator('li')
     // Todos los tramos, también los que no tienen clientes.
@@ -27,7 +33,9 @@ test.describe('Backoffice', () => {
   })
 
   test('el agente del portafolio sigue visible como Próximamente', async ({ page }) => {
-    const link = page.locator('.nav a', { hasText: 'Agente portafolio' })
+    if (!hasSidebar(page)) await page.getByRole('button', { name: 'Menú' }).click()
+    const scope = hasSidebar(page) ? page.locator('.side') : page.locator('.msheet')
+    const link = scope.locator('.nav a', { hasText: 'Agente portafolio' })
     await expect(link).toContainText('Próximamente')
     await link.click()
     await expect(page.locator('.banner-soon')).toBeVisible()

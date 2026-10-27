@@ -2,7 +2,7 @@
   "report": {
     "taxpayer": {
       "rut": "[RUT]",
-      "name": "Caso de ejemplo · Capítulo IV",
+      "name": "Caso de ejemplo",
       "capturedAt": "2026-10-06T11:00:00-03:00",
       "sources": [
         {
@@ -46,7 +46,7 @@
             "9 roles vigentes"
           ],
           "missing": [],
-          "note": "Totales del Capítulo IV; el detalle por rol, la escritura, la inscripción y el crédito de cada propiedad son ilustrativos."
+          "note": "Caso de ejemplo: el detalle por rol, la escritura, la inscripción y el crédito de cada propiedad son ilustrativos."
         },
         {
           "source": "ACTIVIDADES",
@@ -84,7 +84,7 @@
       2024,
       2025
     ],
-    "summary": "Tus ingresos se duplicaron entre AT 2022 y AT 2025, pero tu renta financiera neta se mantiene en torno a $5,4 millones mensuales desde AT 2023. La diferencia la explican los arriendos, que el método no considera renta personal. Con ese ingreso, tu dividendo hipotecario de referencia es $1.361.668 al mes. Además, los arriendos declarados son menores a los que percibes, lo que abre una contingencia tributaria por validar.",
+    "summary": "Tus ingresos se duplicaron entre AT 2022 y AT 2025, pero tu renta financiera neta se mantiene en torno a $5,4 millones mensuales desde AT 2023. La diferencia la explican los arriendos, que no se cuentan como renta personal. Con ese ingreso, tu dividendo hipotecario de referencia es $1.361.668 al mes. Además, los arriendos declarados son menores a los que percibes, lo que abre una contingencia tributaria por validar.",
     "kpis": [
       {
         "label": "Ingresos AT 2025",
@@ -126,7 +126,7 @@
         "dimension": "Económico",
         "tone": "neutral",
         "title": "Los arriendos ya son 22% de tus ingresos",
-        "body": "Aparecen desde AT 2024 y suman $23.132.593 en AT 2025. El método los excluye de la renta financiera personal.",
+        "body": "Aparecen desde AT 2024 y suman $23.132.593 en AT 2025. No se suman a la renta financiera personal.",
         "source": "F22 · código 955",
         "anchor": "origenes"
       },
@@ -154,7 +154,7 @@
         "tone": "positive",
         "title": "Tu renta financiera neta se mantiene en $5,4 millones al mes",
         "body": "Desde AT 2023 varía menos de 2%, aunque los ingresos totales siguen creciendo.",
-        "source": "Cálculo Método ICRED",
+        "source": "Cálculo del informe",
         "anchor": "financiero"
       },
       {
@@ -162,8 +162,8 @@
         "dimension": "Crediticio",
         "tone": "positive",
         "title": "Tu dividendo hipotecario de referencia es $1.361.668",
-        "body": "Equivale a 25% de tu renta financiera neta mensual. A 30 años y 4% anual representa cerca de 7.424 UF. Es un valor referencial del método, no una aprobación de crédito.",
-        "source": "Cálculo Método ICRED",
+        "body": "Equivale a 25% de tu renta financiera neta mensual. A 30 años y 4% anual representa cerca de 7.424 UF. Es un valor referencial, no una aprobación de crédito.",
+        "source": "Cálculo del informe",
         "anchor": "credito"
       },
       {
@@ -385,13 +385,15 @@
         "code": "681012",
         "label": "Compra, venta y alquiler (excepto amoblados) de inmuebles",
         "category": "1",
-        "startDate": "2025-01-31"
+        "startDate": "2025-01-31",
+        "afectaIva": false
       },
       {
         "code": "749009",
         "label": "Otras actividades profesionales, científicas y técnicas n.c.p.",
         "category": "2",
-        "startDate": "2014-10-06"
+        "startDate": "2014-10-06",
+        "afectaIva": true
       }
     ],
     "properties": [
@@ -1006,8 +1008,8 @@
     ],
     "f50": [],
     "warnings": [
-      "Las reglas marcadas \"por confirmar\" se dedujeron de los casos de referencia y aún no están validadas por el Método ICRED.",
-      "Folios, desglose de rebajas, sociedades, regímenes, detalle de bienes raíces por rol y períodos del F29 son ilustrativos: el Capítulo IV solo publica los totales. El código 158 de cada año también es ilustrativo: el Capítulo IV no lo trae, y se tomó igual a la suma de los orígenes de renta."
+      "Los cálculos marcados \"por confirmar\" usan un dato o un supuesto que aún falta confirmar.",
+      "Caso de ejemplo: los folios, el desglose de rebajas, las sociedades, los regímenes, el detalle de bienes raíces por rol, los períodos del F29 y el código 158 de cada año son ilustrativos."
     ],
     "f22Returns": [
       {
@@ -1050,7 +1052,7 @@
         {
           "key": "rfb_rule",
           "label": "Renta financiera bruta",
-          "value": "Código 158 + 494 − 106 − 108 (Capítulo IV, páginas 5 y 6)",
+          "value": "Código 158 + 494 − 106 − 108",
           "status": "confirmed"
         },
         {
@@ -1085,20 +1087,20 @@
         },
         {
           "key": "mortgage_factor",
-          "label": "Factor crédito hipotecario",
+          "label": "Porcentaje para crédito hipotecario",
           "value": "0,25 de la RFN mensual",
           "status": "confirmed"
         },
         {
           "key": "auto_factor",
-          "label": "Factor crédito automotriz",
+          "label": "Porcentaje para crédito automotriz",
           "value": "0,07 de la RFN mensual",
           "status": "confirmed"
         },
         {
           "key": "credit_params",
           "label": "Tasa y plazo del Credit Capacity",
-          "value": "Los escribe la persona. Parten en 4% anual a 30 años (Capítulo IV)",
+          "value": "Los escribe la persona. Parten en 4% anual a 30 años",
           "status": "confirmed"
         },
         {
@@ -1502,6 +1504,10 @@
       "text": "Otros impuestos, últimos 24 meses"
     },
     {
+      "code": "Actividades",
+      "text": "Actividades económicas registradas"
+    },
+    {
       "code": "Bienes raíces",
       "text": "Roles y avalúos vigentes"
     }
@@ -1528,13 +1534,18 @@
       "detail": "Últimos 24 períodos"
     },
     {
+      "key": "CONTRIBUYENTE",
+      "title": "Datos del contribuyente",
+      "detail": "Actividades económicas registradas e inicio de actividades"
+    },
+    {
       "key": "BIENES_RAICES",
-      "title": "Bienes raíces y actividades",
-      "detail": "Roles, avalúos y giros vigentes"
+      "title": "Bienes raíces",
+      "detail": "Roles, avalúos y datos de compra"
     },
     {
       "key": "CALCULO",
-      "title": "Cálculo Método ICRED",
+      "title": "Cálculo del diagnóstico",
       "detail": "Orígenes de renta, RFN y capacidad de crédito"
     }
   ],
@@ -1581,13 +1592,18 @@
     },
     {
       "step": 5,
-      "t": "02:20",
-      "text": "Bienes raíces: 9 roles vigentes · Actividades: 2 vigentes"
+      "t": "02:06",
+      "text": "Datos del contribuyente: 2 actividades económicas registradas"
     },
     {
       "step": 6,
+      "t": "02:20",
+      "text": "Bienes raíces: 9 roles vigentes"
+    },
+    {
+      "step": 7,
       "t": "02:31",
-      "text": "Cálculos del Método ICRED listos. Diagnóstico disponible."
+      "text": "Cálculos listos. Diagnóstico disponible."
     }
   ]
 }

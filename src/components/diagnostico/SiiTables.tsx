@@ -1,5 +1,5 @@
 import { glossary } from '../../data/glosario'
-import type { Calc } from '../../lib/calculos'
+import { ACTIVITY_TEXT, type Calc } from '../../lib/calculos'
 import { formatAmount, formatAt, formatDate } from '../../lib/format'
 import type { TimelineDay } from '../../lib/timeline'
 import type { Report } from '../../types'
@@ -165,7 +165,7 @@ export function RentaTables({
         </TableWrap>
       </SectionCard>
 
-      <SectionCard id="ajustes" title="Otros códigos usados por el método" note="Formulario 22" as="h3">
+      <SectionCard id="ajustes" title="Otros códigos usados en los cálculos" note="Formulario 22" as="h3">
         <TableWrap>
           <table>
             <thead>
@@ -207,9 +207,9 @@ export function RentaTables({
 export function ContribuyenteTables({ report }: { report: Report }) {
   return (
     <>
-      <SectionCard id="actividades" title="Actividades económicas" note="SII" as="h3">
+      <SectionCard id="actividades" title={ACTIVITY_TEXT.title} note={ACTIVITY_TEXT.source} as="h3">
         {report.activities.length === 0 ? (
-          <EmptyState text="Sin actividades económicas registradas." />
+          <EmptyState text={ACTIVITY_TEXT.none} />
         ) : (
           <TableWrap>
             <table>
@@ -218,6 +218,7 @@ export function ContribuyenteTables({ report }: { report: Report }) {
                   <th>Nombre</th>
                   <th>Código</th>
                   <th>Categoría</th>
+                  <th>Afecta IVA</th>
                   <th>Desde</th>
                 </tr>
               </thead>
@@ -227,6 +228,7 @@ export function ContribuyenteTables({ report }: { report: Report }) {
                     <td>{item.label}</td>
                     <td>{item.code}</td>
                     <td>{item.category}</td>
+                    <td>{ACTIVITY_TEXT.afectaIva(item.afectaIva)}</td>
                     <td>{formatDate(item.startDate)}</td>
                   </tr>
                 ))}

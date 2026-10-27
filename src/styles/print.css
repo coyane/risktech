@@ -3,16 +3,16 @@
   margin: 16mm 14mm 18mm;
 
   @bottom-left {
-    content: "CEFT · Diagnóstico Base · documento referencial";
-    color: #475569;
-    font-family: "IBM Plex Sans", sans-serif;
+    content: "Innovacred · Diagnóstico Base · documento referencial";
+    color: #5a676b;
+    font-family: "Instrument Sans", sans-serif;
     font-size: 9px;
   }
 
   @bottom-right {
     content: "Página " counter(page) " de " counter(pages);
-    color: #475569;
-    font-family: "IBM Plex Sans", sans-serif;
+    color: #5a676b;
+    font-family: "Instrument Sans", sans-serif;
     font-size: 9px;
   }
 }
@@ -20,7 +20,8 @@
 @media print {
   /* Escala tipográfica propia del papel. */
   :root {
-    --ground: #fff;
+    --canvas: #fff;
+    --shell: #f3f5f4;
     --fs-xs: 7.5pt;
     --fs-sm: 8pt;
     --fs-md: 9pt;
@@ -28,20 +29,26 @@
     --fs-xl: 11pt;
     --fs-2xl: 14pt;
     --fs-3xl: 18pt;
+    --fs-figure: 18pt;
+    --fs-hero: 26pt;
   }
 
   body {
+    background: #fff;
     font-size: 10pt;
   }
 
-  .nav,
+  .side,
+  .mtop,
+  .msheet,
+  .msheet-scrim,
+  .tabbar,
   .skip-link,
   .no-print,
   .thread-input,
   .thread-suggestions,
   .ask-form,
-  .disclosure-toggle,
-  .sim-inputs {
+  .disclosure-toggle {
     display: none !important;
   }
 
@@ -49,201 +56,61 @@
     display: inline;
   }
 
-  .print-block {
+  section.print-only,
+  div.print-only,
+  p.print-only {
     display: block;
-  }
-
-  /* El PDF trae todas las vistas y todos los cálculos, en orden. */
-  .view[hidden],
-  .data-panel[hidden] {
-    display: flex !important;
-  }
-
-  .explorer-panel[hidden] {
-    display: block !important;
-  }
-
-  .explorer-wrap,
-  .explorer,
-  .explorer-index {
-    display: block;
-  }
-
-  .explorer-wrap > * + * {
-    margin-top: 12px;
-  }
-
-  .index-row::after {
-    content: none;
-  }
-
-  .index-row[aria-current] {
-    background: none;
-    box-shadow: none;
-  }
-
-  .index-row[aria-current] .index-name {
-    color: inherit;
-    font-weight: 500;
-  }
-
-  .explorer-detail[hidden] {
-    display: block !important;
-  }
-
-  .index-grid {
-    gap: 10px;
-  }
-
-  .index-row {
-    min-height: 0;
-    padding-block: 4px;
-  }
-
-  .index-card,
-  .index-row {
-    break-inside: avoid;
-  }
-
-  .report-views {
-    gap: 16px;
-    padding: 0;
-  }
-
-  .report-about {
-    order: 0;
-    gap: 10px;
-  }
-
-  .report-head h1 {
-    font-size: 21pt;
-  }
-
-  .explorer-section-title {
-    margin-top: 14px;
-    color: var(--muted);
-    font-size: 8pt;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    break-after: avoid;
-  }
-
-  .data-panel {
-    gap: 10px;
   }
 
   .shell,
   .workspace {
     display: block;
-  }
-
-  .main {
+    margin: 0;
     padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
   }
 
-  .report {
-    gap: 16px;
-    max-width: none;
-  }
-
-  .calc-value,
-  .hero-value {
-    font-size: 18pt;
-  }
-
-  .chip-value {
-    font-size: 11pt;
-  }
-
-  .hero {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-
-  .hero-item,
-  .data-chip {
-    padding: 8px 10px;
-  }
-
-  .hero-question {
-    min-height: 0;
-  }
-
-  .legend {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .chapter,
-  .calc,
-  .calc-block {
-    gap: 10px;
-  }
-
-  /* En papel el bloque no es una caja: una caja vacía al pie de página no dice nada.
-     La línea superior viaja con el encabezado del cálculo. */
-  .calc,
-  .cascade {
+  .main,
+  .pn-top,
+  .pn-page {
     padding: 0;
-    border: 0;
     border-radius: 0;
     background: none;
   }
 
-  .calc-head {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1.5pt solid var(--nav);
+  .report,
+  .pn-page {
+    gap: 14px;
   }
 
-  .calc-pending .calc-head {
-    border-top: 1.5pt dashed var(--field);
-  }
-
-  .calc-links {
-    padding-top: 8px;
-  }
-
-  .calc-check,
-  .calc-note {
-    padding: 6px 10px;
-  }
-
-  .eq {
-    gap: 6px;
-  }
-
-  .data-chip {
-    min-width: 120px;
-    max-width: 220px;
-  }
-
-  .calc:target {
-    border-color: var(--line);
-    box-shadow: none;
-  }
-
-  .calc-answer {
-    padding: 10px 14px;
-  }
-
-  .eq-op {
-    font-size: 13pt;
-  }
-
-  .waterfall-track {
-    height: 14px;
-  }
-
-  .brackets li {
+  .pn-top {
     min-height: 0;
-    padding: 4px 12px;
+    padding-bottom: 8px;
+    border-bottom: 1.5pt solid var(--p800);
   }
 
-  .section-body,
-  .card-head {
-    padding: 8px 12px;
+  .pn-top-case h1 {
+    font-size: 18pt;
+  }
+
+  /* El PDF trae todas las vistas y todos los cálculos, en orden. */
+  .view[hidden],
+  .data-panel[hidden] {
+    display: block !important;
+  }
+
+  .view {
+    animation: none !important;
+  }
+
+  .view + .view {
+    margin-top: 10px;
+  }
+
+  .view:not([data-view='resumen']) {
+    break-before: page;
   }
 
   .disclosure-body[hidden] {
@@ -251,35 +118,158 @@
     flex-direction: column;
   }
 
-  .chapter-break {
-    break-before: page;
+  .pn-head {
+    margin-bottom: 10px;
   }
 
-  /* Los bloques fluyen entre páginas; solo sus piezas internas no se parten. */
-  .calc-head {
+  .pn-title {
+    font-size: 20pt;
+  }
+
+  .pn-grid {
+    gap: 8px;
+  }
+
+  .pn-card {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: none;
+    break-inside: avoid;
+  }
+
+  .pn-card.is-dark {
+    background: var(--p800);
+  }
+
+  .pn-kpi {
+    min-height: 0;
+  }
+
+  .pn-bars-plot {
+    height: 150px;
+  }
+
+  .pn-curve-plot {
+    break-inside: avoid;
+  }
+
+  .pn-strip {
+    padding: 10px 0;
+    background: none;
+    border: 1px solid var(--line);
+  }
+
+  /* Cada cálculo con todos sus niveles abiertos. La línea superior viaja con su pregunta. */
+  .pn-print-group-title {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 9pt;
+    font-weight: 600;
     break-after: avoid;
   }
 
-  .calc-head,
-  .calc-answer,
-  .calc-block,
-  .data-chip,
-  .hero-item,
-  .stat-tile,
-  .brackets,
-  .waterfall,
-  .legend,
+  .pn-detail {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1.5pt solid var(--p800);
+  }
+
+  .pn-detail-top,
+  .pn-detail-q,
+  .pn-detail-value {
+    break-after: avoid;
+  }
+
+  .pn-detail-top {
+    margin-bottom: 6px;
+  }
+
+  .pn-detail-q {
+    font-size: 13pt;
+  }
+
+  .pn-detail-value {
+    margin: 6px 0;
+    font-size: 18pt;
+  }
+
+  .pn-plain {
+    font-size: 10pt;
+  }
+
+  .pn-levels {
+    margin-top: 8px;
+    gap: 4px;
+  }
+
+  .pn-op li {
+    padding: 4px 0;
+  }
+
+  .pn-op-value {
+    font-size: 10pt;
+  }
+
+  .pn-op-result .pn-op-value {
+    font-size: 11pt;
+  }
+
+  .pn-sources {
+    gap: 4px;
+  }
+
+  .pn-rel a {
+    min-height: 0;
+    padding: 2px 8px;
+  }
+
+  .pn-op li,
+  .pn-sources li,
   .pending-list li,
   .timeline > li,
   .glossary > div,
+  .split,
+  .pn-prow,
+  .pn-acts-list li,
   tr {
     break-inside: avoid;
+  }
+
+  /* Lista de propiedades y actividades: la tabla con encabezados, más compacta en papel. */
+  .pn-prow {
+    gap: 10px;
+    padding: 8px 2px;
+    font-size: 8pt;
+  }
+
+  .pn-phead {
+    font-size: 7.5pt;
+  }
+
+  .pn-pc-sub,
+  .pn-plazo-state,
+  .pn-columns {
+    font-size: 7.5pt;
+  }
+
+  .pn-fin-bar {
+    flex-basis: 40px;
+  }
+
+  .pn-acts-src .pn-go {
+    display: none;
   }
 
   h2,
   h3,
   h4 {
     break-after: avoid;
+  }
+
+  .section-body,
+  .card-head {
+    padding: 8px 12px;
   }
 
   .table-wrap {
@@ -302,7 +292,56 @@
     text-decoration: none;
   }
 
-  /* Fondos de fichas, barras y estados deben imprimirse. */
+  /* Informe de deudas: al final de la carpeta, cada página del PDF cargado en su propia hoja. */
+  .dr-print-head {
+    margin-bottom: 8px;
+  }
+
+  .dr-print-head .pn-note {
+    max-width: none;
+  }
+
+  .dr-print-verified {
+    margin-top: 2px;
+    font-size: 8pt;
+    font-weight: 600;
+  }
+
+  .dr-pages {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
+
+  .dr-page {
+    display: block;
+    max-width: none;
+    margin: 0 0 4mm;
+    text-align: center;
+    break-inside: avoid;
+  }
+
+  .dr-page + .dr-page {
+    break-before: page;
+  }
+
+  .dr-page img {
+    width: auto;
+    max-width: 100%;
+    max-height: 222mm;
+    margin: 0 auto;
+    border: 0.5pt solid var(--line-2);
+    border-radius: 0;
+  }
+
+  .dr-page-num {
+    display: block;
+    margin-top: 2mm;
+    font-size: 7.5pt;
+  }
+
+  /* Fondos de barras, rayados y estados deben imprimirse. */
   * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;

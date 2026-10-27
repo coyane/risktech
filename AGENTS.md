@@ -13,7 +13,7 @@ Este archivo es la fuente principal de instrucciones compartidas para los agente
 
 ## 2. Este proyecto
 
-Risktech · CEFT es un prototipo de front (React, Vite y TypeScript) de un diagnóstico tributario y crediticio basado en el Método ICRED. No tiene backend, no consulta el SII y trabaja con datos de ejemplo. La interfaz y todos los documentos van en español.
+Innovacred (repositorio Risktech) es un prototipo de front (React, Vite y TypeScript) de un diagnóstico tributario y crediticio que sigue el Método ICRED. La interfaz no nombra el método: habla del cálculo y de su origen (ver `docs/product.md`). No tiene backend, no consulta el SII y trabaja con datos de ejemplo. La interfaz y todos los documentos van en español.
 
 ### Dónde está cada cosa
 
@@ -22,6 +22,7 @@ Risktech · CEFT es un prototipo de front (React, Vite y TypeScript) de un diagn
 | Qué es el producto y sus reglas | `docs/product.md` |
 | Plan vigente, fórmulas y pendientes del método | `docs/sprint-1-v2-diagnostico-base-y-backoffice.md` |
 | Catálogo exacto de fórmulas y su fuente | `docs/sprint-2-formulas-del-metodo.md` |
+| Sprint 3: rediseño Innovacred, actividades, plazo del crédito e informe de deudas, con antes y después | `docs/sprint-3-rediseno-innovacred.md` |
 | Cómo construir y verificar interfaz | `docs/ui.md` |
 | Reglas visuales por página | `design-system/risktech-ceft/pages/` |
 | Decisiones costosas de revertir | `docs/decisions/` |
@@ -43,6 +44,8 @@ No hay integración continua: lo que no se corre a mano no se verificó.
 El detalle y el porqué están en `docs/product.md`. Cambiarlas requiere una indicación explícita del usuario.
 
 - El Diagnóstico Base es determinístico y no interpreta: sin semáforo, sin evaluaciones, sin texto que dependa del caso. Todo su contenido sale del registro `src/lib/calculos.ts`.
+- La variación entre años se muestra solo como dato neutro ("+11,9% vs AT 2024"), sin flechas ni adjetivos, y se puede ocultar.
+- La interfaz (pantalla, PDF y CSV) no nombra el método, el Capítulo IV ni sus reglas: habla del cálculo y de su origen. La marca visible es Innovacred.
 - No se inventan fórmulas. Lo deducido de los casos queda "por confirmar" hasta que el método lo valide.
 - Lo pendiente se muestra rotulado; no se oculta.
 - Lo que está fuera de fase (los dos agentes) queda visible y completo, con la etiqueta "Próximamente". No elimines ni escondas algo que ya se mostró funcionando sin confirmarlo antes.
@@ -52,6 +55,7 @@ El detalle y el porqué están en `docs/product.md`. Cambiarlas requiere una ind
 
 La tabla de la sección 3 aplica a la lógica y al futuro backend. Para decidir cómo se ve o cómo se usa algo, el flujo es distinto:
 
+0. **Quién lo hace.** En Claude Code, toda pantalla nueva, rediseño o cambio visual se delega al subagente `frontend-uiux` (definido a nivel de usuario, con `ui-ux-pro-max` e `imitar-21st`); el agente principal integra y corre la verificación final. Codex sigue estos mismos pasos con `ui-ux-pro-max`. Las referencias de 21st.dev se reconstruyen con el CSS y los tokens de `src/styles/`: este proyecto no usa Tailwind ni framer-motion.
 1. Explora con iteraciones cortas y capturas, sin especificación previa.
 2. Cuando el usuario elige una forma, déjala escrita en `design-system/risktech-ceft/pages/` y, si cambia un recorrido, en `docs/ui.md`.
 3. Reutiliza las piezas listadas en `docs/ui.md` antes de crear otras. Usa la skill `ui-ux-pro-max` cuando esté disponible.

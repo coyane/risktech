@@ -13,7 +13,7 @@ import {
 import { REPORT_PATH } from '../lib/routes'
 import { formatRut, isValidRut, splitRut } from '../lib/rut'
 
-const CONSENT_PURPOSE = 'Elaborar tu diagnóstico tributario y crediticio con el Método ICRED'
+const CONSENT_PURPOSE = 'Elaborar tu diagnóstico tributario y crediticio'
 const CONSENT_SOURCES = ['F22', 'F29', 'F50', 'BIENES_RAICES', 'ACTIVIDADES']
 
 // ?demo=captcha|mfa|clave|parcial|fallo|error simula cada estado de la captura.
@@ -108,16 +108,16 @@ export function LoginPage() {
       <section className="login-hero">
         <div className="brand login-brand">
           <div className="brand-mark" aria-hidden="true">
-            C
+            I
           </div>
-          CEFT
+          Innovacred
         </div>
         <div className="login-pitch">
-          <div className="label-caps">Agente Crediticio, Económico, Financiero y Tributario</div>
+          <div className="label-caps">Diagnóstico tributario y crediticio</div>
           <h1>Conecta tu cuenta del SII y el agente arma tu diagnóstico.</h1>
           <p>
-            Al ingresar, el agente lee tus declaraciones, calcula tus indicadores con el Método
-            ICRED y te entrega un análisis de apertura en minutos.
+            Al ingresar, el agente lee tus declaraciones, calcula tus indicadores y te muestra de
+            dónde sale cada cifra, en minutos.
           </p>
         </div>
         <ul className="login-sources">
@@ -204,7 +204,7 @@ export function LoginPage() {
             />
             <div>
               <label htmlFor="consent">
-                Autorizo a CEFT a consultar mis declaraciones y bienes raíces en el SII para
+                Autorizo a Innovacred a consultar mis declaraciones y bienes raíces en el SII para
                 elaborar mi diagnóstico. <span aria-hidden="true">*</span>
               </label>{' '}
               <button

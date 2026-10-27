@@ -103,3 +103,40 @@ export function summarizeProperties(properties: Property[]): PatrimonySummary {
     byDestino: countBy(properties, (item) => item.destino),
   }
 }
+
+// ---------- Plazo del crédito de cada propiedad ----------
+
+export interface PlazoCredito {
+  // Plazo pactado en la escritura, en meses.
+  pactadoMeses: number
+  // Meses desde la fecha de la escritura hasta la fecha de captura, sin pasar del plazo pactado.
+  transcurridoMeses: number
+  restanteMeses: number
+}
+
+// Meses completos entre dos fechas ISO (AAAA-MM-DD); un mes cuenta cuando se cumple el mismo día.
+export function mesesEntre(desde: string, hasta: string): number {
+  const [y1, m1, d1] = desde.slice(0, 10).split('-').map(Number)
+  const [y2, m2, d2] = hasta.slice(0, 10).split('-').map(Number)
+  return (y2 - y1) * 12 + (m2 - m1) - (d2 < d1 ? 1 : 0)
+}
+
+// El SII no informa los dividendos pagados: se cuenta el tiempo transcurrido desde la escritura,
+// lo que supone pagos al día. Sin plazo o sin fecha de escritura, no se calcula.
+export function plazoCredito(property: Property, capturedAt: string): PlazoCredito | null {
+  const pactado = property.plazoMeses
+  const desde = property.fechaAdquisicion ?? property.fechaInscripcion
+  if (!pactado || pactado <= 0 || !desde) return null
+  const transcurrido = Math.min(Math.max(mesesEntre(desde, capturedAt), 0), pactado)
+  return { pactadoMeses: pactado, transcurridoMeses: transcurrido, restanteMeses: pactado - transcurrido }
+}
+
+// "6 años y 4 meses", "25 años", "1 mes".
+export function formatMeses(meses: number): string {
+  const anos = Math.floor(meses / 12)
+  const resto = meses % 12
+  const parte = (n: number, uno: string, varios: string) => `${n} ${n === 1 ? uno : varios}`
+  if (anos === 0) return parte(resto, 'mes', 'meses')
+  if (resto === 0) return parte(anos, 'año', 'años')
+  return `${parte(anos, 'año', 'años')} y ${parte(resto, 'mes', 'meses')}`
+}

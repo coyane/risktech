@@ -16,7 +16,7 @@ export interface MethodAlert {
 
 const joinYears = (years: number[]) => years.map(formatAt).join(', ')
 
-// Advertencias del Capítulo IV que dependen de los códigos declarados.
+// Advertencias que dependen de los códigos declarados.
 export function methodAlerts(report: Report): MethodAlert[] {
   const alerts: MethodAlert[] = []
   const series = (code: string, from = report.incomeOrigins) =>

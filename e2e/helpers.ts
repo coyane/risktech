@@ -43,7 +43,29 @@ export async function expectNoHorizontalScroll(page: Page, where: string) {
   expect(overflow, `desborde horizontal en ${where}`).toBeLessThanOrEqual(0)
 }
 
-export const isDesktop = (page: Page) => (page.viewportSize()?.width ?? 0) > 1100
+export const isDesktop = (page: Page) => (page.viewportSize()?.width ?? 0) > 1180
+// Bajo 1024 px el menú lateral se abre desde un botón.
+export const hasSidebar = (page: Page) => (page.viewportSize()?.width ?? 0) >= 1024
+
+// Abre una vista del informe como lo haría la persona: menú lateral, barra inferior o menú.
+export async function goToView(page: Page, view: string) {
+  if (hasSidebar(page)) {
+    await page.locator(`.side .nav-item[href$="#${view}"]`).click()
+  } else if (['resumen', 'calculos', 'credito', 'propiedades'].includes(view)) {
+    await page.locator(`.tabbar a[href$="#${view}"]`).click()
+  } else {
+    await page.getByRole('button', { name: 'Más' }).click()
+    await page.locator(`.msheet .nav-item[href$="#${view}"]`).click()
+  }
+  await expect(page.locator(`[data-view="${view}"]`)).toBeVisible()
+}
+
+// Abre un enlace del menú (lateral o en hoja, según el ancho).
+export async function openNavLink(page: Page, name: string | RegExp) {
+  if (!hasSidebar(page)) await page.getByRole('button', { name: 'Menú' }).click()
+  const scope = hasSidebar(page) ? page.locator('.side') : page.locator('.msheet')
+  await scope.getByRole('link', { name }).click()
+}
 
 // La vista del informe que está a la vista.
 export const openView = (page: Page) => page.locator('.view:not([hidden])')

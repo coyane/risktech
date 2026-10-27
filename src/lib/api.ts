@@ -11,7 +11,7 @@ import type {
 import { readSession, writeSession } from './storage'
 
 const STEP_MS = 2500
-const RUNS_KEY = 'ceft.mock.runs.v2'
+const RUNS_KEY = 'innovacred.mock.runs.v2'
 const scrapeSteps = demo.scrapeSteps as ScrapeStepDef[]
 const scrapeLog = demo.scrapeLog as (ScrapeLogEntry & { step: number })[]
 const report = demo.report as unknown as Report

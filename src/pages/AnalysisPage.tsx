@@ -5,7 +5,7 @@ import { FilterChips } from '../components/FilterChips'
 import { InsightCard } from '../components/InsightCard'
 import { RunGate } from '../components/RunGate'
 import { statusLabel, useThreads } from '../context/threads'
-import { methodAlerts } from '../lib/icred'
+import { methodAlerts } from '../lib/finanzas'
 import { REPORT_PATH, reportAnchor } from '../lib/routes'
 import type { InsightStatus, Report, RunStatus } from '../types'
 
@@ -46,7 +46,7 @@ function AnalysisReady({ report, run }: { report: Report; run: RunStatus }) {
       <header className="page-head">
         <div>
           <div className="eyebrow">
-            Sección de análisis · actualizado {capturedAt} · reglas {report.method.release}
+            Sección de análisis · actualizado {capturedAt}
           </div>
           <h1>Análisis de apertura</h1>
           <p className="page-lead">
@@ -152,8 +152,8 @@ function AnalysisReady({ report, run }: { report: Report; run: RunStatus }) {
           {alerts.length > 0 && (
             <section className="card stack col-half">
               <div>
-                <h2>Alertas del método</h2>
-                <div className="card-note">Reglas del Capítulo IV aplicadas a los códigos del F22</div>
+                <h2>Alertas de tus códigos</h2>
+                <div className="card-note">Revisiones que dependen de los códigos de tu F22</div>
               </div>
               <ul className="alert-list">
                 {alerts.map((alert) => (
@@ -169,7 +169,7 @@ function AnalysisReady({ report, run }: { report: Report; run: RunStatus }) {
             <section className="card stack col-half">
               <div>
                 <h2>Antes de incrementar deuda</h2>
-                <div className="card-note">Diagnóstico cualitativo del método</div>
+                <div className="card-note">Puntos a revisar con tus datos</div>
               </div>
               <ul className="check-list">
                 {report.recommendations.map((item) => (

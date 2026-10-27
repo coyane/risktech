@@ -1,108 +1,51 @@
 # Diagnóstico Base — reglas de la página
 
-Sobrescribe a `MASTER.md` solo en lo que aparece aquí.
+Sobrescribe a `MASTER.md` solo en lo que aparece aquí. Elegido en octubre de 2026 tras tres rondas de prototipos (ver "Descartado" en `docs/ui.md`): el panel "V4", sobre la base de Tablero.
 
 ## Qué es
 
-Los datos del SII y los cálculos del método, en dos presentaciones del mismo contenido:
+Los datos del SII y los cálculos que se hacen con ellos, en dos presentaciones del mismo contenido:
 
-- **Pantalla:** un espacio interactivo por vistas. Nada de página larga: cada vista cabe en una o dos pantallas y los cálculos se abren de a uno.
+- **Pantalla:** un panel por vistas. Cada vista cabe en una o dos pantallas.
 - **PDF:** el documento completo, en el mismo orden, para leer o entregar a un banco.
 
-La meta es que cualquier persona entienda cada cifra y vea de dónde sale, y que un lector técnico pueda seguir la operación hasta el código del formulario.
+**No interpreta.** Sin semáforo, sin adjetivos, sin texto que cambie según el caso. La variación entre años es un dato neutro ("+11,9% vs AT 2024") que se puede ocultar con el botón "Variación entre años".
 
-**No interpreta.** Sin semáforo, sin adjetivos, sin comparaciones entre años, sin texto que cambie según el caso. Entre dos personas solo cambian números, fechas y nombres propios.
+**Habla del cálculo y de su origen.** No nombra un método, un capítulo ni sus reglas.
 
-## Pantalla
+## Marco
 
-Cabecera fija del informe (título, persona, acciones) y una barra que queda a la vista al bajar: pestañas a la izquierda, año a la derecha.
+- Menú lateral en tarjeta: grupo Diagnóstico (Resumen, Cálculos, Crédito, Propiedades), grupo Informe (Datos del SII, Pendientes con su número, Glosario) y grupo Complementos (Informe de deudas, "Opcional · Recomendado"; ver `informe-de-deudas.md`). Al pie, la tarjeta oscura del agente con "Próximamente". Si el menú no cabe en la altura, se desplaza: la tarjeta del agente nunca se recorta.
+- Barra superior del informe: caso, RUT y fecha de captura; años en segmentos; descargas PDF y CSV; "Nueva captura".
+- Bajo 1024 px: botón "Menú" que abre el menú como hoja y barra inferior con las cuatro vistas y "Más".
+
+## Vistas
 
 | Vista | Contenido |
 | --- | --- |
-| Resumen | Seis cifras del año con su pregunta, tres cifras de propiedades, tabla de análisis financiero por año, datos del informe |
-| Cálculos | Todos los cálculos como bloques agrupados, con la explicación de uno siempre abierta al lado; debajo, cascada del dinero y guía de lectura |
-| Crédito | Dos campos numéricos libres (tasa y plazo), el resultado al lado, la explicación de los tres cálculos de crédito, una tabla de consulta y el crédito automotriz |
-| Datos del SII | Subpestañas: renta anual, declaraciones mensuales, propiedades, contribuyente, fuentes y cobertura |
-| Pendientes | Lista de lo que está por confirmar y por determinar, y parámetros en uso |
-| Glosario | Definiciones cortas |
+| Resumen | Cuatro cifras (crédito que paga el dividendo, en petróleo; ingreso declarado; renta neta al mes; dividendo de referencia), cada una con su variación y una flecha a su cálculo. Bajo las cifras, a todo el ancho, las actividades económicas registradas: el código de seis dígitos en petróleo y cifra de título, la glosa y, en una línea, categoría, Afecta IVA y desde; con su origen "SII · Datos del contribuyente" y una flecha a la tabla. Barras por año con base cero y botones para cambiar la cifra, con la tabla por año plegada. Tasa y plazo con el valor en UF "por confirmar". Tasa efectiva como parte de la base imponible (barra partida con los códigos 157 y 170). Propiedades en barra partida. Deuda de origen por institución con su leverage por determinar |
+| Cálculos | Grupos en segmentos (Renta e impuesto, Renta financiera, Crédito, Propiedades, Contingencias). Índice del grupo a la izquierda y el cálculo al lado, por niveles: (1) pregunta, cifra, frase en simple y lo que falta; (2) "La operación", plegada: operador, forma del dato, nombre enlazado y valor, con el total bajo una línea; (3) "Qué es y de dónde sale", plegado: definición, fuente de cada dato, viene de y se usa en. Lo abierto sigue abierto al pasar al siguiente |
+| Crédito | Tarjeta petróleo con el monto, el valor en UF y los campos. El crédito según el plazo (curva con eje desde $0 y el plazo escrito marcado). Factor leverage como cinco cifras. Crédito automotriz con tasa libre. Tabla de referencia plegada |
+| Propiedades | Fila de cinco cifras (propiedades, activos, patrimonio, pasivos de origen, avalúo). Cómo se pagaron (barra partida). Deuda de origen por institución, de mayor a menor. Lista de las propiedades a todo el ancho, como tabla con encabezados: comuna y destino, compra, institución, plazo transcurrido ("7 años y 3 meses de 25 años", barra fina de avance y lo que queda; el estado "Por confirmar" con su nota va sobre la lista y en cada fila para lectores de pantalla), financiado (mini barra partida: liso al contado, rayado financiado, con la cifra al lado) y precio. "¿Qué es cada columna?" plegable bajo la nota de financiado. En móvil, cada propiedad es una ficha con rótulos. Debajo, por destino, por comuna y Ley 20.455 en tres tarjetas |
+| Datos del SII, Pendientes, Glosario | Como antes, dentro de la hoja. El Glosario suma cómo leer los estados, los tipos de dato y los datos del informe |
 
-Reglas:
+## Reglas
 
-- **Lo que la persona ajusta se escribe, no se arrastra.** Campos numéricos libres con su etiqueta y el resultado al lado. Los deslizadores y las tablas con celdas presionables se descartaron: son incómodos con mouse. Un valor escrito se muestra tal cual, sin redondearlo.
-- **Un solo índice de cálculos:** los bloques. No combinar una lista lateral con un mapa en árbol, ni llevar la explicación a otra pantalla.
-- **Explicación en la misma sección, siempre abierta.** Sobre 1100 px los bloques van en una columna a la izquierda y la explicación queda al lado, fija mientras se recorre la lista; parte por el primer cálculo y nunca se cierra. Bajo 1100 px no caben los dos: la explicación se desliza desde la derecha encima de los bloques al elegir uno, y se cierra con el botón, con Escape o tocando fuera.
-- **Los bloques se ven presionables:** flecha a la derecha de cada fila, subrayado y flecha en color al pasar el cursor, y el bloque abierto con fondo y borde de color. El panel también lleva anterior y siguiente.
-- Abrir, cambiar o cerrar un cálculo no mueve la página.
-- **Todo es un enlace con dirección propia.** Una cifra del resumen abre su cálculo; una ficha de dato del SII abre la tabla y resalta la fila; "Se usa en" vuelve al cálculo. El botón atrás del navegador deshace cada paso.
-- Al cambiar de vista la página solo se mueve si el contenido nuevo quedó tapado por la barra.
-- El estado de un cálculo en el índice se lee en texto bajo el nombre, además del borde.
-
-## Orden del PDF
-
-1. Encabezado: identificación, fecha de captura, valores de referencia (UF, UTA) y avisos fijos.
-2. Resultado del análisis: cifras principales y tabla por año.
-3. Cómo se calcula cada resultado: índice, cascada, guía de lectura y todos los cálculos por grupo.
-4. Datos obtenidos del SII: todas las tablas.
-5. Pendientes del método y glosario.
-
-## Bloque de cálculo
-
-Siempre las mismas piezas, en este orden:
-
-| Pieza | Regla |
-| --- | --- |
-| Pregunta | Título del bloque. La misma para cualquier persona y se entiende sola, sin leer el bloque anterior |
-| Nombre técnico | Debajo de la pregunta, en gris |
-| Estado | Etiqueta arriba a la derecha |
-| Cifra | La respuesta, en el tamaño más grande del bloque |
-| Frase en simple | Reexpresa la operación con sus números. Una plantilla por cálculo, verdadera para cualquier valor |
-| Qué es | Definición fija |
-| Cómo se calcula | Ecuación con fichas |
-| Verificación | Solo si el valor del motor difiere del recalculado: frase fija con la diferencia |
-| Qué falta | Solo en estados "por confirmar" y "por determinar" |
-| Viene de / Se usa en | Enlaces a los cálculos relacionados |
-
-## Fichas de datos
-
-Tres tipos. Cada uno lleva etiqueta de texto además del color, para que se distinga en blanco y negro.
-
-| Tipo | Etiqueta | Color | Enlace |
-| --- | --- | --- | --- |
-| Dato del SII | DATO DEL SII | Borde azul, fondo `--info-bg` | A su fila en las tablas del SII |
-| Parámetro del método | PARÁMETRO DEL MÉTODO | Borde dorado, fondo ámbar claro | Sin enlace |
-| Resultado calculado | RESULTADO CALCULADO | Borde gris oscuro, fondo `--idle-bg` | Al bloque que lo produce |
-| Resultado del bloque | RESULTADO | Fondo navy, texto blanco | — |
-
-La ficha muestra, de arriba abajo: tipo, nombre del dato, valor y fuente (formulario, código, año y folio).
-
-## Estados
-
-| Estado | Aspecto |
-| --- | --- |
-| Calculado | Fondo verde claro, ícono de verificación |
-| Por confirmar | Borde dorado, ícono de reloj |
-| Por determinar | Borde punteado gris, ícono de pregunta. El bloque completo usa borde punteado |
-
-Nada se oculta por estar pendiente.
-
-## Color
-
-Reservado para los tres tipos de dato y los tres estados. Las barras de la cascada usan navy para los subtotales y trama para las restas y sumas. La columna del año elegido se destaca con `--info-bg` en todas las tablas.
-
-## Interacción
-
-- El selector de año cambia las cifras, el índice, la cascada y cada cálculo. El PDF imprime el año elegido.
-- Al llegar a una fila desde una ficha, la fila se resalta (`tr:target`).
-
-## Móvil
-
-Bajo 720 px la ecuación se apila en vertical, con el operador centrado entre fichas. Las pestañas y los años se deslizan en una fila, y la explicación de un cálculo ocupa la pantalla completa. Sin scroll horizontal de página; las tablas anchas se desplazan dentro de su contenedor.
+- **Lo que la persona ajusta se escribe.** Campos numéricos libres, con la unidad adentro; nada de deslizadores ni celdas presionables. La tasa y el plazo son los mismos en Resumen y Crédito.
+- **Todo cálculo se explica en Cálculos.** Las flechas de las tarjetas y los enlaces de propiedades llevan ahí (`#calc-<id>`). El botón atrás deshace cada paso.
+- **Abrir o cambiar un cálculo no mueve la página.** Sobre 1180 px el cálculo queda siempre al lado; bajo 1180 px se abre como hoja y se cierra con el botón, Escape o tocando fuera.
+- **Tipos de dato:** dato del SII (cuadrado), valor de referencia (rombo), resultado calculado (círculo); siempre con su nombre en la leyenda.
+- **Estados:** calculado (verde claro con visto), por confirmar (ámbar con reloj), por determinar (borde punteado). Lo pendiente nunca se oculta: un cálculo por determinar muestra "Por determinar" en vez de la cifra.
 
 ## PDF
 
-- Se imprimen todas las vistas y todos los cálculos, aunque en pantalla estén ocultos; la barra de pestañas y la navegación no se imprimen.
-- Escala tipográfica propia en puntos (bloque `@media print` de `src/index.css`).
-- Los bloques de cálculo no son cajas: llevan una línea superior que viaja con el encabezado. Así no quedan cajas vacías al pie de página.
-- No se parten: encabezado y respuesta del bloque, fichas, tramos, filas de tabla.
-- Pie con nombre del documento y número de página (`@page`).
-- Los fondos de fichas, barras y estados se imprimen (`print-color-adjust: exact`).
+1. Barra superior con caso y año, y los datos del informe con responsabilidad y alcance.
+2. Resumen con la tasa y el plazo usados (sin los campos).
+3. Todos los cálculos por grupo, con sus niveles abiertos.
+4. Crédito y Propiedades, con las tablas plegables desplegadas.
+5. Datos del SII, Pendientes y Glosario.
+6. Informe de deudas (CMF): sus páginas tal cual, una por hoja, o la línea fija si no se cargó.
+
+Las actividades económicas y el plazo transcurrido de cada crédito se imprimen: las actividades en el Resumen y en Datos del SII; el plazo en la lista de propiedades, en la ficha registral y como cálculo en Propiedades.
+
+Cada vista empieza en página nueva; las tarjetas y las filas no se parten; los fondos y rayados se imprimen.

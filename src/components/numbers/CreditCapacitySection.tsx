@@ -1,145 +1,103 @@
 import { useState } from 'react'
-import type { Calc, CreditChoice } from '../../lib/calculos'
+import { creditSource, type Calc, type CreditChoice } from '../../lib/calculos'
 import {
-  formatDate,
   formatDecimal,
   formatExact,
   formatMoney,
   formatRate,
   formatRateExact,
 } from '../../lib/format'
-import { presentValue } from '../../lib/icred'
+import { presentValue } from '../../lib/finanzas'
+import { MAX_RATE, MAX_YEARS, parseNumber, type CreditDraft } from '../../lib/useCreditDraft'
 import type { Report } from '../../types'
-import { Figure, Figures } from '../Figures'
+import { BigValue } from '../panel/Bits'
 import { SectionCard, TableWrap } from '../SectionCard'
 
-// Acepta coma o punto decimal. null si no es un número.
-function parseNumber(text: string) {
-  const clean = text.trim().replace(',', '.')
-  if (clean === '') return null
-  const value = Number(clean)
-  return Number.isFinite(value) ? value : null
-}
-
-const MAX_RATE = 30
-const MAX_YEARS = 50
-const rateInput = (rate: number) => formatExact(Math.round(rate * 1e7) / 1e5, 1)
-
-// La tasa y el plazo del Credit Capacity se escriben a mano. No hay valores únicos:
-// dependen de cada institución, y el informe completo se recalcula con lo que se ingrese.
-export function CreditInputs({
+// Los dos campos del Credit Capacity. Se escriben a mano: no hay valores únicos, dependen
+// de cada institución. El borrador vive en el informe, así el Resumen y la pestaña Crédito
+// muestran lo mismo; idPrefix evita ids repetidos entre las dos vistas.
+// La unidad va dentro del campo (inspirado en Unit Field de arikchakma, 21st.dev, MIT;
+// sin el arrastre para cambiar el valor, que equivale a un deslizador).
+export function CreditFields({
   report,
-  calcs,
-  credit,
-  onChange,
+  draft,
+  idPrefix,
+  tone = 'light',
 }: {
   report: Report
-  calcs: Calc[]
-  credit: CreditChoice
-  onChange: (credit: CreditChoice | null) => void
+  draft: CreditDraft
+  idPrefix: string
+  tone?: 'light' | 'dark'
 }) {
   const { method } = report
-  const [rateText, setRateText] = useState(() => rateInput(credit.rate))
-  const [yearsText, setYearsText] = useState(() => String(credit.years))
-  const displayOf = (id: string) => calcs.find((calc) => calc.id === id)?.display ?? '—'
-
-  const rate = parseNumber(rateText)
-  const years = parseNumber(yearsText)
-  const rateOk = rate !== null && rate >= 0 && rate <= MAX_RATE
-  const yearsOk = years !== null && years > 0 && years <= MAX_YEARS
-  const isReference = credit.rate === method.mortgageRate && credit.years === method.mortgageYears
-
-  // El informe solo cambia cuando ambos valores son válidos; si no, conserva los últimos.
-  const apply = (nextRate: string, nextYears: string) => {
-    const r = parseNumber(nextRate)
-    const y = parseNumber(nextYears)
-    if (r !== null && r >= 0 && r <= MAX_RATE && y !== null && y > 0 && y <= MAX_YEARS) {
-      onChange({ rate: r / 100, years: y })
-    }
-  }
+  const { rateText, yearsText, rateOk, yearsOk } = draft
+  const rateId = `${idPrefix}-rate`
+  const yearsId = `${idPrefix}-years`
 
   return (
-    <div id="credito" className="card stack credit-inputs">
-      <div className="sim-inputs no-print">
-        <div className="field">
-          <label htmlFor="sim-rate">Tasa de interés anual (%)</label>
+    <div className={`pn-fields pn-fields-${tone} no-print`}>
+      <div className="pn-field">
+        <label htmlFor={rateId}>
+          Tasa de interés anual<span className="sr-only"> (%)</span>
+        </label>
+        <span className="pn-input" data-invalid={rateOk ? undefined : true}>
           <input
-            id="sim-rate"
+            id={rateId}
+            name="tasa"
             inputMode="decimal"
+            enterKeyHint="done"
             autoComplete="off"
+            spellCheck={false}
             value={rateText}
             aria-invalid={rateOk ? undefined : true}
-            aria-describedby={rateOk ? undefined : 'sim-rate-error'}
-            onChange={(event) => {
-              setRateText(event.target.value)
-              apply(event.target.value, yearsText)
-            }}
+            aria-describedby={rateOk ? undefined : `${rateId}-error`}
+            onChange={(event) => draft.setRate(event.target.value)}
           />
-          {!rateOk && (
-            <span id="sim-rate-error" className="field-error" role="alert">
-              Escribe una tasa entre 0 y {MAX_RATE}, por ejemplo 4,5.
-            </span>
-          )}
-        </div>
-        <div className="field">
-          <label htmlFor="sim-years">Plazo (años)</label>
+          <span aria-hidden="true">%</span>
+        </span>
+        {!rateOk && (
+          <span id={`${rateId}-error`} className="pn-field-error" role="alert">
+            Escribe una tasa entre 0 y {MAX_RATE}, por ejemplo 4,5.
+          </span>
+        )}
+      </div>
+      <div className="pn-field">
+        <label htmlFor={yearsId}>Plazo</label>
+        <span className="pn-input" data-invalid={yearsOk ? undefined : true}>
           <input
-            id="sim-years"
+            id={yearsId}
+            name="plazo"
             inputMode="decimal"
+            enterKeyHint="done"
             autoComplete="off"
+            spellCheck={false}
             value={yearsText}
             aria-invalid={yearsOk ? undefined : true}
-            aria-describedby={yearsOk ? undefined : 'sim-years-error'}
-            onChange={(event) => {
-              setYearsText(event.target.value)
-              apply(rateText, event.target.value)
-            }}
+            aria-describedby={yearsOk ? undefined : `${yearsId}-error`}
+            onChange={(event) => draft.setYears(event.target.value)}
           />
-          {!yearsOk && (
-            <span id="sim-years-error" className="field-error" role="alert">
-              Escribe un plazo entre 1 y {MAX_YEARS} años.
-            </span>
-          )}
-        </div>
-        <button
-          type="button"
-          className="btn"
-          disabled={isReference && rateOk && yearsOk}
-          onClick={() => {
-            setRateText(rateInput(method.mortgageRate))
-            setYearsText(String(method.mortgageYears))
-            onChange(null)
-          }}
-        >
-          Volver a la referencia ({formatRate(method.mortgageRate, 1)} a {method.mortgageYears} años)
-        </button>
+          <span aria-hidden="true">años</span>
+        </span>
+        {!yearsOk && (
+          <span id={`${yearsId}-error`} className="pn-field-error" role="alert">
+            Escribe un plazo entre 1 y {MAX_YEARS} años.
+          </span>
+        )}
       </div>
-
-      <div aria-live="polite">
-        <Figures label="Resultado con esa tasa y ese plazo">
-          <Figure
-            label="Dividendo de referencia"
-            value={displayOf('limite-hipotecario')}
-            note={`${formatRate(method.mortgageFactor, 0)} de la renta financiera neta mensual`}
-          />
-          <Figure
-            label="Credit Capacity"
-            value={displayOf('credit-capacity')}
-            note={`Con ${formatRateExact(credit.rate)} anual a ${formatExact(credit.years)} años`}
-          />
-          <Figure
-            label="Credit Capacity en UF"
-            value={displayOf('credit-capacity-uf')}
-            note={`UF del ${formatDate(method.uf.date)}`}
-          />
-        </Figures>
-      </div>
+      <p className="pn-fields-foot">
+        <span>{creditSource(method, draft.credit)}</span>
+        {!(draft.isReference && rateOk && yearsOk) && (
+          <button type="button" className="pn-linkbtn" onClick={draft.reset}>
+            Volver a la referencia ({formatRateExact(method.mortgageRate)} a {method.mortgageYears} años)
+          </button>
+        )}
+      </p>
     </div>
   )
 }
 
 // Tabla de doble entrada, solo de consulta: el crédito que paga el dividendo de referencia
-// para cada tasa y plazo del rango del método.
+// para cada tasa y plazo del rango de referencia.
 export function CreditTable({
   report,
   calcs,
@@ -222,42 +180,40 @@ export function AutoCredit({ report, calcs }: { report: Report; calcs: Calc[] })
   const amount = rate !== null && rateOk ? presentValue(payment, rate / 100, method.autoMonths) : null
 
   return (
-    <SectionCard id="credito-automotriz" title="Crédito automotriz" as="h3" note={`${method.autoMonths} meses`}>
-      <div className="section-body stack">
-        <div className="sim-inputs sim-narrow no-print">
-          <div className="field">
-            <label htmlFor="sim-auto">Tasa de interés anual (%)</label>
-            <input
-              id="sim-auto"
-              inputMode="decimal"
-              autoComplete="off"
-              placeholder="El método no fija una tasa"
-              value={rateText}
-              aria-invalid={rateOk ? undefined : true}
-              onChange={(event) => setRateText(event.target.value)}
-            />
-            {!rateOk && (
-              <span className="field-error" role="alert">
-                Escribe una tasa entre 0 y {MAX_RATE}.
-              </span>
-            )}
-          </div>
-        </div>
-        <div aria-live="polite">
-          <Figures label="Crédito automotriz">
-            <Figure
-              label="Cuota de referencia"
-              value={formatMoney(payment)}
-              note={`${formatRate(method.autoFactor, 0)} de la renta financiera neta mensual`}
-            />
-            <Figure
-              label="Crédito que paga esa cuota"
-              value={amount === null ? '—' : formatMoney(Math.round(amount))}
-              note={amount === null ? 'Escribe una tasa para calcularlo' : `Con ${formatExact(rate ?? 0, 1)}% anual a ${method.autoMonths} meses`}
-            />
-          </Figures>
-        </div>
+    <div className="pn-auto">
+      <p className="pn-note">Cuota de referencia, {formatRate(method.autoFactor, 0)} de la renta neta mensual</p>
+      <p className="pn-figure">
+        <BigValue display={formatMoney(payment)} />
+      </p>
+      <div className="pn-field no-print">
+        <label htmlFor="sim-auto">Tasa de interés anual, a {method.autoMonths} meses</label>
+        <span className="pn-input pn-input-light" data-invalid={rateOk ? undefined : true}>
+          <input
+            id="sim-auto"
+            name="tasa-automotriz"
+            inputMode="decimal"
+            autoComplete="off"
+            placeholder="Escribe una tasa…"
+            value={rateText}
+            aria-invalid={rateOk ? undefined : true}
+            aria-describedby="sim-auto-out"
+            onChange={(event) => setRateText(event.target.value)}
+          />
+          <span aria-hidden="true">%</span>
+        </span>
       </div>
-    </SectionCard>
+      <p id="sim-auto-out" className="pn-note" aria-live="polite">
+        {!rateOk ? (
+          <span className="pn-field-error">Escribe una tasa entre 0 y {MAX_RATE}.</span>
+        ) : amount === null ? (
+          'No hay una tasa de referencia para este crédito: escríbela para calcularlo.'
+        ) : (
+          <>
+            Crédito que paga esa cuota: <strong>{formatMoney(Math.round(amount))}</strong>, con{' '}
+            {formatExact(rate ?? 0, 1)}% anual a {method.autoMonths} meses.
+          </>
+        )}
+      </p>
+    </div>
   )
 }

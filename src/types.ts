@@ -105,10 +105,13 @@ export interface F22Return {
   filingType: FilingType
 }
 
+// Actividad económica registrada, como la muestra el SII al final de "Datos del contribuyente".
 export interface Activity {
   label: string
   code: string
   category: string
+  // Columna "Afecta IVA" del SII; null si no se capturó.
+  afectaIva: boolean | null
   startDate: string
 }
 
@@ -137,7 +140,7 @@ export interface Property {
   // Propiedad habitacional acogida a la Ley 20.455.
   ley20455: boolean
   usoFamiliar: boolean
-  // Antecedentes registrales y del crédito, como los muestra la matriz de BICRED.
+  // Antecedentes registrales y del crédito de cada propiedad.
   derechos: number | null
   repertorio: string | null
   dfl2: boolean | null

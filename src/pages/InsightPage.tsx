@@ -237,10 +237,10 @@ function Workspace({
           <div className="thread-head">
             <Avatar role="agent" />
             <div>
-              <div className="thread-title">Agente CEFT</div>
+              <div className="thread-title">Agente Innovacred</div>
               <div className="thread-sub">
                 <span className="thread-live" aria-hidden="true" />
-                Trabajando este hallazgo · reglas {ctx.report.method.release}
+                Trabajando este hallazgo
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { AppShell } from './components/AppShell'
 import { RequireSession } from './components/RequireSession'
+import { DebtReportProvider } from './context/DebtReportProvider'
 import { RunProvider } from './context/RunProvider'
 import { SessionProvider } from './context/SessionProvider'
 import { ThreadsProvider } from './context/ThreadsProvider'
@@ -38,32 +39,34 @@ export default function App() {
     <SessionProvider>
       <ThreadsProvider>
         <RunProvider>
-          <BrowserRouter>
-            <Suspense fallback={null}>
-              <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route element={<RequireSession />}>
-                  <Route element={<AppShell />}>
-                    <Route path={REPORT_PATH} element={<DiagnosticoPage />} />
-                    <Route path="/numeros" element={<ToReport />} />
-                    <Route path={ANALYSIS_PATH} element={<AnalysisPage />} />
-                    <Route
-                      path={`${ANALYSIS_PATH}/hallazgo/:insightId`}
-                      element={<InsightPage />}
-                    />
+          <DebtReportProvider>
+            <BrowserRouter>
+              <Suspense fallback={null}>
+                <Routes>
+                  <Route path="/" element={<LoginPage />} />
+                  <Route element={<RequireSession />}>
+                    <Route element={<AppShell />}>
+                      <Route path={REPORT_PATH} element={<DiagnosticoPage />} />
+                      <Route path="/numeros" element={<ToReport />} />
+                      <Route path={ANALYSIS_PATH} element={<AnalysisPage />} />
+                      <Route
+                        path={`${ANALYSIS_PATH}/hallazgo/:insightId`}
+                        element={<InsightPage />}
+                      />
+                    </Route>
                   </Route>
-                </Route>
-                <Route element={<RequireSession role="admin" />}>
-                  <Route path="/admin" element={<AdminShell />}>
-                    <Route index element={<AdminClientsPage />} />
-                    <Route path="radiografia" element={<AdminRadiografiaPage />} />
-                    <Route path="agente" element={<AdminAgentPage />} />
+                  <Route element={<RequireSession role="admin" />}>
+                    <Route path="/admin" element={<AdminShell />}>
+                      <Route index element={<AdminClientsPage />} />
+                      <Route path="radiografia" element={<AdminRadiografiaPage />} />
+                      <Route path="agente" element={<AdminAgentPage />} />
+                    </Route>
                   </Route>
-                </Route>
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Suspense>
-          </BrowserRouter>
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </Suspense>
+            </BrowserRouter>
+          </DebtReportProvider>
         </RunProvider>
       </ThreadsProvider>
     </SessionProvider>

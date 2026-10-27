@@ -4,7 +4,7 @@ import { readSession, removeSession, writeSession } from '../lib/storage'
 import type { Consent, Report, RunStatus } from '../types'
 import { isRunReady, RunContext, type RunError } from './run'
 
-const RUN_KEY = 'ceft.run.v2'
+const RUN_KEY = 'innovacred.run.v2'
 const POLL_MS = 1000
 
 interface StoredRun {

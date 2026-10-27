@@ -2,6 +2,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { useRun } from '../context/run'
 import { portfolioTotals } from '../data/portfolio'
 import { REPORT_PATH } from '../lib/routes'
+import { Icon } from './Icon'
 import { ShellFrame } from './ShellFrame'
 
 const titles = {
@@ -9,7 +10,7 @@ const titles = {
   '/admin/radiografia': 'Radiografía',
   '/admin/agente': 'Agente portafolio',
 }
-const linkClass = ({ isActive }: { isActive: boolean }) => `nav-link${isActive ? ' active' : ''}`
+const linkClass = ({ isActive }: { isActive: boolean }) => `nav-item nav-link${isActive ? ' active' : ''}`
 
 export function AdminShell() {
   const { runId, startRun } = useRun()
@@ -18,8 +19,6 @@ export function AdminShell() {
     <ShellFrame
       contained
       navLabel="Administración"
-      mark="R"
-      name="Risktech"
       titles={titles}
       footer={
         <>
@@ -28,27 +27,32 @@ export function AdminShell() {
         </>
       }
     >
-      <div className="nav-links">
-        <div className="nav-sub-title">Administración</div>
+      <div className="nav-group">
+        <span className="nav-group-title">Administración</span>
         <NavLink to="/admin" end className={linkClass}>
+          <Icon name="datos" />
           Propietarios
         </NavLink>
         <NavLink to="/admin/radiografia" className={linkClass}>
+          <Icon name="resumen" />
           Radiografía
         </NavLink>
         <NavLink to="/admin/agente" className={linkClass}>
+          <Icon name="spark" />
           Agente portafolio
           <span className="nav-soon">Próximamente</span>
         </NavLink>
       </div>
-      <div className="nav-sub">
-        <div className="nav-sub-title">Vista cliente</div>
+      <div className="nav-group">
+        <span className="nav-group-title">Vista cliente</span>
         <Link
+          className="nav-item"
           to={REPORT_PATH}
           onClick={() => {
             if (!runId) startRun('demo')
           }}
         >
+          <Icon name="arrow" />
           Ver caso de ejemplo
         </Link>
       </div>

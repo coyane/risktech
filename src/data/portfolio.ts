@@ -520,7 +520,7 @@ export const portfolioInsights: PortfolioInsight[] = [
     dimension: 'Crediticio',
     tone: 'positive',
     title: `Capacidad hipotecaria agregada: ${formatMoneyMillions(portfolioTotals.totalMortgage)} mensuales`,
-    body: `Suma del límite 25% de la RFN de los ${portfolioTotals.clients} clientes del portafolio. Valor referencial del método.`,
+    body: `Suma del límite 25% de la RFN de los ${portfolioTotals.clients} clientes del portafolio. Valor referencial.`,
     affected: portfolioTotals.clients,
     action: 'Priorizar ofertas hipotecarias',
   },

@@ -194,6 +194,8 @@ El listado entrega una fila por rol; los antecedentes o el PDF de cada rol entre
 
 El reporte trae además, por propiedad, los antecedentes que muestra la matriz de BICRED: porcentaje de derechos, repertorio, acogida a DFL2, plazo del crédito en meses, monto de IVA, fojas, número y fecha de inscripción, si adquiere dominio pleno y si es nueva. La fecha y la naturaleza de la escritura son `fechaAdquisicion` y `tipoActo`. Ningún cálculo los usa; se muestran en "Datos del SII → Propiedades": la tabla por rol (con la entidad que financió, la deuda de origen y el plazo), el financiamiento por institución y la ficha registral de cada propiedad. Falta confirmar que el conector de "Mis Bienes" los entregue todos.
 
+**Plazo transcurrido del crédito** (por confirmar). Por cada propiedad con crédito: meses completos desde la fecha de la escritura (`fechaAdquisicion`; si falta, `fechaInscripcion`) hasta la fecha de captura, con tope en `plazoMeses`; lo restante es el plazo pactado menos lo transcurrido. El SII registra el plazo pactado, no los dividendos pagados: el cálculo supone pagos al día y por eso queda "por confirmar". Caso de ejemplo: escritura 14-06-2019, 300 meses, captura 06-10-2026 → 87 meses transcurridos (7 años y 3 meses) y 213 restantes. Función `plazoCredito` en `src/lib/patrimonio.ts`.
+
 Reglas de bienes raíces:
 
 - Si el SII no entrega un dato de una propiedad, queda como no capturado. Los totales suman solo lo informado; si ninguna propiedad trae el dato, el total es desconocido.
@@ -206,12 +208,14 @@ Reglas de bienes raíces:
 | --- | --- | --- |
 | Nombre y RUT | `taxpayer` | Encabezado; backoffice |
 | Fecha de nacimiento e inicio de actividades | `taxpayer` | Resumen |
-| Actividades económicas: código, glosa, categoría y fecha de inicio | `activities` | Datos del SII; línea de tiempo |
+| Actividades económicas registradas: código, glosa, categoría, afecta IVA y fecha de inicio | `activities` | Resumen; Datos del SII; línea de tiempo |
 | Sociedades: RUT, nombre, participación y fecha | `companies` | Datos del SII; línea de tiempo |
 | Regímenes tributarios: código, nombre y fecha de inicio | `regimes` | Datos del SII; línea de tiempo |
 | Timbrajes: documento y fecha | `stampings` | Datos del SII; línea de tiempo |
 
-Ningún cálculo del método usa estos datos en la fase 1. La herramienta de referencia muestra además el capital enterado y el porcentaje de capital de cada sociedad, y si cada actividad afecta IVA; hoy no están en el reporte.
+Ningún cálculo del método usa estos datos en la fase 1. La herramienta de referencia muestra además el capital enterado y el porcentaje de capital de cada sociedad; hoy no están en el reporte.
+
+**Ruta de las actividades económicas.** sii.cl → Mi SII → "Datos del contribuyente" (datos personales y tributarios) → al final de la página, la tabla "Actividades económicas registradas". Se leen todas sus filas: código de actividad (6 dígitos), glosa, categoría, si afecta IVA (Sí/No) y fecha de inicio. Es un paso propio de la extracción, `CONTRIBUYENTE`, que también lee la fecha de inicio de actividades; ya no depende del paso de bienes raíces. Si la tabla viene vacía, la cobertura `ACTIVIDADES` queda `empty`; si la página no responde, `failed` y el run termina en `PARTIAL`.
 
 ### Valores públicos y parámetros
 
@@ -538,7 +542,7 @@ El resumen del portafolio se puede calcular en el front a partir de `/v1/owners`
 
 **Estados del run.** `RUNNING` agrupa los estados intermedios. Los terminales son `COMPLETED`, `PARTIAL`, `BLOCKED_CAPTCHA`, `BLOCKED_MFA`, `AUTH_FAILED`, `SOURCE_CHANGED`, `QUARANTINED`, `CANCELLED`, `EXPIRED` y `FAILED`.
 
-**Pasos de la extracción.** `LOGIN`, `F22`, `F29`, `F50`, `BIENES_RAICES` (incluye actividades) y `CALCULO`, cada uno en `queued`, `running`, `done` o `error`.
+**Pasos de la extracción.** `LOGIN`, `F22`, `F29`, `F50`, `CONTRIBUYENTE` (datos del contribuyente y actividades económicas registradas), `BIENES_RAICES` y `CALCULO`, cada uno en `queued`, `running`, `done` o `error`.
 
 **Errores.** Formato `application/problem+json` con `code`, `detail`, `correlation_id` y `retryable`. Nunca se devuelve HTML del SII ni la clave.
 
@@ -635,7 +639,7 @@ Los identificadores del plan anterior se conservan. Los nuevos llevan "(nuevo)".
 - [ ] SII-04 Conector y parser F29
 - [ ] SII-05 Conector y parser F50
 - [ ] SII-06 Conector y parser de bienes raíces: identificación, avalúo, enajenación, pago al contado y financiamiento
-- [ ] SII-07 Datos del contribuyente: fecha de nacimiento, inicio de actividades y actividades económicas
+- [ ] SII-07 Datos del contribuyente: fecha de nacimiento, inicio de actividades y la tabla "Actividades económicas registradas" completa (código, glosa, categoría, afecta IVA y fecha de inicio), en su propio paso `CONTRIBUYENTE`
 - [ ] SII-08 Almacenamiento de evidencia cruda con hash
 - [ ] SII-09 Sociedades, regímenes tributarios y timbrajes
 

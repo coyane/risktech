@@ -22,6 +22,15 @@ export const glossary: GlossaryTerm[] = [
     meaning: 'Declaración mensual de otros impuestos, como retenciones a no residentes.',
   },
   {
+    term: 'Actividad económica',
+    meaning:
+      'El giro que la persona registra ante el SII, con un código de seis dígitos, su categoría y la fecha desde la que la ejerce. Aparece al final de “Datos del contribuyente”.',
+  },
+  {
+    term: 'Afecta IVA',
+    meaning: 'Indica si las ventas o servicios de esa actividad pagan IVA, según el registro del SII.',
+  },
+  {
     term: 'Código',
     meaning: 'El número con que el SII identifica cada casilla de un formulario.',
   },

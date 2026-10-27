@@ -19,6 +19,7 @@
 
 .login-brand {
   padding: 0;
+  color: var(--on-dark);
   font-size: var(--fs-xl);
 }
 

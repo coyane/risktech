@@ -1,67 +1,19 @@
 /* ---------- Responsive ---------- */
 
+/* Ajustes de las páginas que no son el panel del Diagnóstico Base (sus medidas van en panel.css). */
 @media (width <= 1100px) {
   .workspace {
     grid-template-columns: minmax(0, 1fr);
   }
-
 }
 
 @media (width <= 900px) {
-  .index-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .hero {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (width <= 720px) {
-  /* La barra lateral pasa a barra superior compacta. */
-  .nav {
-    flex: 1 1 100%;
-    flex-flow: row wrap;
-    align-items: center;
-    gap: 8px 12px;
-    max-width: none;
-    padding: 12px 16px;
-  }
-
-  .nav-links {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .nav-links .nav-sub-title,
-  .nav-sections,
-  .nav-user {
-    display: none;
-  }
-
-  .nav-sub {
-    flex-direction: row;
-    padding: 0;
-  }
-
-  .nav-sub .nav-sub-title {
-    display: none;
-  }
-
-  .nav-foot {
-    margin: 0 0 0 auto;
-    padding: 0;
-    border: none;
-  }
-
-  .nav-signout {
-    margin-left: 0;
-  }
-
-  .main {
-    padding: 24px 16px;
-  }
-
   .page-head h1,
   .notice h1 {
     font-size: var(--fs-2xl);
@@ -90,41 +42,8 @@
   }
 
   .summary,
-  .login-pitch p,
-  .cover-lead {
+  .login-pitch p {
     font-size: var(--fs-lg);
-  }
-
-  .report {
-    gap: 30px;
-  }
-
-  .cover-lead,
-  .calc-plain {
-    font-size: var(--fs-lg);
-  }
-
-  .calc {
-    padding: 20px 16px;
-  }
-
-  .eq,
-  .eq-term {
-    flex-flow: column nowrap;
-    align-items: stretch;
-  }
-
-  .eq-note {
-    flex-basis: auto;
-  }
-
-  .eq-op {
-    justify-content: center;
-    font-size: var(--fs-xl);
-  }
-
-  .data-chip {
-    max-width: none;
   }
 
   .legend li,
@@ -132,24 +51,6 @@
   .timeline > li {
     grid-template-columns: 1fr;
     gap: 4px;
-  }
-
-  .waterfall-row {
-    grid-template-columns: 1fr auto;
-  }
-
-  .waterfall-track {
-    grid-row: 2;
-    grid-column: 1 / -1;
-  }
-
-  .brackets li {
-    grid-template-columns: 1fr auto;
-  }
-
-  .brackets .tag {
-    grid-column: 1 / -1;
-    justify-self: start;
   }
 
   .hero-question {
@@ -164,17 +65,9 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .credit-inputs .sim-inputs {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   /* Las cifras del informe son largas: en móvil van una por fila. */
   .report .hero-figures {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .credit-inputs .sim-inputs > .btn {
-    margin-top: 0;
   }
 
   /* Sin ancho para ocho columnas: cada tramo pasa a una barra horizontal. */
@@ -231,56 +124,15 @@
     border-radius: 0 6px 6px 0;
   }
 
-  .report-head {
-    align-items: flex-start;
-  }
-
   .tab {
     min-height: 48px;
     padding: 0 10px;
     font-size: var(--fs-md);
   }
 
-  /* La barra queda fija: los años van en una sola fila compacta. */
-  .report-bar {
-    gap: 0;
-  }
-
-  .year-picker {
-    width: 100%;
-    padding: 6px 0 8px;
-  }
-
   .report [id] {
-    scroll-margin-top: 116px;
+    scroll-margin-top: 84px;
   }
-
-  .year-picker .chip-group {
-    flex-wrap: nowrap;
-    gap: 6px;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .year-picker .chip {
-    flex: none;
-    min-height: 36px;
-    padding: 0 12px;
-  }
-
-  .index-row {
-    padding-right: 14px;
-  }
-
-  .detail-bar {
-    padding-left: 16px;
-  }
-
-  .explorer-detail .calc,
-  .explorer-detail .explorer-panel > .chapter {
-    padding: 20px 16px 24px;
-  }
-
 }
 
 @media (prefers-reduced-motion: reduce) {
