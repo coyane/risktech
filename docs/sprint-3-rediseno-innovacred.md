@@ -45,7 +45,8 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 ## Convenciones de los tickets
 
 - **Dónde verlo:** entrar a `/diagnostico` con cualquier RUT válido en modo demo (por ejemplo, 12.345.678-5). Cada vista tiene dirección propia con `#`.
-- **Commit:** este sprint aún no tiene push. Al hacerlo, completar el commit de cada ticket.
+- **Commit:** todo el sprint está en [`5757147`](https://github.com/coyane/risktech/commit/575714737a40ab53377b45f43f176f4b51fe956c) (`main`, 2026-10-27).
+- **Mapa de código:** cada ticket trae una tabla "Código" con las piezas de UI y UX y su enlace a las líneas exactas. Los enlaces están fijados al commit 5757147, así que muestran el código del sprint aunque después cambie; para la versión vigente, abrir el mismo archivo en `main`.
 - **Estados de cálculo:** se mantienen. Calculado, Por confirmar (falta confirmar un dato o un supuesto) y Por determinar (falta un dato o la forma de calcularlo).
 - **Verificación de todos los tickets:** `npm run verify:ui` en verde y revisión de la pantalla a 1440 y 375 px.
 
@@ -75,6 +76,19 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 - [ ] `docs/product.md` tiene la regla 7.
 
 **Archivos:** `src/lib/calculos.ts`, `src/data/demo.json`, `src/pages/LoginPage.tsx`, `index.html`, `public/favicon.svg`, `docs/product.md`.
+
+**Código** (commit 5757147)
+
+| Pieza | Para qué sirve (UI/UX) | Código |
+| --- | --- | --- |
+| Textos fijos: estados y tipos de dato | UX: cómo se explica cada estado y tipo de dato, sin método | [`calculos.ts` L113–124](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/calculos.ts#L113-L124) |
+| Origen de tasa y plazo | UX: "Tasa y plazo de referencia" / "escritos en este informe" | [`calculos.ts` L183–189](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/calculos.ts#L183-L189) |
+| Marca | UI: nombre de la plataforma en un solo lugar | [`ShellFrame.tsx` L5](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/ShellFrame.tsx#L5) |
+| Prueba: sin método ni marcas de terceros | Regla 7 automatizada | [`calculos.test.ts` L333–370](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/__tests__/calculos.test.ts#L333-L370) |
+| Prueba: textos idénticos entre casos | Determinismo de los textos | [`calculos.test.ts` L317–321](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/__tests__/calculos.test.ts#L317-L321) |
+| Prueba e2e: ninguna pantalla nombra el método | Informe completo | [`diagnostico.spec.ts` L32–35](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L32-L35) |
+| Prueba e2e: ingreso con marca nueva | Pantalla de conexión | [`diagnostico.spec.ts` L296–301](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L296-L301) |
+| Regla de producto 7 | Documento de producto | [`product.md` L64](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/docs/product.md?plain=1#L64) |
 
 ---
 
@@ -108,6 +122,21 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 - [ ] El sistema de diseño (`design-system/risktech-ceft/MASTER.md`) describe la tipografía y la paleta nuevas.
 
 **Archivos:** `src/styles/tokens.css`, `shell.css`, `panel.css`, `src/components/ShellFrame.tsx`, `AppShell.tsx`, `AdminShell.tsx`, `src/components/Icon.tsx`, `package.json`.
+
+**Código** (commit 5757147)
+
+| Pieza | Para qué sirve (UI/UX) | Código |
+| --- | --- | --- |
+| Tokens: paleta, tipografía, espacios | UI: todos los valores visuales del sistema | [`tokens.css` L1–83](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/styles/tokens.css#L1-L83) |
+| Marco: menú lateral, barra superior, hoja y barra inferior | UI/UX: navegación en escritorio y móvil | [`ShellFrame.tsx` L11–127](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/ShellFrame.tsx#L11-L127) |
+| Estilos del marco | UI: tarjeta del menú, grupos, barra inferior | [`shell.css` L1–409](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/styles/shell.css#L1-L409) |
+| Menú del diagnóstico (grupos y rótulos) | UX: Diagnóstico, Informe, Complementos y agente "Próximamente" | [`AppShell.tsx` L26–149](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/AppShell.tsx#L26-L149) |
+| Vistas y grupos del menú | Orden y agrupación de las vistas | [`reportViews.ts` L9–18](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/reportViews.ts#L9-L18) |
+| Íconos | UI: familia única de íconos SVG | [`Icon.tsx` L1–49](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/Icon.tsx#L1-L49) |
+| Piezas del panel (tarjeta, cifra, flecha, variación, forma de dato) | UI: componentes base reutilizables | [`Bits.tsx` L1–64](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/panel/Bits.tsx#L1-L64) |
+| Estilos del panel | UI: tarjetas, cifras, barras, niveles | [`panel.css` L1–1956](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/styles/panel.css#L1-L1956) |
+| Sistema de diseño (reglas visuales) | Guía para devs y diseño | [`MASTER.md` L1–64](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/design-system/risktech-ceft/MASTER.md?plain=1#L1-L64) |
+| Prueba e2e: sin desplazamiento horizontal | 375 y 1440 px | [`diagnostico.spec.ts` L204–213](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L204-L213) |
 
 ---
 
@@ -146,6 +175,21 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 
 **Archivos:** `src/pages/DiagnosticoPage.tsx`, `src/components/panel/Bits.tsx`, `src/components/panel/Charts.tsx`, `src/lib/variacion.ts`, `src/lib/useCreditDraft.ts`, `src/components/SplitBar.tsx`.
 
+**Código** (commit 5757147)
+
+| Pieza | Para qué sirve (UI/UX) | Código |
+| --- | --- | --- |
+| Vista Resumen completa | UI/UX: composición del panel | [`DiagnosticoPage.tsx` L393–497](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/pages/DiagnosticoPage.tsx#L393-L497) |
+| Tarjeta de cifra (Kpi) | UI: cifra, variación y flecha al cálculo | [`DiagnosticoPage.tsx` L834–862](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/pages/DiagnosticoPage.tsx#L834-L862) |
+| Tasa efectiva como barra | UI: base 170 y impuesto 157 | [`DiagnosticoPage.tsx` L865–892](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/pages/DiagnosticoPage.tsx#L865-L892) |
+| Barras por año | UI: base cero, selector de cifra | [`Charts.tsx` L5–45](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/panel/Charts.tsx#L5-L45) |
+| Variación entre años | Lógica: dato neutro, "Primer año del informe" | [`variacion.ts` L1–24](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/variacion.ts#L1-L24) |
+| Tasa y plazo compartidos | Lógica: sincronía Resumen ↔ Crédito | [`useCreditDraft.ts` L37–66](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/useCreditDraft.ts#L37-L66) |
+| Barra partida | UI: liso al contado, rayado financiado | [`SplitBar.tsx` L1–42](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/SplitBar.tsx#L1-L42) |
+| Prueba e2e: variación neutra | — | [`diagnostico.spec.ts` L37–47](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L37-L47) |
+| Prueba e2e: gráfico por año | — | [`diagnostico.spec.ts` L49–55](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L49-L55) |
+| Prueba unitaria: variación | — | [`calculos.test.ts` L381–386](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/__tests__/calculos.test.ts#L381-L386) |
+
 ---
 
 ## S3-04 · Cálculos por niveles
@@ -179,6 +223,21 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 
 **Archivos:** `src/components/panel/CalcLevels.tsx`, `src/lib/reportViews.ts`, `src/styles/panel.css`, `src/styles/print.css`.
 
+**Código** (commit 5757147)
+
+| Pieza | Para qué sirve (UI/UX) | Código |
+| --- | --- | --- |
+| Vista Cálculos | UI/UX: grupos, índice y cálculo abierto | [`DiagnosticoPage.tsx` L500–524](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/pages/DiagnosticoPage.tsx#L500-L524) |
+| Grupos de cálculos | Qué cálculo va en qué grupo | [`reportViews.ts` L28–46](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/reportViews.ts#L28-L46) |
+| Navegación por dirección (#calc, #grupo) | UX: enlaces y botón atrás | [`reportViews.ts` L88–114](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/reportViews.ts#L88-L114) |
+| Índice y hoja en móvil | UI/UX: índice corto y hoja a pantalla completa | [`CalcLevels.tsx` L418–475](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/panel/CalcLevels.tsx#L418-L475) |
+| Cálculo abierto (nivel 1) | UI: pregunta, cifra, frase y estado | [`CalcLevels.tsx` L303–414](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/panel/CalcLevels.tsx#L303-L414) |
+| "La operación" (nivel 2) | UI: filas con operador, forma de dato y total | [`CalcLevels.tsx` L81–193](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/panel/CalcLevels.tsx#L81-L193) |
+| "Qué es y de dónde sale" (nivel 3) | UI: definición, fuentes, viene de / se usa en | [`CalcLevels.tsx` L214–263](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/panel/CalcLevels.tsx#L214-L263) |
+| Forma de cada tipo de dato | UI: cuadrado, rombo, círculo | [`Bits.tsx` L44–52](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/panel/Bits.tsx#L44-L52) |
+| Prueba e2e: lectura por niveles | — | [`diagnostico.spec.ts` L67–90](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L67-L90) |
+| Prueba e2e: hoja en móvil | — | [`diagnostico.spec.ts` L101–113](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L101-L113) |
+
 ---
 
 ## S3-05 · Crédito
@@ -202,6 +261,19 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 - [ ] La tasa y el plazo escritos se mantienen al ir al Resumen y volver.
 
 **Archivos:** `src/components/numbers/CreditCapacitySection.tsx`, `src/components/panel/Charts.tsx`, `src/lib/finanzas.ts` (antes `icred.ts`).
+
+**Código** (commit 5757147)
+
+| Pieza | Para qué sirve (UI/UX) | Código |
+| --- | --- | --- |
+| Vista Crédito | UI/UX: monto, campos, curva, factores, automotriz | [`DiagnosticoPage.tsx` L527–588](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/pages/DiagnosticoPage.tsx#L527-L588) |
+| Campos de tasa y plazo | UX: entrada libre, sin deslizador, validación | [`CreditCapacitySection.tsx` L21–97](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/numbers/CreditCapacitySection.tsx#L21-L97) |
+| Curva del crédito según el plazo | UI: eje desde $0, plazo marcado | [`Charts.tsx` L49–115](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/panel/Charts.tsx#L49-L115) |
+| Factores leverage como cifras | UI: cinco cifras en UF | [`DiagnosticoPage.tsx` L895–922](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/pages/DiagnosticoPage.tsx#L895-L922) |
+| Crédito automotriz | UI/UX: tasa libre | [`CreditCapacitySection.tsx` L172–219](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/numbers/CreditCapacitySection.tsx#L172-L219) |
+| Tabla de referencia por tasa y plazo | — | [`CreditCapacitySection.tsx` L101–169](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/numbers/CreditCapacitySection.tsx#L101-L169) |
+| Valor presente (fórmula) | Lógica del Credit Capacity | [`finanzas.ts` L5–9](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/finanzas.ts#L5-L9) |
+| Prueba e2e: tasa y plazo recalculan todo | — | [`diagnostico.spec.ts` L136–163](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L136-L163) |
 
 ---
 
@@ -236,6 +308,19 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 - [ ] Encabezados visibles en escritorio y rótulos en móvil; "¿Qué es cada columna?" se despliega.
 
 **Archivos:** `src/components/numbers/PatrimonySection.tsx` (`PropertyList` reemplaza a `PropertyTable`), `src/pages/DiagnosticoPage.tsx`, `src/lib/reportViews.ts`.
+
+**Código** (commit 5757147)
+
+| Pieza | Para qué sirve (UI/UX) | Código |
+| --- | --- | --- |
+| Vista Propiedades | UI/UX: cifras, pago, deuda, tabla, conteos | [`DiagnosticoPage.tsx` L591–656](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/pages/DiagnosticoPage.tsx#L591-L656) |
+| Tabla de propiedades (escritorio y fichas en móvil) | UI: encabezados, mini barra, plazo | [`PatrimonySection.tsx` L24–136](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/numbers/PatrimonySection.tsx#L24-L136) |
+| Explicación de columnas | UX: textos de "¿Qué es cada columna?" | [`calculos.ts` L155–170](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/calculos.ts#L155-L170) |
+| Ficha registral | UI: antecedentes por propiedad, plegable | [`PatrimonySection.tsx` L144–201](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/numbers/PatrimonySection.tsx#L144-L201) |
+| Conteos por destino y comuna | UI | [`DiagnosticoPage.tsx` L952–963](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/pages/DiagnosticoPage.tsx#L952-L963) |
+| Totales de propiedades y deuda por institución | Lógica | [`patrimonio.ts` L57–105](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/patrimonio.ts#L57-L105) |
+| Prueba e2e: encabezados y explicación | — | [`diagnostico.spec.ts` L368–386](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L368-L386) |
+| Prueba e2e: cifras del caso | — | [`diagnostico.spec.ts` L309–316](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L309-L316) |
 
 ---
 
@@ -275,6 +360,18 @@ Pendientes pasa de 4 a 5.
 **Por confirmar con Ricardo:** si se acepta suponer pagos al día, o si existe otra fuente de los dividendos pagados (por ejemplo, el informe de deudas de la CMF).
 
 **Archivos:** `src/lib/patrimonio.ts` (`plazoCredito`, `mesesEntre`, `formatMeses`), `src/lib/calculos.ts` (`PLAZO_TEXT`, `buildPlazoCalc`), `docs/sprint-1-v2-diagnostico-base-y-backoffice.md`.
+
+**Código** (commit 5757147)
+
+| Pieza | Para qué sirve (UI/UX) | Código |
+| --- | --- | --- |
+| Meses entre fechas | Lógica: el mes se cumple el mismo día | [`patrimonio.ts` L118–122](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/patrimonio.ts#L118-L122) |
+| Plazo del crédito | Lógica: tope, mínimo 0, fecha de escritura o inscripción | [`patrimonio.ts` L126–132](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/patrimonio.ts#L126-L132) |
+| Formato años y meses | UX: singular y plural | [`patrimonio.ts` L135–142](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/patrimonio.ts#L135-L142) |
+| Textos fijos del plazo | UX: nota del supuesto, "Por confirmar" | [`calculos.ts` L130–152](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/calculos.ts#L130-L152) |
+| Cálculo explicado (#calc-plazo-credito) | Operación y origen | [`calculos.ts` L985–1028](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/calculos.ts#L985-L1028) |
+| Pruebas unitarias del plazo | — | [`calculos.test.ts` L417–461](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/__tests__/calculos.test.ts#L417-L461) |
+| Prueba e2e: plazo por confirmar | — | [`diagnostico.spec.ts` L352–366](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L352-L366) |
 
 ---
 
@@ -327,6 +424,21 @@ Pendientes pasa de 4 a 5.
 - `e2e/deudas.spec.ts` y `e2e/fixtures/` (PDF sintético, sin datos reales)
 - `design-system/risktech-ceft/pages/informe-de-deudas.md`
 
+**Código** (commit 5757147)
+
+| Pieza | Para qué sirve (UI/UX) | Código |
+| --- | --- | --- |
+| Vista Informe de deudas | UI/UX: estados vacía, cargando, cargada | [`DebtReportView.tsx` L23–179](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/deudas/DebtReportView.tsx#L23-L179) |
+| Guía de la CMF | UX: URL exacta, copiar, pasos y requisitos | [`DebtReportView.tsx` L307–398](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/deudas/DebtReportView.tsx#L307-L398) |
+| Zona de carga | UI/UX: arrastrar, elegir PDF, errores | [`DebtReportView.tsx` L400–459](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/deudas/DebtReportView.tsx#L400-L459) |
+| URL, límites y textos fijos | UX: todos los textos de la vista | [`informeDeudas.ts` L9–130](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/informeDeudas.ts#L9-L130) |
+| Render de páginas con pdf.js | Lógica: carga diferida | [`pdfPages.ts` L1–66](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/pdfPages.ts#L1-L66) |
+| Estado del archivo en la sesión | Lógica | [`DebtReportProvider.tsx` L29–212](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/context/DebtReportProvider.tsx#L29-L212) |
+| Sección en la carpeta (impresión) | UI: páginas al final del PDF | [`print.css` L295–334](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/styles/print.css#L295-L334) |
+| Estilos de la vista | UI | [`deudas.css` L1–692](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/styles/deudas.css#L1-L692) |
+| Reglas visuales de la página | Guía para devs y diseño | [`informe-de-deudas.md` L1–39](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/design-system/risktech-ceft/pages/informe-de-deudas.md?plain=1#L1-L39) |
+| Pruebas e2e del informe de deudas | — | [`deudas.spec.ts` L1–204](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/deudas.spec.ts#L1-L204) |
+
 ---
 
 ## S3-09 · Verificación del informe de deudas por código QR
@@ -371,6 +483,18 @@ Pendientes pasa de 4 a 5.
 
 **Archivos:** `src/lib/verificacionDeudas.ts`, `src/context/DebtReportProvider.tsx`, `src/components/deudas/DebtReportView.tsx`, `docs/contrato-verificacion-informe-deudas.md`, `README.md` (escenarios).
 
+**Código** (commit 5757147)
+
+| Pieza | Para qué sirve (UI/UX) | Código |
+| --- | --- | --- |
+| Contrato simulado de verificación | Lógica: pasos, estados, escenarios de demo | [`verificacionDeudas.ts` L1–122](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/verificacionDeudas.ts#L1-L122) |
+| Contrato para el backend | Documento | [`contrato-verificacion-informe-deudas.md` L1–68](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/docs/contrato-verificacion-informe-deudas.md?plain=1#L1-L68) |
+| Panel de verificación y resultados | UI/UX: pasos, sello, rechazos, reintentar | [`DebtReportView.tsx` L182–305](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/deudas/DebtReportView.tsx#L182-L305) |
+| Flujo de verificación (cancelar, reintentar, reemplazo) | Lógica | [`DebtReportProvider.tsx` L29–212](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/context/DebtReportProvider.tsx#L29-L212) |
+| Prueba e2e: verificado | — | [`deudas.spec.ts` L80–118](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/deudas.spec.ts#L80-L118) |
+| Prueba e2e: rechazos | — | [`deudas.spec.ts` L168–188](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/deudas.spec.ts#L168-L188) |
+| Prueba e2e: error de servicio y reintento | — | [`deudas.spec.ts` L191–204](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/deudas.spec.ts#L191-L204) |
+
 ---
 
 ## S3-10 · Actividades económicas registradas
@@ -412,6 +536,20 @@ Pendientes pasa de 4 a 5.
 - **Categoría:** se muestra tal cual ("1" o "2"). ¿Se traduce a "Primera" y "Segunda categoría"?
 
 **Archivos:** `src/types.ts`, `src/data/demo.json` (paso, log, fuentes y `afectaIva`), `src/pages/DiagnosticoPage.tsx`, `src/components/diagnostico/SiiTables.tsx`, `src/data/glosario.ts`, `docs/sprint-1-v2-diagnostico-base-y-backoffice.md` (SII-07 y la ruta).
+
+**Código** (commit 5757147)
+
+| Pieza | Para qué sirve (UI/UX) | Código |
+| --- | --- | --- |
+| Tipo Activity (afectaIva) | Contrato de datos | [`types.ts` L109–116](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/types.ts#L109-L116) |
+| Paso CONTRIBUYENTE de la extracción | Datos de demo: paso y log | [`demo.json` L1537–1540](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/data/demo.json#L1537-L1540) |
+| Tarjeta del Resumen | UI: código, glosa, categoría, Afecta IVA, desde | [`DiagnosticoPage.tsx` L778–820](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/pages/DiagnosticoPage.tsx#L778-L820) |
+| Textos fijos de actividades | UX | [`calculos.ts` L173–178](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/lib/calculos.ts#L173-L178) |
+| Tabla en Datos del SII | UI: columna Afecta IVA | [`SiiTables.tsx` L207–323](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/components/diagnostico/SiiTables.tsx#L207-L323) |
+| Glosario | UX: Actividad económica y Afecta IVA | [`glosario.ts` L24–32](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/src/data/glosario.ts#L24-L32) |
+| Ruta de extracción (SII-07) | Documento | [`sprint-1-v2-diagnostico-base-y-backoffice.md` L218](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/docs/sprint-1-v2-diagnostico-base-y-backoffice.md?plain=1#L218) |
+| Prueba e2e: tarjeta en el Resumen | — | [`diagnostico.spec.ts` L235–253](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L235-L253) |
+| Prueba e2e: paso en la extracción | — | [`diagnostico.spec.ts` L276–289](https://github.com/coyane/risktech/blob/575714737a40ab53377b45f43f176f4b51fe956c/e2e/diagnostico.spec.ts#L276-L289) |
 
 ---
 
