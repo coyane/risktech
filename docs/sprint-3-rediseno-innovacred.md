@@ -44,6 +44,8 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 
 ## Convenciones de los tickets
 
+- **Linear:** REM-49 a REM-59 (S3-01 a S3-11), proyecto Riscktech, asignados a Marcos. Cada issue trae este mismo contenido, su mapa de código y sus capturas.
+
 - **Dónde verlo:** entrar a `/diagnostico` con cualquier RUT válido en modo demo (por ejemplo, 12.345.678-5). Cada vista tiene dirección propia con `#`.
 - **Commit:** todo el sprint está en [`5757147`](https://github.com/coyane/risktech/commit/575714737a40ab53377b45f43f176f4b51fe956c) (`main`, 2026-10-27).
 - **Mapa de código:** cada ticket trae una tabla "Código" con las piezas de UI y UX y su enlace a las líneas exactas. Los enlaces están fijados al commit 5757147, así que muestran el código del sprint aunque después cambie; para la versión vigente, abrir el mismo archivo en `main`.
@@ -53,6 +55,8 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 ---
 
 ## S3-01 · Marca Innovacred y lenguaje sin método
+
+**Linear:** [REM-49](https://linear.app/prodbooster/issue/REM-49) · asignado a Marcos
 
 **Por qué.** La plataforma pasa a llamarse Innovacred. Además, la persona necesita entender el cálculo y de dónde sale el dato, no el nombre de una metodología.
 
@@ -93,6 +97,8 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 ---
 
 ## S3-02 · Sistema visual nuevo y marco de la aplicación
+
+**Linear:** [REM-50](https://linear.app/prodbooster/issue/REM-50) · asignado a Marcos
 
 **Por qué.** La base visual venía de Kupera (pensada para abogados) y se sentía sobria en exceso. Se buscó algo más moderno sin perder confianza de producto financiero. La dirección final, "Panel", salió de cuatro rondas de prototipos y de tres referencias de Dribbble (Task Management Dashboard, Personal Finance Management y App Metrics Dashboard).
 
@@ -141,6 +147,8 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 ---
 
 ## S3-03 · Resumen como panel
+
+**Linear:** [REM-51](https://linear.app/prodbooster/issue/REM-51) · asignado a Marcos
 
 **Por qué.** El Resumen anterior mostraba nueve tarjetas del mismo peso, sin decir que seis forman una sola cadena (ingreso → impuesto → renta neta → dividendo → crédito). El crédito, que es lo que más importa, no se podía ajustar ahí. Hubo una versión intermedia en cinco pasos con línea técnica y frases puente, pero se descartó por sobrecargada.
 
@@ -194,6 +202,8 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 
 ## S3-04 · Cálculos por niveles
 
+**Linear:** [REM-52](https://linear.app/prodbooster/issue/REM-52) · asignado a Marcos
+
 **Por qué.** La vista de cálculos era la más criticada: "sobrecargada y tosca", con demasiada información a la vista en poco espacio. Toda la información sigue disponible, pero ahora se ve un nivel a la vez.
 
 | Antes | Ahora |
@@ -242,6 +252,8 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 
 ## S3-05 · Crédito
 
+**Linear:** [REM-53](https://linear.app/prodbooster/issue/REM-53) · asignado a Marcos
+
 | Antes | Ahora |
 | --- | --- |
 | ![Crédito antes](sprint-3/antes-credito.jpg) | ![Crédito ahora](sprint-3/despues-credito.jpg) |
@@ -278,6 +290,8 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 ---
 
 ## S3-06 · Propiedades: vista propia y tabla que se entiende
+
+**Linear:** [REM-54](https://linear.app/prodbooster/issue/REM-54) · asignado a Marcos
 
 **Por qué.** Las propiedades eran una subpestaña de Datos del SII con una tabla de 10 columnas sin explicación. La parte de "financiado o no" no se leía.
 
@@ -325,6 +339,8 @@ S3-01 y S3-02 son la base de todo lo visual. S3-07, S3-09 y S3-10 traen trabajo 
 ---
 
 ## S3-07 · Plazo transcurrido del crédito de cada propiedad
+
+**Linear:** [REM-55](https://linear.app/prodbooster/issue/REM-55) · asignado a Marcos
 
 **Por qué.** Hace falta saber cuántos años lleva pagados cada crédito sobre los pactados. El SII ("Mis Bienes") registra el plazo pactado y la fecha de la escritura, **no los dividendos pagados**.
 
@@ -376,6 +392,8 @@ Pendientes pasa de 4 a 5.
 ---
 
 ## S3-08 · Informe de deudas de la CMF: vista y carpeta crediticia
+
+**Linear:** [REM-56](https://linear.app/prodbooster/issue/REM-56) · asignado a Marcos
 
 **Por qué.** El informe de deudas de la CMF completa la carpeta crediticia digital. Es opcional pero recomendado. No tiene cálculos ni se interpreta: se muestra y se imprime tal como se cargó. La persona lo saca por fuera, en el sitio de la CMF con su ClaveÚnica, así que la guía tiene que ser muy clara.
 
@@ -443,6 +461,8 @@ Pendientes pasa de 4 a 5.
 
 ## S3-09 · Verificación del informe de deudas por código QR
 
+**Linear:** [REM-57](https://linear.app/prodbooster/issue/REM-57) · asignado a Marcos
+
 **Por qué.** El informe de la CMF trae un código QR. El backend lo leerá y validará que el documento sea legítimo, así que la persona tiene que ver ese proceso y su resultado. **Decisión de Cristóbal:** si la verificación falla por el documento, se rechaza; no se guarda ni entra a la carpeta.
 
 **Contrato** (detalle en `docs/contrato-verificacion-informe-deudas.md`; en la demo, simulado en `src/lib/verificacionDeudas.ts`)
@@ -499,6 +519,8 @@ Pendientes pasa de 4 a 5.
 
 ## S3-10 · Actividades económicas registradas
 
+**Linear:** [REM-58](https://linear.app/prodbooster/issue/REM-58) · asignado a Marcos
+
 **Por qué.** Los códigos de actividad económica son clave y no se estaban considerando como corresponde. Se leían dentro del paso de bienes raíces, sin la columna "Afecta IVA", y solo se veían en Datos del SII.
 
 | Antes | Ahora |
@@ -554,6 +576,8 @@ Pendientes pasa de 4 a 5.
 ---
 
 ## S3-11 · Landing e ingreso (siguiente sprint)
+
+**Linear:** [REM-59](https://linear.app/prodbooster/issue/REM-59) · asignado a Marcos
 
 **Estado.** Hay tres prototipos HTML locales (Trazado, Expediente y Respuesta), cada uno con su landing y su pantalla de ingreso. Todavía no están en el repositorio. Se recomienda **V2 Expediente**: el F22 que se enciende fila por fila y alimenta el diagnóstico, y una autorización que se lee como documento, con el formulario flotante. La bitácora de la clave ya incorpora el documento técnico del conector:
 
