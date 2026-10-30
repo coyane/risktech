@@ -1,0 +1,130 @@
+/* Ingreso V2 Expediente: el CSS del prototipo aprobado, sin cambios de valores. */
+html{scroll-behavior:smooth}
+h1,h2,h3{line-height:1.08}
+a{color:var(--p300)}
+.sheet :focus-visible{outline-color:var(--p500)}
+.skip{z-index:10}
+
+.bar{border-bottom:1px solid var(--line)}
+.bar-in{width:min(1240px,100% - 32px);margin-inline:auto;display:flex;align-items:center;gap:8px;min-height:68px}
+.brand{display:inline-flex;align-items:center;gap:10px;font:600 1.125rem/1 var(--display);text-decoration:none;color:var(--text);min-height:44px}
+.back{margin-left:auto;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;color:var(--text-2);text-decoration:none;border-radius:999px}
+.back:hover{color:var(--text)}
+.back svg{width:18px;height:18px}
+
+.layout{width:min(1240px,100% - 32px);margin:40px auto 72px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:48px;align-items:start}
+.intro h1{font-size:clamp(2.1rem,1.4rem + 2.8vw,3.6rem);letter-spacing:-.035em}
+.intro p{margin-top:14px;font-size:1.125rem;color:var(--text-2);max-width:38rem}
+.jump{display:none;margin-top:14px;min-height:44px;align-items:center;font-weight:600}
+.blk{margin-top:44px}
+.blk h2{font-size:1.75rem}
+.blk > p{margin-top:8px;color:var(--text-2)}
+
+/* Cajón */
+.drawer{margin-top:20px;background:var(--bg-2);border:1px solid var(--line-hi);border-radius:22px;padding:26px clamp(12px,2.4vw,24px) 18px}
+.card{position:relative;margin-top:16px}
+.card:first-child{margin-top:4px}
+.card summary{list-style:none;cursor:pointer;background:var(--paper);color:var(--paper-ink);border:1px solid var(--paper-edge);border-radius:4px;padding:14px 18px;display:grid;grid-template-columns:minmax(0,1fr) 26px;gap:2px 14px;align-items:center;min-height:60px;box-shadow:0 6px 14px -10px rgba(0,0,0,.7);transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.card summary::-webkit-details-marker{display:none}
+.card summary:hover{transform:translateY(-3px)}
+.card[open] summary{transform:translateY(-6px);border-radius:4px 4px 0 0;box-shadow:0 16px 26px -18px rgba(0,0,0,.8)}
+.card .tab{position:absolute;top:-15px;left:20px;height:16px;padding:0 10px;background:var(--paper);border:1px solid var(--paper-edge);border-bottom:0;border-radius:5px 5px 0 0;font:500 .6875rem/16px var(--mono);color:var(--paper-muted)}
+.card:nth-child(2) .tab{left:30%}.card:nth-child(3) .tab{left:46%}.card:nth-child(4) .tab{left:62%}.card:nth-child(5) .tab{left:14%}
+.card .ttl{font:500 1.125rem/1.2 var(--sans)}
+.card .ttl b{font:500 1.0625rem/1 var(--mono);margin-right:8px}
+.card .one{grid-column:1;font-size:.9375rem;color:var(--paper-muted)}
+.card summary svg{grid-row:1/3;grid-column:2;width:22px;height:22px;color:var(--paper-muted);transition:transform .3s var(--ease)}
+.card[open] summary svg{transform:rotate(45deg)}
+.body{background:var(--paper);color:var(--paper-ink);border:1px solid var(--paper-edge);border-top:1px dashed var(--paper-edge);margin-top:-6px;border-radius:0 0 4px 4px;padding:4px 18px 16px}
+.body dl{margin:0;display:grid;grid-template-columns:150px minmax(0,1fr);gap:0}
+.body dt,.body dd{padding:10px 0;border-top:1px solid var(--paper-edge);font-size:.9375rem}
+.body dt:first-of-type,.body dd:first-of-type{border-top:0}
+.body dt{font-weight:600;color:var(--paper-muted)}
+.body dd{margin:0}
+.body dd ul{margin:0;padding-left:18px}
+.chip{display:inline-block;font-size:.8125rem;font-weight:500;padding:2px 10px;border-radius:999px;background:var(--p100);margin:0 4px 4px 0}
+.chip.none{background:#fff;border:1px solid var(--paper-edge)}
+
+/* Bitácora de la clave */
+.log{margin-top:16px;list-style:none;padding:0;border-left:2px solid var(--line-hi);display:grid;gap:0}
+.log li{position:relative;display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding:12px 0 12px 22px}
+.log li::before{content:"";position:absolute;left:-7px;top:19px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--p300)}
+.log li:last-child::before{background:var(--p300)}
+/* En el prototipo era <time>, pero "Ahora" o "Siempre" no son fechas: va como texto. */
+.log .when{font:500 .8125rem/1.6 var(--mono);color:var(--p300)}
+.log b{display:block;font-weight:600}
+.log span{color:var(--text-2);font-size:.9375rem}
+.stop{margin-top:14px;padding:14px 16px;border:1px solid var(--line-hi);border-radius:16px;color:var(--text-2);font-size:.9375rem}
+.stop b{color:var(--text)}
+
+.nos{margin-top:16px;list-style:none;padding:0;display:grid;gap:0}
+.nos li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid var(--line);color:var(--text-2)}
+.nos li:last-child{border-bottom:1px solid var(--line)}
+.nos svg{width:18px;height:18px;margin-top:3px}
+.who{margin-top:16px;color:var(--text-2);font-size:.9375rem}
+
+/* La hoja de autorización: fija en su columna; si es más alta que la ventana, el cuerpo se desplaza
+   dentro de la hoja y la acción (botón) queda siempre a la vista al pie. */
+aside{align-self:stretch}
+.sheet{position:sticky;top:16px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);display:flex;flex-direction:column;background:var(--paper);color:var(--paper-ink);border:1px solid var(--paper-edge);border-radius:4px;box-shadow:0 1px 0 rgba(255,255,255,.5),0 30px 60px -30px rgba(0,0,0,.9),0 2px 8px rgba(0,0,0,.3)}
+.s-head{display:flex;justify-content:space-between;gap:12px;padding:12px 24px;border-bottom:1px solid var(--paper-edge);font:500 .75rem/1.4 var(--mono);color:var(--paper-muted)}
+.s-body{padding:24px clamp(18px,3vw,32px) 8px;overflow:auto;overscroll-behavior:contain;min-height:0;flex:1 1 auto;scroll-padding:16px 0}
+.s-action{flex:none;padding:12px clamp(18px,3vw,32px) 16px;border-top:1px solid var(--paper-edge);background:var(--paper);box-shadow:0 -12px 20px -16px rgba(0,0,0,.35)}
+.s-action .submit{margin-top:0}
+.s-head,.s-foot{flex:none}
+.dock{display:none}
+.sheet h2{font-size:1.875rem;font-weight:500}
+.doc{margin-top:12px;color:var(--paper-ink)}
+.terms-intro{margin-top:22px;font-weight:600;font-size:.9375rem}
+.terms{margin:8px 0 0;display:grid;grid-template-columns:110px minmax(0,1fr);border-top:1px solid var(--paper-edge)}
+.terms dt,.terms dd{padding:9px 0;border-bottom:1px solid var(--paper-edge);font-size:.9375rem}
+.terms dt{font-weight:600}
+.terms dd{margin:0;color:var(--paper-muted)}
+.field{margin-top:18px}
+label{display:block;font-weight:600;font-size:.9375rem}
+.input{width:100%;margin-top:8px;min-height:52px;padding:0 14px;border-radius:10px;border:1px solid var(--field);background:#fff;color:var(--paper-ink);font:500 1.0625rem var(--sans);font-feature-settings:"tnum" 1}
+.input::placeholder{color:#66737a}
+.input:focus{outline:3px solid var(--p500);outline-offset:1px}
+.input[aria-invalid="true"]{border-color:var(--danger)}
+.row{display:flex;gap:8px;margin-top:8px}
+.row .input{margin-top:0}
+.show{min-height:52px;padding:0 16px;border-radius:10px;border:1px solid var(--field);background:#fff;color:var(--paper-ink);font:600 .9375rem var(--sans);cursor:pointer;flex:none}
+.show:hover{border-color:var(--paper-ink)}
+.err{margin-top:6px;color:var(--danger);font-size:.875rem;font-weight:500}
+.sign{margin-top:22px;padding-top:18px;border-top:2px solid var(--paper-ink);display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px}
+.sign input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--p500)}
+.sign label{font-weight:500}
+.submit{margin-top:18px;width:100%;min-height:54px;border-radius:999px;border:0;background:var(--bg);color:var(--text);font:600 1.0625rem var(--sans);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px}
+.submit:hover:not(:disabled){background:var(--bg-3)}
+.submit:disabled{background:#d6dcdb;color:#4f5d61;cursor:not-allowed}
+.hint{margin-top:8px;text-align:center;font-size:.875rem;color:var(--paper-muted)}
+.spin{width:18px;height:18px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.status{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--p100);font-size:.9375rem}
+.status b{display:block}
+.s-foot{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;padding:14px clamp(18px,3vw,32px);border-top:1px dashed var(--paper-edge);font-size:.875rem;color:var(--paper-muted)}
+.s-foot svg{width:18px;height:18px;color:var(--p500);margin-top:2px}
+
+@media (max-width:980px){
+  .layout{grid-template-columns:minmax(0,1fr);gap:40px}
+  .sheet{position:static;max-height:none}
+  .s-body{overflow:visible}
+  body{padding-bottom:88px}
+  .dock{display:flex;position:fixed;left:16px;right:16px;bottom:max(16px,env(safe-area-inset-bottom));z-index:30;min-height:54px;align-items:center;justify-content:center;border-radius:999px;background:var(--paper);color:var(--paper-ink);font:600 1.0625rem var(--sans);text-decoration:none;box-shadow:0 12px 30px -10px rgba(0,0,0,.8);transition:opacity .2s,transform .2s}
+  .dock:focus-visible{outline:3px solid var(--p300);outline-offset:3px}
+  .dock.off{opacity:0;transform:translateY(12px);pointer-events:none;visibility:hidden}
+  html{scroll-padding-bottom:96px}
+  .jump{display:inline-flex}
+}
+/* En el prototipo el texto de "Volver al inicio" se ocultaba con display:none y el enlace quedaba sin nombre;
+   ahora se oculta solo a la vista. */
+@media (max-width:560px){
+  .body dl{grid-template-columns:minmax(0,1fr)}
+  .body dt{padding-bottom:0}
+  .body dd{border-top:0;padding-top:2px}
+  .log li{grid-template-columns:minmax(0,1fr);gap:2px}
+  .terms{grid-template-columns:minmax(0,1fr)}
+  .terms dt{border-bottom:0;padding-bottom:0}
+  .card:nth-child(n) .tab{left:16px}
+  .back span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}

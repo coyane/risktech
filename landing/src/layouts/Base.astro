@@ -1,0 +1,76 @@
+---
+// Documento común: SEO técnico (title, description, canonical, robots, Open Graph, Twitter),
+// fuentes autoalojadas y el orden de la cascada (tokens > base > página > movimiento reducido).
+import { getImage } from 'astro:assets'
+import '@fontsource-variable/bricolage-grotesque/opsz.css'
+import '@fontsource/instrument-sans/latin-400.css'
+import '@fontsource/instrument-sans/latin-500.css'
+import '@fontsource/instrument-sans/latin-600.css'
+import '@fontsource/ibm-plex-mono/latin-400.css'
+import '@fontsource/ibm-plex-mono/latin-500.css'
+import bricolageUrl from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2?url'
+import instrumentUrl from '@fontsource/instrument-sans/files/instrument-sans-latin-400-normal.woff2?url'
+import '../styles/tokens.css'
+import '../styles/base.css'
+import ogSource from '../assets/img/resumen.jpg'
+import { BRAND, INDEXABLE, absolute } from '../lib/site'
+import { serializeJsonLd } from '../lib/jsonld'
+
+interface Props {
+  title: string
+  description: string
+  /** Fuerza noindex aunque el sitio sea indexable (el ingreso). */
+  noindex?: boolean
+  jsonLd?: unknown
+}
+
+const { title, description, noindex = false, jsonLd } = Astro.props
+const path = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`
+const canonical = absolute(path, Astro.site)
+
+// Sin indexación global: noindex, nofollow en todo. Con indexación: solo el ingreso queda fuera.
+const robots = !INDEXABLE ? 'noindex, nofollow' : noindex ? 'noindex' : undefined
+
+// Imagen para compartir: el Resumen del caso de ejemplo, recortado a 1200 × 630 al compilar.
+const og = await getImage({ src: ogSource, width: 1200, height: 630, fit: 'cover', position: 'top', format: 'jpg', quality: 82 })
+const ogImage = absolute(og.src, Astro.site)
+const ogAlt = 'Resumen del Diagnóstico Base de Innovacred con un caso de ejemplo: cuatro cifras principales y un gráfico por año tributario.'
+---
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {robots && <meta name="robots" content={robots} />}
+    <meta name="theme-color" content="#082a2f" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <link rel="preload" href={bricolageUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={instrumentUrl} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={BRAND} />
+    <meta property="og:locale" content="es_CL" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogAlt} />
+
+    {jsonLd !== undefined && <script type="application/ld+json" is:inline set:html={serializeJsonLd(jsonLd)} />}
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

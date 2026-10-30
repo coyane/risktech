@@ -1,0 +1,185 @@
+---
+// Landing V2 Expediente: port fiel del prototipo aprobado (Risktech-prototipos/landing/v2-expediente.html).
+// Referencias de 21st.dev observadas y reconstruidas desde cero (sin copiar código):
+// - FAQ Drawer (@cipriantitire, MIT): fichas de un cajón con pestaña.
+// - Build Pipeline (@ibrandify, MIT): etapas encadenadas con su estado.
+// - Editorial Collage Hero (@felipemenezes098, sin licencia: solo observado): dos piezas superpuestas.
+// - Dot Pattern / Grid Pattern (@dillionverma, MIT): retícula enmascarada de fondo.
+import { Image } from 'astro:assets'
+import Base from '../layouts/Base.astro'
+import '../styles/landing.css'
+import '../styles/motion.css'
+import Brand from '../components/Brand.astro'
+import Icon from '../components/Icon.astro'
+import Pc from '../components/Pc.astro'
+import Desk from '../components/landing/Desk.astro'
+import Fichas from '../components/landing/Fichas.astro'
+import Faq from '../components/landing/Faq.astro'
+import calcOrigen from '../assets/img/calc-origen.jpg'
+import resumen from '../assets/img/resumen.jpg'
+import credito from '../assets/img/credito.jpg'
+import propiedades from '../assets/img/propiedades.jpg'
+import extraccion from '../assets/img/extraccion.jpg'
+import { ROUTES, absolute } from '../lib/site'
+import { homeJsonLd } from '../lib/jsonld'
+
+const title = 'Innovacred · Tus números ya están en el SII'
+const description = 'Innovacred lee tus formularios del SII y los convierte en un Diagnóstico Base que se entiende: cada cifra con su operación y su origen.'
+const siteUrl = absolute('/', Astro.site)
+const jsonLd = homeJsonLd(siteUrl, siteUrl)
+// Anchos de las capturas: columnas de ~380 px en escritorio y ancho completo en móvil.
+const thirds = '(max-width: 900px) calc(100vw - 32px), 389px'
+---
+<Base title={title} description={description} jsonLd={jsonLd}>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+  <header class="bar">
+    <nav class="bar-in" aria-label="Principal">
+      <Brand href="#top" />
+      <div class="links"><a href="#que-hace">Qué hace</a><a href="#recorrido">Cómo funciona</a><a href="#fichas">Qué se lee</a><a href="#preguntas">Preguntas</a></div>
+      <a class="btn btn-paper" href={ROUTES.ingreso}>Ingresar</a>
+    </nav>
+  </header>
+
+  <main id="contenido">
+    <div class="hero" id="top">
+      <div class="grid-bg" aria-hidden="true"></div>
+      <div class="wrap hero-grid">
+        <div>
+          <h1>Tus números ya están en el SII. <span>Aquí se entienden.</span></h1>
+          <p class="lead">Innovacred lee tus declaraciones y tus propiedades y te entrega tu Diagnóstico Base: cuánto declaraste, tu tasa efectiva, tu renta neta al mes y el crédito que paga esa renta. Cada cifra con su operación y su origen.</p>
+          <div class="ctas">
+            <a class="btn btn-paper" href={ROUTES.ingreso}>Ingresar</a>
+            <a class="btn btn-line" href="#fichas">Ver qué se lee</a>
+          </div>
+          <p class="legal">Entras con tu RUT y tu clave tributaria. La clave se usa solo durante la extracción y no se almacena. El informe es referencial y no constituye una decisión tributaria ni crediticia.</p>
+        </div>
+        <Desk />
+      </div>
+    </div>
+
+    <section id="que-hace" aria-labelledby="h-hace">
+      <div class="wrap">
+        <h2 id="h-hace" class="sr">Qué hace la primera fase</h2>
+        <p class="statement"><em>De tu cuenta del SII a tu diagnóstico, en minutos.</em> <span>Abres tu sesión, Innovacred lee cinco fuentes y las convierte en un solo informe. Nada de códigos sueltos: cada cifra dice qué es, cómo se calculó y de qué formulario, código y año sale.</span></p>
+        <div class="facts">
+          <div><b>Unos minutos</b><span>Ves el avance fuente por fuente y puedes cancelar.</span></div>
+          <div><b>4 años y 24 meses</b><span>F22 de 4 años tributarios; F29 y F50 de los últimos 24 meses.</span></div>
+          <div><b>PDF y CSV</b><span>Para leerlo, guardarlo o llevarlo a quien lo necesite.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="obtienes" aria-labelledby="h-obt">
+      <div class="wrap">
+        <p class="kicker">Lo que obtienes</p>
+        <h2 id="h-obt" class="sec-h">Primero la respuesta. La operación y el origen, cuando los pidas.</h2>
+        <div class="annot">
+          <ol class="notes">
+            <li class="note"><span class="n" aria-hidden="true">1</span><div><h3>La respuesta</h3><p>Una pregunta simple y su cifra: ¿qué porcentaje se paga de impuesto? 16,04%.</p></div></li>
+            <li class="note"><span class="n" aria-hidden="true">2</span><div><h3>La operación</h3><p>Los datos y la cuenta completa, a la vista: impuesto determinado ÷ base imponible.</p></div></li>
+            <li class="note"><span class="n" aria-hidden="true">3</span><div><h3>Qué es y de dónde sale</h3><p>Cada dato con su formulario, código, año y folio. Lo que falta confirmar queda rotulado.</p></div></li>
+          </ol>
+          <figure class="doc">
+            <Image src={calcOrigen} widths={[560, 860, 1100]} sizes="(max-width: 900px) calc(100vw - 32px), 590px" loading="lazy" alt="Cálculo de la tasa efectiva del caso de ejemplo: 16,04%. La operación divide el impuesto determinado, $15.931.231, por la base imponible, $99.322.241. Las fuentes indican F22, códigos 157 y 170, AT 2025, folio 250428-0001." />
+            <span class="pin pin-1" aria-hidden="true">1</span>
+            <span class="pin pin-2" aria-hidden="true">2</span>
+            <span class="pin pin-3" aria-hidden="true">3</span>
+          </figure>
+        </div>
+        <div class="more">
+          <figure><Image src={resumen} widths={[400, 800, 1200]} sizes={thirds} loading="lazy" alt="Resumen del caso de ejemplo con las cuatro cifras principales y un gráfico por año tributario." /><figcaption><b>Resumen.</b> Tus cifras principales, año por año.</figcaption></figure>
+          <figure><Image src={credito} widths={[400, 800, 1200]} sizes={thirds} loading="lazy" alt="Vista Crédito: $384.089.077 con 4,0% anual a 30 años y la curva del crédito según el plazo." /><figcaption><b>Crédito.</b> Lo que paga tu renta, con tasa y plazo que puedes cambiar.</figcaption></figure>
+          <figure><Image src={propiedades} widths={[400, 800, 1200]} sizes={thirds} loading="lazy" alt="Vista Propiedades: activos, patrimonio, pasivos de origen y deuda por institución." /><figcaption><b>Propiedades.</b> Cuánto costaron y cómo se financiaron.</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="recorrido" aria-labelledby="h-rec">
+      <div class="wrap">
+        <p class="kicker">Cómo funciona</p>
+        <h2 id="h-rec" class="sec-h">Cuatro folios, de tu clave a tu informe</h2>
+        <ol class="folios">
+          <li class="folio"><div class="folio-n"><b>01</b>Ingreso</div><div><h3>Ingresas y autorizas</h3><p>Tu RUT y tu clave tributaria, las mismas de sii.cl. Antes de conectar ves qué se lee, para qué y cuánto dura el uso de la clave.</p></div><div class="aside"><b>Tu autorización</b>Finalidad: elaborar tu diagnóstico. Vigencia: solo esta captura, con un solo intento de ingreso; al terminar se cierra la sesión del SII.</div></li>
+          <li class="folio"><div class="folio-n"><b>02</b>Lectura</div><div><h3>Se leen tus fuentes</h3><p>F22, F29, F50 y bienes raíces, una por una. Ves el avance y puedes cancelar. Si el SII pide CAPTCHA o segundo factor, la lectura se detiene y se explica.</p></div><figure><Image src={extraccion} widths={[400, 800, 1200]} sizes="(max-width: 860px) calc(100vw - 32px), 476px" loading="lazy" alt="Pantalla de lectura en curso: seis pasos, de la conexión con el SII al cálculo del diagnóstico, con su estado." /></figure></li>
+          <li class="folio"><div class="folio-n"><b>03</b>Cálculo</div><div><h3>Se arma tu Diagnóstico Base</h3><p>Las mismas cifras dan el mismo informe: sin semáforos ni evaluaciones. Lo que aún falta confirmar aparece rotulado como “por confirmar”.</p></div><div class="aside"><b>Tasa y plazo</b>No hay una tasa ni un plazo únicos. El informe parte con 4,0% anual a 30 años y puedes cambiarlos.</div></li>
+          <li class="folio"><div class="folio-n"><b>04</b>Informe</div><div><h3>Revisas y descargas</h3><p>Abres cada cifra hasta su origen y descargas el informe en PDF y CSV.</p></div><div class="aside"><b>Para llevar</b>El PDF sirve para leerlo o entregarlo; el CSV, para trabajar las cifras en una planilla.</div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="fichas" aria-labelledby="h-fichas">
+      <div class="wrap">
+        <p class="kicker">Qué se lee y para qué</p>
+        <h2 id="h-fichas" class="sec-h">Cinco fichas del SII. Tira de una para leerla.</h2>
+        <p class="sec-p">Cada fuente dice qué se lee, para qué cálculo se usa y qué cifra de tu diagnóstico alimenta. También lo que hoy no se usa en ningún cálculo.</p>
+        <Fichas />
+      </div>
+    </section>
+
+    <section id="confianza" aria-labelledby="h-conf">
+      <div class="wrap">
+        <p class="kicker">Tu clave y tus datos</p>
+        <h2 id="h-conf" class="sec-h">Lo que pasa con tu información, sin letra chica</h2>
+        <div class="trust">
+          <div class="yes"><h3>Lo que sí</h3><ul>
+            <li><Icon name="check" /><span>La clave se usa solo durante la extracción y no se almacena.</span></li>
+            <li><Icon name="check" /><span>Se consulta lo que autorizas, con una sola finalidad: elaborar tu diagnóstico.</span></li>
+            <li><Icon name="check" /><span>Cada cifra se puede seguir hasta su formulario, código, año y folio.</span></li>
+            <li><Icon name="check" /><span>Tu clave viaja cifrada y nunca se guarda: ni en disco, ni en registros, ni en nuestros servidores.</span></li>
+          </ul></div>
+          <div class="no"><h3>Lo que no</h3><ul>
+            <li><Icon name="cross" /><span>No se evaden CAPTCHA ni segundo factor.</span></li>
+            <li><Icon name="cross" /><span>No hay semáforos ni evaluaciones de ti como contribuyente.</span></li>
+            <li><Icon name="cross" /><span>No aprueba créditos ni recomienda productos, y no es un documento oficial.</span></li>
+            <li><Icon name="cross" /><span>No presenta ni modifica declaraciones en tu nombre. <Pc>[por confirmar]</Pc></span></li>
+          </ul></div>
+          <div class="pend"><h3>Por confirmar antes de publicar</h3><ul>
+            <li>Cumplimiento de la Ley 19.628 y de la Ley 21.719. <Pc>[por confirmar]</Pc></li>
+            <li>Dónde y por cuánto tiempo se guardan las declaraciones leídas. <Pc>[por confirmar]</Pc></li>
+            <li>Cómo y dónde revocar la autorización. <Pc>[por confirmar]</Pc></li>
+          </ul></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-soon">
+      <div class="wrap soon">
+        <div>
+          <p class="kicker">Lo que viene</p>
+          <h2 id="h-soon" class="sec-h">El expediente queda abierto para los agentes</h2>
+          <p class="sec-p">La primera fase entrega tus cifras y su origen. La siguiente suma agentes para trabajar sobre ellas. Ya se ven en la plataforma con datos de ejemplo; todavía no están conectados a un modelo.</p>
+        </div>
+        <div class="folder">
+          <div><h3>Análisis con el agente</h3><p>Cada hallazgo se podrá abrir para ver de dónde nace, hacerle preguntas y simular escenarios.</p></div>
+          <div><h3>Agente del portafolio</h3><p>Para el equipo que revisa muchos diagnósticos a la vez: preguntas sobre el conjunto.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="preguntas" aria-labelledby="h-faq">
+      <div class="wrap">
+        <p class="kicker">Preguntas</p>
+        <h2 id="h-faq" class="sec-h">Antes de conectar tu cuenta</h2>
+        <Faq />
+      </div>
+    </section>
+
+    <section class="close" aria-labelledby="h-close">
+      <div class="wrap">
+        <div class="sheet">
+          <div><h2 id="h-close">Abre tu expediente del SII y léelo en simple.</h2><p>Entra con tu RUT y tu clave tributaria. Antes de conectar, ves cada ficha que se va a leer.</p></div>
+          <a class="btn btn-ink" href={ROUTES.ingreso}>Ingresar</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <div><Brand href="#top" /><p class="foot-line">Diagnóstico tributario y crediticio con tus datos del SII.</p><p class="foot-line"><Pc>[por confirmar: razón social y contacto]</Pc></p></div>
+      <div><h2>Producto</h2><ul><li><a href="#que-hace">Qué hace</a></li><li><a href="#obtienes">Lo que obtienes</a></li><li><a href="#recorrido">Cómo funciona</a></li></ul></div>
+      <div><h2>Tus datos</h2><ul><li><a href="#fichas">Qué se lee</a></li><li><a href="#confianza">Tu clave</a></li><li><a href={ROUTES.ingreso}>Ingresar</a></li></ul></div>
+      <div><h2>Legal</h2><ul><li><a href="#confianza">Términos</a></li><li><a href="#confianza">Privacidad</a></li><li class="pc-item"><Pc>[por confirmar: textos legales]</Pc></li></ul></div>
+    </div>
+  </footer>
+</Base>

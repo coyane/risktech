@@ -1,0 +1,154 @@
+---
+// Ingreso V2 Expediente: port fiel del prototipo aprobado (Risktech-prototipos/landing/v2-ingreso.html).
+// Las fichas del cajón a la izquierda; la autorización es una hoja que se lee entera y se firma al final,
+// fija en su columna mientras se leen las fichas. En móvil, un botón fijo abajo lleva a la hoja.
+// Referencias de 21st.dev (observadas, reconstruidas de cero): FAQ Drawer (@cipriantitire, MIT)
+// y Build Pipeline (@ibrandify, MIT) para la bitácora de la clave.
+//
+// No hay backend: el formulario no envía ni guarda nada. Los campos no tienen `name`, así que ni sin
+// JavaScript viajan en la URL; el botón solo se habilita con JavaScript y lleva a PUBLIC_APP_URL.
+import Base from '../layouts/Base.astro'
+import '../styles/ingreso.css'
+import '../styles/motion.css'
+import Brand from '../components/Brand.astro'
+import Icon from '../components/Icon.astro'
+import Pc from '../components/Pc.astro'
+import { APP_URL, ROUTES } from '../lib/site'
+
+const title = 'Ingresar · Innovacred'
+const description = 'Las fichas que se leen de tu SII, para qué se usa cada una y la autorización que firmas, en un solo documento.'
+---
+<Base title={title} description={description} noindex>
+  <a class="skip" href="#autorizacion">Saltar a la autorización</a>
+  <header class="bar"><div class="bar-in">
+    <Brand href={ROUTES.home} />
+    <a class="back" href={ROUTES.home}><Icon name="back" /><span>Volver al inicio</span></a>
+  </div></header>
+
+  <div class="layout">
+    <main>
+      <div class="intro">
+        <h1>Lo que se lee de tu SII, y por qué</h1>
+        <p>Al conectar, Innovacred saca cinco fichas de tu cuenta del SII. Ábrelas para ver qué se lee de cada una, para qué cálculo se usa y qué cifra de tu diagnóstico alimenta. La autorización está en esta misma página y te acompaña mientras lees.</p>
+        <a class="jump" href="#autorizacion">Ir directo a la autorización</a>
+      </div>
+
+      <section class="blk" aria-labelledby="h-fichas">
+        <h2 id="h-fichas">Las fichas</h2>
+        <div class="drawer">
+          <details class="card" open><summary><span class="tab" aria-hidden="true">RENTA</span><span class="ttl"><b>F22</b>Renta anual</span><span class="one">Últimos 4 años tributarios · la base de casi todas tus cifras</span><Icon name="plus" /></summary>
+            <div class="body"><dl>
+              <dt>Qué se lee</dt><dd><ul><li>Ingresos declarados: sueldos, honorarios, retiros, dividendos, arriendos y otras rentas</li><li>Rebajas</li><li>Base imponible (código 170) e impuesto determinado (código 157)</li><li>Folio y fecha de cada declaración vigente</li></ul></dd>
+              <dt>Para qué cálculo</dt><dd>Total de orígenes de renta · tasa efectiva (157 ÷ 170) · renta neta del año y al mes · dividendo de referencia (25% de la renta neta al mes) · crédito que paga ese dividendo</dd>
+              <dt>Qué cifra alimenta</dt><dd><span class="chip">Ingreso declarado</span><span class="chip">Tasa efectiva</span><span class="chip">Renta neta al mes</span><span class="chip">Dividendo de referencia</span><span class="chip">Crédito</span></dd>
+              <dt>Por qué se pide</dt><dd>Sin tu declaración de renta no hay ingreso ni renta neta, y sin ellos no se calcula el crédito que paga tu renta. Son 4 años para verlo año por año.</dd>
+            </dl></div></details>
+          <details class="card"><summary><span class="tab" aria-hidden="true">IVA Y PPM</span><span class="ttl"><b>F29</b>Declaración mensual</span><span class="one">Últimos 24 meses · hoy no entra en el resumen</span><Icon name="plus" /></summary>
+            <div class="body"><dl>
+              <dt>Qué se lee</dt><dd><ul><li>Período, folio, fecha y tipo</li><li>Débito, crédito, IVA determinado y remanente</li><li>PPM y retenciones</li><li>Total a pagar y estado de pago</li></ul></dd>
+              <dt>Para qué cálculo</dt><dd>Hoy, ninguno del resumen.</dd>
+              <dt>Qué cifra alimenta</dt><dd><span class="chip none">Datos del SII · declaraciones mensuales</span></dd>
+              <dt>Por qué se pide</dt><dd>Para que tu informe muestre tus declaraciones mensuales junto a las anuales. Un mes sin declaración queda como faltante; no se inventa. <Pc>[por confirmar: cálculos que lo usarán]</Pc></dd>
+            </dl></div></details>
+          <details class="card"><summary><span class="tab" aria-hidden="true">OTROS</span><span class="ttl"><b>F50</b>Otros impuestos</span><span class="one">Últimos 24 meses · hoy no entra en el resumen</span><Icon name="plus" /></summary>
+            <div class="body"><dl>
+              <dt>Qué se lee</dt><dd>Período, total declarado y fecha de presentación.</dd>
+              <dt>Para qué cálculo</dt><dd>Hoy, ninguno del resumen.</dd>
+              <dt>Qué cifra alimenta</dt><dd><span class="chip none">Datos del SII · declaraciones mensuales</span></dd>
+              <dt>Por qué se pide</dt><dd>Para completar tu historial de declaraciones mensuales. <Pc>[por confirmar: cálculos que lo usarán]</Pc></dd>
+            </dl></div></details>
+          <details class="card"><summary><span class="tab" aria-hidden="true">MIS BIENES</span><span class="ttl"><b>BR</b>Bienes raíces</span><span class="one">Tus propiedades y cómo se compraron</span><Icon name="plus" /></summary>
+            <div class="body"><dl>
+              <dt>Qué se lee</dt><dd><ul><li>Rol, comuna, dirección y destino</li><li>Avalúo fiscal y contribuciones</li><li>Fecha y monto de compra</li><li>Pago al contado e institución que financió</li></ul></dd>
+              <dt>Para qué cálculo</dt><dd>Activos (suma de compras) · patrimonio (pagado al contado) · pasivos de origen (compra menos contado) · deuda de origen por institución</dd>
+              <dt>Qué cifra alimenta</dt><dd><span class="chip">Propiedades y financiamiento</span></dd>
+              <dt>Por qué se pide</dt><dd>Para mostrar cómo se financiaron tus propiedades. Es la deuda con que se compró cada una, no la que tienes hoy.</dd>
+            </dl></div></details>
+          <details class="card"><summary><span class="tab" aria-hidden="true">GIROS</span><span class="ttl"><b>ACT</b>Actividades económicas</span><span class="one">Giros vigentes · solo se muestran</span><Icon name="plus" /></summary>
+            <div class="body"><dl>
+              <dt>Qué se lee</dt><dd>Tus actividades económicas vigentes.</dd>
+              <dt>Para qué cálculo</dt><dd>Ninguno.</dd>
+              <dt>Qué cifra alimenta</dt><dd><span class="chip none">Datos del SII</span></dd>
+            </dl></div></details>
+        </div>
+      </section>
+
+      <section class="blk" aria-labelledby="h-clave">
+        <h2 id="h-clave">Bitácora de tu clave</h2>
+        <p>Tu clave sirve para un solo ingreso al SII y nunca se guarda. Este es su recorrido completo.</p>
+        <ol class="log">
+          <li><span class="when">Ahora</span><div><b>Escribes tu clave</b><span>En la autorización, con las mismas credenciales de sii.cl.</span></div></li>
+          <li><span class="when">Al conectar</span><div><b>Viaja cifrada</b><span>Toda la comunicación usa cifrado TLS, desde tu navegador hasta el proceso que hace la consulta.</span></div></li>
+          <li><span class="when">Al recibirla</span><div><b>El proceso de consulta la recibe y tu navegador la borra</b><span>Apenas ese proceso acepta el trabajo, la página borra la clave de tu navegador.</span></div></li>
+          <li><span class="when">Un intento</span><div><b>Un solo intento de ingreso a sii.cl</b><span>La clave se usa una vez para entrar. Luego se leen las cinco fichas; ves el avance y puedes cancelar.</span></div></li>
+          <li><span class="when">Al terminar</span><div><b>Se cierra la sesión del SII y el navegador</b><span>El navegador que usó el proceso de consulta también se cierra.</span></div></li>
+          <li><span class="when">Siempre</span><div><b>Nunca se guarda</b><span>La clave existe solo en la memoria del proceso de consulta mientras trabaja. No queda en disco, en registros ni en nuestros servidores.</span></div></li>
+          <li><span class="when">Comprobado</span><div><b>Una prueba lo verifica</b><span>Una prueba dedicada comprueba que la clave no se guarda ni aparece en los registros ni en el estado del proceso de consulta.</span></div></li>
+        </ol>
+        <p class="stop"><b>Si el SII pide CAPTCHA o segundo factor,</b> la lectura se detiene y la pantalla te explica qué pasó. No se evaden esos controles.</p>
+      </section>
+
+      <section class="blk" aria-labelledby="h-no">
+        <h2 id="h-no">Lo que no se hace</h2>
+        <ul class="nos">
+          <li><Icon name="cross" /><span>No se guarda tu clave tributaria.</span></li>
+          <li><Icon name="cross" /><span>No se leen declaraciones juradas, registro de compras y ventas, documentos electrónicos ni balance.</span></li>
+          <li><Icon name="cross" /><span>No se te evalúa ni se recomiendan productos; el informe no aprueba créditos.</span></li>
+          <li><Icon name="cross" /><span>No se presentan ni modifican declaraciones en tu nombre. <Pc>[por confirmar]</Pc></span></li>
+          <li><Icon name="cross" /><span>No se comparten tus datos con terceros sin tu autorización. <Pc>[por confirmar]</Pc></span></li>
+        </ul>
+        <p class="who">Ven tu diagnóstico tú y el equipo interno de Innovacred, que ve las cifras principales en su panel. <Pc>[por confirmar: alcance y plazo de conservación]</Pc></p>
+      </section>
+    </main>
+
+    <aside aria-labelledby="h-aut">
+      <form class="sheet" id="autorizacion" novalidate data-app-url={APP_URL}>
+        <div class="s-head"><span>AUTORIZACIÓN DE CONSULTA · SII</span><span>Modo demo</span></div>
+        <div class="s-body">
+          <h2 id="h-aut">Conecta tu cuenta del SII</h2>
+          <p class="doc">Con esta autorización, Innovacred abre tu sesión en sii.cl para consultar tus declaraciones y bienes raíces y elaborar tu diagnóstico.</p>
+          <div class="field">
+            <label for="rut">RUT</label>
+            <input class="input" id="rut" autocomplete="username" spellcheck="false" autocapitalize="off" placeholder="12.345.678-5" required aria-describedby="rut-err" />
+            <p class="err" id="rut-err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="clave">Clave tributaria</label>
+            <div class="row">
+              <input class="input" id="clave" type="password" autocomplete="current-password" required aria-describedby="clave-err" />
+              <button class="show" type="button" id="show" aria-pressed="false" aria-controls="clave">Mostrar</button>
+            </div>
+            <p class="err" id="clave-err" hidden></p>
+          </div>
+          <p class="terms-intro">Lo que autorizas al marcar la casilla:</p>
+          <dl class="terms">
+            <dt>Finalidad</dt><dd>Elaborar tu diagnóstico tributario y crediticio.</dd>
+            <dt>Fuentes</dt><dd>F22, F29, F50, bienes raíces y actividades económicas.</dd>
+            <dt>Vigencia</dt><dd>Solo esta captura: un solo intento de ingreso; al terminar se cierra la sesión del SII.</dd>
+            <dt>Tu clave</dt><dd>Viaja cifrada y nunca se guarda: ni en disco, ni en registros, ni en nuestros servidores.</dd>
+            <dt>Revocación</dt><dd><Pc>[por confirmar: cómo y dónde revocarla]</Pc></dd>
+            <dt>Tus datos leídos</dt><dd><Pc>[por confirmar: dónde y por cuánto tiempo se guardan]</Pc></dd>
+            <dt>Marco legal</dt><dd><Pc>[por confirmar: Ley 19.628 y Ley 21.719; términos definitivos pendientes de redacción]</Pc></dd>
+          </dl>
+          <div class="sign">
+            <input type="checkbox" id="consent" />
+            <label for="consent">Autorizo a Innovacred a consultar mis declaraciones y bienes raíces en el SII para elaborar mi diagnóstico.</label>
+          </div>
+        </div>
+        <div class="s-action">
+          <button class="submit" id="submit" type="submit" disabled aria-describedby="hint">Conectar con el SII</button>
+          <p class="hint" id="hint">Marca la autorización para continuar.</p>
+          <div id="status" role="status" aria-live="polite"></div>
+        </div>
+        <div class="s-foot"><Icon name="lock" /><span>La clave viaja cifrada, se usa solo durante la extracción y no se almacena. Modo demo: no se envían credenciales; se usan datos del caso de ejemplo.</span></div>
+      </form>
+    </aside>
+  </div>
+
+  <a class="dock" id="dock" href="#autorizacion">Conectar con el SII</a>
+
+  <script>
+    import { initIngreso } from '../scripts/ingreso'
+    initIngreso()
+  </script>
+</Base>

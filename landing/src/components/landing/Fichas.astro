@@ -1,0 +1,22 @@
+---
+// Cajón de fichas (FAQ Drawer de @cipriantitire, 21st.dev, MIT: observado y reconstruido).
+// Cada fuente del SII es una ficha con pestaña; se tira de una para leerla (details nativo).
+import Icon from '../Icon.astro'
+import Pc from '../Pc.astro'
+import { ROUTES } from '../../lib/site'
+---
+<div class="drawer">
+  <div class="cards">
+    <details class="card" open><summary><span class="tab" aria-hidden="true">RENTA</span><span class="code">F22</span><span class="what">Renta anual<span>Últimos 4 años tributarios</span></span><Icon name="plus" /></summary>
+      <div class="card-body"><div><p class="card-h">Qué se lee</p><p>Ingresos declarados, rebajas, base imponible (170) e impuesto determinado (157), con folio y fecha.</p></div><div><p class="card-h">Para qué cálculo</p><p>Ingreso declarado, tasa efectiva, renta neta del año y al mes, dividendo de referencia y crédito.</p></div><div><p class="card-h">Qué cifra alimenta</p><p>Casi todo el resumen: ingreso declarado, tasa efectiva, renta neta al mes, dividendo y crédito.</p></div></div></details>
+    <details class="card"><summary><span class="tab" aria-hidden="true">IVA Y PPM</span><span class="code">F29</span><span class="what">Declaración mensual<span>Últimos 24 meses</span></span><Icon name="plus" /></summary>
+      <div class="card-body"><div><p class="card-h">Qué se lee</p><p>Período, folio, débito, crédito, IVA determinado, PPM, retenciones, total a pagar y estado de pago.</p></div><div><p class="card-h">Para qué cálculo</p><p>Hoy, ninguno del resumen. <Pc>[por confirmar: cálculos futuros]</Pc></p></div><div><p class="card-h">Qué cifra alimenta</p><p>Se muestra completo en Datos del SII, mes a mes.</p></div></div></details>
+    <details class="card"><summary><span class="tab" aria-hidden="true">OTROS</span><span class="code">F50</span><span class="what">Otros impuestos<span>Últimos 24 meses</span></span><Icon name="plus" /></summary>
+      <div class="card-body"><div><p class="card-h">Qué se lee</p><p>Período, total declarado y fecha de presentación.</p></div><div><p class="card-h">Para qué cálculo</p><p>Hoy, ninguno del resumen. <Pc>[por confirmar: cálculos futuros]</Pc></p></div><div><p class="card-h">Qué cifra alimenta</p><p>Se muestra en Datos del SII.</p></div></div></details>
+    <details class="card"><summary><span class="tab" aria-hidden="true">MIS BIENES</span><span class="code">Bienes raíces</span><span class="what">Tus propiedades<span>Roles, avalúos y datos de compra</span></span><Icon name="plus" /></summary>
+      <div class="card-body"><div><p class="card-h">Qué se lee</p><p>Rol, comuna, destino, avalúo fiscal, fecha y monto de compra, pago al contado e institución que financió.</p></div><div><p class="card-h">Para qué cálculo</p><p>Activos, patrimonio, pasivos de origen y deuda de origen por institución.</p></div><div><p class="card-h">Qué cifra alimenta</p><p>Propiedades y su financiamiento. Es la deuda con que se compró, no la deuda de hoy.</p></div></div></details>
+    <details class="card"><summary><span class="tab" aria-hidden="true">GIROS</span><span class="code">Actividades</span><span class="what">Actividades económicas<span>Giros vigentes</span></span><Icon name="plus" /></summary>
+      <div class="card-body"><div><p class="card-h">Qué se lee</p><p>Tus actividades económicas vigentes.</p></div><div><p class="card-h">Para qué cálculo</p><p>Ninguno.</p></div><div><p class="card-h">Qué cifra alimenta</p><p>Se muestran en el informe como dato.</p></div></div></details>
+  </div>
+  <div class="drawer-foot"><span>Antes de conectar, la pantalla de ingreso repite estas fichas con más detalle.</span><a class="btn btn-line" href={ROUTES.ingreso}>Ir a ingresar</a></div>
+</div>

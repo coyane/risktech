@@ -1,0 +1,100 @@
+---
+// La hoja del F22 del caso de ejemplo y el panel del diagnóstico. Las filas se iluminan y encienden
+// la cifra que alimentan. El primer paso ya viene pintado en el HTML: no hay salto al cargar el script.
+import Icon from '../Icon.astro'
+
+const rows = [
+  { code: '161', concept: 'Sueldos y salarios', amount: '$81.185.676' },
+  { code: '955', concept: 'Ingresos por arriendos', amount: '$23.132.593' },
+  { code: '158', concept: 'Total ingresos brutos afectos', amount: '$104.832.677' },
+  { code: '106', concept: 'Gastos rechazados', amount: '$0' },
+  { code: '108', concept: 'Rentas presuntas', amount: '$0' },
+  { code: '170', concept: 'Base imponible', amount: '$99.322.241' },
+  { code: '157', concept: 'Impuesto determinado', amount: '$15.931.231' },
+]
+const calcs = [
+  { id: 'ingreso', label: 'Ingreso declarado', value: '$104.832.677', op: '158 − 106 − 108' },
+  { id: 'tasa', label: 'Tasa efectiva', value: '16,04%', op: '157 ÷ 170' },
+  { id: 'renta', label: 'Renta neta al mes', value: '$7.334.798', op: 'renta neta del año ÷ 12' },
+]
+// El mismo orden y los mismos textos que el script; el primero es el que se ve al cargar.
+const first = { rows: ['158', '106', '108'], calc: 'ingreso', text: 'Ingreso declarado: códigos 158, 106 y 108.' }
+---
+<div class="desk running" id="desk" role="group" aria-label="Ejemplo: de la declaración de renta a las cifras del diagnóstico">
+  <article class="sheet f22">
+    <div class="f22-head"><span>FORMULARIO 22 · AT 2025</span><span>Folio 250428-0001</span></div>
+    <p class="f22-title">Declaración de renta</p>
+    <p class="f22-sub">Caso de ejemplo. Extracto de los códigos que usa el diagnóstico.</p>
+    <table>
+      <caption class="sr">Códigos del F22 del caso de ejemplo</caption>
+      <thead><tr><th scope="col">Código</th><th scope="col">Concepto</th><th scope="col" class="num">Monto</th></tr></thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr data-r={r.code} class={first.rows.includes(r.code) ? 'hit' : undefined}><td>{r.code}</td><td>{r.concept}</td><td>{r.amount}</td></tr>
+        ))}
+      </tbody>
+    </table>
+    <p class="f22-foot">Fuente: sii.cl · Declaración vigente</p>
+  </article>
+
+  <div class="panel" aria-live="polite">
+    <div class="panel-head"><span class="pulse" aria-hidden="true"></span><b>Tu Diagnóstico Base</b><span>AT 2025</span></div>
+    <dl class="calc-list">
+      {calcs.map((c) => (
+        <div class:list={['calc', { hit: c.id === first.calc }]} data-c={c.id}><dt>{c.label}</dt><dd>{c.value}</dd><small>{c.op}</small></div>
+      ))}
+    </dl>
+  </div>
+  <div class="desk-ctrl">
+    <span id="desk-step">{first.text}</span>
+    <button type="button" id="desk-pause" aria-pressed="false"><Icon name="pause" /><span>Pausar</span></button>
+  </div>
+</div>
+
+<script>
+  // Lectura de la hoja: las filas del F22 se iluminan y encienden la cifra del panel que alimentan.
+  // Se pausa con el botón, fuera de la pantalla y siempre que la persona pidió menos movimiento.
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+  const desk = document.getElementById('desk')
+  const label = document.getElementById('desk-step')
+  const btn = document.getElementById('desk-pause')
+  if (desk && label && btn) {
+    const steps = [
+      { rows: ['158', '106', '108'], calc: 'ingreso', text: 'Ingreso declarado: códigos 158, 106 y 108.' },
+      { rows: ['170', '157'], calc: 'tasa', text: 'Tasa efectiva: código 157 dividido por el código 170.' },
+      { rows: ['158', '170', '157'], calc: 'renta', text: 'Renta neta al mes: usa el ingreso y la tasa efectiva.' },
+    ]
+    const rows = desk.querySelectorAll<HTMLTableRowElement>('tr[data-r]')
+    const calcs = desk.querySelectorAll<HTMLElement>('.calc')
+    const btnLabel = btn.querySelector('span')
+    const btnIcon = btn.querySelector('svg')
+    let i = 0
+    let timer: number | undefined
+    let paused = reduce
+    let onScreen = true
+
+    const paint = () => {
+      const s = steps[i]
+      desk.classList.add('running')
+      rows.forEach((tr) => tr.classList.toggle('hit', s.rows.includes(tr.dataset.r ?? '')))
+      calcs.forEach((c) => c.classList.toggle('hit', c.dataset.c === s.calc))
+      label.textContent = s.text
+    }
+    const run = () => {
+      window.clearInterval(timer)
+      if (!paused && onScreen) timer = window.setInterval(() => { i = (i + 1) % steps.length; paint() }, 3200)
+    }
+    const setPaused = (p: boolean) => {
+      paused = p
+      btn.setAttribute('aria-pressed', String(p))
+      if (btnLabel) btnLabel.textContent = p ? 'Reanudar' : 'Pausar'
+      if (btnIcon) btnIcon.innerHTML = p ? '<path d="M7 5l12 7-12 7z"/>' : '<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>'
+      run()
+    }
+
+    btn.addEventListener('click', () => setPaused(!paused))
+    paint()
+    if (reduce) setPaused(true)
+    new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; run() }).observe(desk)
+  }
+</script>

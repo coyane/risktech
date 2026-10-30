@@ -1,0 +1,11 @@
+---
+// Preguntas: details nativo. El texto sale de content/faq.ts, el mismo que usa el FAQPage.
+import Icon from '../Icon.astro'
+import Pc from '../Pc.astro'
+import { FAQS } from '../../content/faq'
+---
+<div class="faq">
+  {FAQS.map((f) => (
+    <details><summary>{f.q}<Icon name="plus" /></summary><div class="a">{f.a}{f.pending && <> <Pc>{f.pending}</Pc></>}</div></details>
+  ))}
+</div>

@@ -1,0 +1,16 @@
+/* Reglas idénticas en las dos páginas. Lo que cambia entre ellas va en landing.css e ingreso.css. */
+/* En una capa: el bundle puede poner esta hoja después de la de la página, y la página debe ganar igual. */
+@layer base {
+  * { box-sizing: border-box }
+  html { background: var(--bg) }
+  body { margin: 0; touch-action: manipulation; -webkit-tap-highlight-color: rgba(28, 122, 115, .15); background: var(--bg); color: var(--text); font: 16px/1.6 var(--sans); font-feature-settings: "tnum" 1; -webkit-font-smoothing: antialiased; overflow-x: hidden }
+  h1, h2, h3 { font-family: var(--display); font-weight: 400; letter-spacing: -.025em; margin: 0; text-wrap: balance }
+  p { margin: 0; text-wrap: pretty }
+  :focus-visible { outline: 3px solid var(--p300); outline-offset: 3px; border-radius: 6px }
+  .skip { position: absolute; left: 16px; top: -60px; background: var(--paper); color: var(--paper-ink); padding: 10px 16px; border-radius: 999px }
+  .skip:focus { top: 12px }
+  /* Lo que falta confirmar: rotulado y visible, nunca oculto. */
+  .pc { font-weight: 600; color: var(--warn); background: var(--warn-bg); border: 1px dashed var(--warn-line); border-radius: 6px; padding: 0 6px; -webkit-box-decoration-break: clone; box-decoration-break: clone }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+  .mark { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: var(--paper); color: var(--bg); font: 600 .95rem/1 var(--display) }
+}

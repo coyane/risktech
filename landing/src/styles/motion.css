@@ -1,0 +1,5 @@
+/* Con !important, para ganar en cualquier orden del bundle: anula el desplazamiento suave y todo movimiento si la persona lo pidió. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important }
+  *, *::before, *::after { animation: none !important; transition: none !important }
+}
